@@ -31,6 +31,9 @@ process.chdir(__dirname);
 // Attempt to import `sails` dependency, as well as `rc` (for loading `.sailsrc` files).
 var sails;
 var rc;
+
+require('dotenv').config();
+
 try {
   sails = require('sails');
   rc = require('sails/accessible/rc');

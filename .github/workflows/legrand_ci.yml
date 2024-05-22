@@ -22,10 +22,10 @@ jobs:
       - name: Deploying to legrand backend server
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
+          host: ${{ secrets.LEGRAND_HOST }}
+          username: ${{ secrets.LEGRAND_USERNAME }}
+          password: ${{ secrets.LEGRAND_PASS }}
+          port: ${{ secrets.LEGRAND_PORT }}
           script: |
             cd /home/legrand_api/Legrand_Api_Services/ # we move into our app's folder
             git pull # we pull any changes from git

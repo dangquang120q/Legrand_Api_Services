@@ -17,7 +17,7 @@ on:
 jobs:
   # deploy on server
   deploy_test:
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
     steps:
       - name: Deploying to legrand backend server
         uses: appleboy/ssh-action@develop

@@ -9,7 +9,7 @@ module.exports = {
       PORT: 9002
     },
     instances: 1,
-    autorestart: true
+    autorestart: false
   }]
 
   // deploy : {

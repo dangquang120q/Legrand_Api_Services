@@ -61,20 +61,5 @@ try {
   return;
 } //-•
 
-// Socket
-const { Server } = require("socket.io");
-
 // Start server
 sails.lift(rc("sails"));
-sails.on("ready", () => {
-  const io = new Server(9601, {
-    cors: {
-      origin: "*",
-      methods: ["GET", "POST"],
-    },
-  });
-  console.log("Run Socket", io);
-  io.on("connection", (socket) => {
-    console.log("Socket connected", socket.id);
-  });
-});

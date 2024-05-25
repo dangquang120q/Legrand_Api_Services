@@ -9,7 +9,7 @@ const io = new Server(9601, {
 console.log("Run Socket");
 io.on("connection", (socket) => {
   console.log("Socket connected", socket.id);
-  socket.on("request", (data) => {
+  socket.on("*", (data) => {
     const { cmdType } = data;
     console.log("Socket request || ", cmdType, ": ", data);
     let response = {

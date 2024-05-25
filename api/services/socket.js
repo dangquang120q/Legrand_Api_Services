@@ -10,7 +10,7 @@ console.log("Run Socket");
 io.on("connection", (socket) => {
   console.log("Socket connected", socket.id);
   socket.on("*", (data) => {
-    const { cmdType } = data;
+    const { cmdType, packageNo } = data;
     console.log("Socket request || ", cmdType, ": ", data);
     let response = {
       cmdType: "",
@@ -18,6 +18,7 @@ io.on("connection", (socket) => {
     switch (cmdType) {
       case "login":
         response.cmdType = "loginAck";
+        response.packageNo = packageNo;
         response.result = 0;
         break;
       case "heartbeat":
@@ -26,7 +27,6 @@ io.on("connection", (socket) => {
       default:
         break;
     }
-
-    socket.emit("response", response);
+    socket.send(response);
   });
 });

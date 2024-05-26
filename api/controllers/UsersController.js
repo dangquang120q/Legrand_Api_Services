@@ -22,13 +22,13 @@ module.exports = {
         let jwtToken = jwtoken.sign({userId: userId});
         let sql = sqlString.format("CALL sp_login(?,?,?)", [userId, password, jwtToken]);
         let data = await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(sql);
-        // response_data.userData = data["rows"][0][0];
         if (data["rows"][0].length == 0) {
             response = new HttpResponse({msg: "Wrong email or password"}, {statusCode: 400, error: true});
             return res.ok(response);
         }
         let response_data = {};
         response_data.jwt = jwtToken;
+        response_data.userData = data["rows"][0][0];
         response = new HttpResponse(response_data, {statusCode: 200, error: false});
         return res.ok(response);
     } catch (error) {
@@ -67,26 +67,63 @@ module.exports = {
         return res.serverError(response);
     }
   },
-  createRoom: async (req, res) => {
-    log('CreateRoom => ' + JSON.stringify(req.body));
-    let jwtToken = req.body.jwt;
+  logout: async(req, res) => {
+    log('Logout => ' + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
     let response;
     try {
-        let decodedToken = await new Promise((resolve, reject) => {
-            jwtoken.verify(jwtToken, (err, decodedToken) => {
-                if (err) {
-                    response = new HttpResponse({msg: "Invalid Token"}, { statusCode: 401, error: true });
-                    return res.ok(response);
-                    reject(err);
-                } else {
-                    console.log("Token được xác minh thành công:", decodedToken);
-                    resolve(decodedToken);
-                }
-            });
-        });
-        let response_data = {};
-        
-        response = new HttpResponse(response_data, { statusCode: 200, error: false });
+        let decodedToken = jwtoken.decode(jwtToken);
+        let userId = decodedToken["userId"];
+        let sqlUpdate = sqlString.format("update user_account set login_token = ? where user_id = ?", ["",userId]);
+        await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(sqlUpdate);
+        response = new HttpResponse({msg: "Logout Successful"}, {statusCode: 200, error: false});
+        return res.ok(response);
+    } catch (error) {
+        log('Logout error => ' + error.toString());
+        response = new HttpResponse(error, {statusCode: 500, error: true});
+        return res.serverError(response);
+    }
+  },
+  createRoom: async (req, res) => {
+    log('CreateRoom => ' + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
+    let room_name = req.body.room_name;
+    let response;
+    try {
+        let decodedToken = jwtoken.decode(jwtToken);
+        let userId = decodedToken["userId"];
+        let sqlCheck = sqlString.format("Select id from user_account where user_id = ? and login_token = ?", [userId,jwtToken]);
+        let dataCheck = await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(sqlCheck);
+        if (dataCheck["rows"].length == 0) {
+            response = new HttpResponse({msg: "Invalid Token"}, { statusCode: 401, error: false });
+            return res.ok(response);
+        }
+        let sql = sqlString.format("CALL sp_createRoom(?,?)", [userId, room_name]);
+        let data = await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(sql);
+        response = new HttpResponse(data["rows"][0], { statusCode: 200, error: false });
+        return res.ok(response);
+    } catch (error) {
+        log('CreateRoom error => ' + error.toString());
+        response = new HttpResponse(error, {statusCode: 500, error: true});
+        return res.serverError(response);
+    }
+  },
+  getListRoom: async (req, res) => {
+    log('getListRoom => ' + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    try {
+        let decodedToken = jwtoken.decode(jwtToken);
+        let userId = decodedToken["userId"];
+        let sqlCheck = sqlString.format("Select id from user_account where user_id = ? and login_token = ?", [userId,jwtToken]);
+        let dataCheck = await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(sqlCheck);
+        if (dataCheck["rows"].length == 0) {
+            response = new HttpResponse({msg: "Invalid Token"}, { statusCode: 401, error: false });
+            return res.ok(response);
+        }
+        let sql = sqlString.format("CALL sp_createRoom(?,?)", [userId, room_name]);
+        let data = await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(sql);
+        response = new HttpResponse(data["rows"][0], { statusCode: 200, error: false });
         return res.ok(response);
     } catch (error) {
         log('CreateRoom error => ' + error.toString());

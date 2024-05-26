@@ -17,6 +17,14 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  // '*': true,
+  '*': true,
+  UsersController: {
+    login: true,
+    signup: true,
+    logout: "checkJwtoken",
+    getListRoom: "checkJwtoken",
+    createRoom: "checkJwtoken",
+    getListDepartment: "checkJwtoken",
+  },
 
 };

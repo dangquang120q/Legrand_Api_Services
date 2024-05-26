@@ -25,6 +25,7 @@ module.exports.routes = {
   "POST /user/logout": "UsersController.logout",
   "POST /user/createRoom": "UsersController.createRoom",
   "POST /user/getListRoom": "UsersController.getListRoom",
+  "POST /user/getListDepartment": "UsersController.getListDepartment",
   /***************************************************************************
   *                                                                          *
   * More custom routes here...                                               *

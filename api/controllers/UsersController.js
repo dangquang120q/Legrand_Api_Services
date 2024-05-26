@@ -92,12 +92,12 @@ module.exports = {
     try {
         let decodedToken = jwtoken.decode(jwtToken);
         let userId = decodedToken["userId"];
-        let sqlCheck = sqlString.format("Select id from user_account where user_id = ? and login_token = ?", [userId,jwtToken]);
-        let dataCheck = await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(sqlCheck);
-        if (dataCheck["rows"].length == 0) {
-            response = new HttpResponse({msg: "Invalid Token"}, { statusCode: 401, error: false });
-            return res.ok(response);
-        }
+        // let sqlCheck = sqlString.format("Select id from user_account where user_id = ? and login_token = ?", [userId,jwtToken]);
+        // let dataCheck = await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(sqlCheck);
+        // if (dataCheck["rows"].length == 0) {
+        //     response = new HttpResponse({msg: "Invalid Token"}, { statusCode: 401, error: true });
+        //     return res.ok(response);
+        // }
         let sql = sqlString.format("CALL sp_createRoom(?,?)", [userId, room_name]);
         let data = await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(sql);
         response = new HttpResponse(data["rows"][0], { statusCode: 200, error: false });
@@ -127,6 +127,23 @@ module.exports = {
         return res.ok(response);
     } catch (error) {
         log('CreateRoom error => ' + error.toString());
+        response = new HttpResponse(error, {statusCode: 500, error: true});
+        return res.serverError(response);
+    }
+  },
+  getListDepartment: async (req, res) => {
+    log('getListDepartment => ' + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    try {
+        let decodedToken = jwtoken.decode(jwtToken);
+        let userId = decodedToken["userId"];
+        let sql = sqlString.format("Select dept_id,dept_name,owner_id as user_id,dept_address as address from department where owner_id = ?", [userId]);
+        let data = await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(sql);
+        response = new HttpResponse(data["rows"], { statusCode: 200, error: false });
+        return res.ok(response);
+    } catch (error) {
+        log('getListDepartment error => ' + error.toString());
         response = new HttpResponse(error, {statusCode: 500, error: true});
         return res.serverError(response);
     }

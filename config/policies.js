@@ -25,6 +25,7 @@ module.exports.policies = {
     getListRoom: "checkJwtoken",
     createRoom: "checkJwtoken",
     getListDepartment: "checkJwtoken",
+    updateProfile: "checkJwtoken",
   },
 
 };

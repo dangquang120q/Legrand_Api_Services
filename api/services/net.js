@@ -81,7 +81,7 @@ server.on("connection", function (socket) {
         default:
           break;
       }
-      response.cmdType = cmdType + "";
+      response.cmdType = cmdType + "Ack";
       response.packetNo = packetNo;
     }
     //echo data

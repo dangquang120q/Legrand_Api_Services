@@ -29,7 +29,7 @@ log("Run Socket");
 io.on("connection", (socket) => {
   log("Socket connected", socket.id);
 
-  socket.onAny((_request, data) => {
+  socket.onAny(async (_request, data) => {
     const { cmdType, packetNo } = data;
 
     log("Socket request || " + cmdType + ": " + JSON.stringify(data));
@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
     if (cmdType) {
       switch (cmdType) {
         case SOCKET_REQUEST.login:
-          response = login(data);
+          response = await login(data);
           break;
         case SOCKET_REQUEST.heartbeat:
           response = heartbeat(data);

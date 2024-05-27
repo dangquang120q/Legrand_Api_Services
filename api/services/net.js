@@ -128,6 +128,10 @@ server.on("connection", function (socket) {
     }
   });
 
+  socket.setTimeout(120000, function () {
+    console.log("Socket timed out after 2 minutes of inactivity!");
+    socket.end("Timed out!"); // Kết thúc kết nối
+  });
   //   setTimeout(function () {
   //     var isdestroyed = socket.destroyed;
   //     console.log("Socket destroyed:" + isdestroyed);
@@ -145,7 +149,6 @@ server.on("listening", function () {
   console.log("Socket is listening!");
 });
 
-server.maxConnections = 10;
 
 //static port allocation
 server.listen(9601);

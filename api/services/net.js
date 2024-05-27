@@ -51,11 +51,12 @@ server.on("connection", function (socket) {
 
   socket.setEncoding("utf8");
 
-  socket.setTimeout(800000, function () {
+  socket.setTimeout(120000, function () {
     // called after timeout -> same as socket.on('timeout')
     // it just tells that soket timed out => its ur job to end or destroy the socket.
     // socket.end() vs socket.destroy() => end allows us to send final data and allows some i/o activity to finish before destroying the socket
     // whereas destroy kills the socket immediately irrespective of whether any i/o operation is goin on or not...force destry takes place
+    socket.end("Timed out!"); // Kết thúc kết nối
     console.log("Socket timed out");
   });
 
@@ -128,10 +129,6 @@ server.on("connection", function (socket) {
     }
   });
 
-  socket.setTimeout(120000, function () {
-    console.log("Socket timed out after 2 minutes of inactivity!");
-    socket.end("Timed out!"); // Kết thúc kết nối
-  });
   //   setTimeout(function () {
   //     var isdestroyed = socket.destroyed;
   //     console.log("Socket destroyed:" + isdestroyed);

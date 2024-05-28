@@ -61,39 +61,40 @@ server.on("connection", function (socket) {
   });
 
   socket.on("data", async function (data) {
-    // var bread = socket.bytesRead;
-    // var bwrite = socket.bytesWritten;
-    // console.log("Bytes read : " + bread);
-    // console.log("Bytes written : " + bwrite);
     log("Data sent to server : " + data);
-    data = JSON.parse(data);
-    const { cmdType, packetNo } = data;
-    let response = {
-      cmdType: "",
-      packetNo: "",
-    };
-    if (cmdType) {
-      switch (cmdType) {
-        case SOCKET_REQUEST.login:
-          response = await login(data);
-
-          break;
-
-        default:
-          break;
+    try{
+      data = JSON.parse(data);
+      const { cmdType, packetNo } = data;
+      let response = {
+        cmdType: "",
+        packetNo: "",
+      };
+      if (cmdType) {
+        switch (cmdType) {
+          case SOCKET_REQUEST.login:
+            response = await login(data);
+  
+            break;
+  
+          default:
+            break;
+        }
+        response.cmdType = cmdType + "Ack";
+        response.packetNo = packetNo;
       }
-      response.cmdType = cmdType + "Ack";
-      response.packetNo = packetNo;
+      //echo data
+      var is_kernel_buffer_full = socket.write(JSON.stringify(response));
+      if (is_kernel_buffer_full) {
+        console.log(
+          "Data was flushed successfully from kernel buffer i.e written successfully!"
+        );
+      } else {
+        socket.pause();
+      }
     }
-    //echo data
-    var is_kernel_buffer_full = socket.write(JSON.stringify(response));
-    if (is_kernel_buffer_full) {
-      console.log(
-        "Data was flushed successfully from kernel buffer i.e written successfully!"
-      );
-    } else {
-      socket.pause();
-    }
+    catch (error) {
+      log('error');
+  }
   });
 
   socket.on("drain", function () {

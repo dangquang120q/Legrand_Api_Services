@@ -6,7 +6,7 @@ const { SOCKET_REQUEST } = require("./const");
 
 const options = {
   key: fs.readFileSync('privkey.pem'),
-  cert: fs.readFileSync('cert.pem'),
+  cert: fs.readFileSync('fullchain.pem'),
   // Các tùy chọn bổ sung như passphrase, ca, crl, etc. (nếu cần)
 };
 // creates the server

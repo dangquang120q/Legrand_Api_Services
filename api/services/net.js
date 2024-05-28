@@ -149,7 +149,7 @@ server.on("listening", function () {
 
 
 //static port allocation
-server.listen(9600);
+server.listen(9601);
 
 // for dyanmic port allocation
 // server.listen(function () {

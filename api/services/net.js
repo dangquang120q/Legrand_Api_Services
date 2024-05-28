@@ -1,10 +1,16 @@
-var net = require("net");
+const tls = require('tls');
+var fs = require('fs');
 const { log } = require("./log");
 const { login } = require("./socket/login");
 const { SOCKET_REQUEST } = require("./const");
 
+const options = {
+  key: fs.readFileSync('privkey.pem'),
+  cert: fs.readFileSync('cert.pem'),
+  // Các tùy chọn bổ sung như passphrase, ca, crl, etc. (nếu cần)
+};
 // creates the server
-var server = net.createServer();
+var server = tls.createServer(options);
 
 //emitted when server closes ...not emitted until all connections closes.
 server.on("close", function () {
@@ -12,7 +18,7 @@ server.on("close", function () {
 });
 
 // emitted when new client connects
-server.on("connection", function (socket) {
+server.on("secureConnection", function (socket) {
   //this property shows the number of characters currently buffered to be written. (Number of characters is approximately equal to the number of bytes to be written, but the buffer may contain strings, and the strings are lazily encoded, so the exact number of bytes is not known.)
   //Users who experience large or growing bufferSize should attempt to "throttle" the data flows in their program with pause() and resume().
 

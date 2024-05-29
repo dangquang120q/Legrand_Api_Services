@@ -3,6 +3,7 @@ var fs = require('fs');
 const { log } = require("./log");
 const { login } = require("./socket/login");
 const { SOCKET_REQUEST } = require("./const");
+const dataUtils = require('./socket/data-utils');
 
 const options = {
   key: fs.readFileSync('privkey.pem'),
@@ -66,10 +67,11 @@ server.on("secureConnection", function (socket) {
     console.log("Socket timed out");
   });
 
-  socket.on("data", async function (data) {
-    log("Data sent to server : " + data);
+  socket.on("data", async function (request) {
+    log("Data sent to server : " + request);
+    var { header, body, end } = dataUtils.extractData(request);
     try{
-      data = JSON.parse(data);
+      var data = JSON.parse(body);
       const { cmdType, packetNo } = data;
       let response = {
         cmdType: "",
@@ -78,7 +80,7 @@ server.on("secureConnection", function (socket) {
       if (cmdType) {
         switch (cmdType) {
           case SOCKET_REQUEST.login:
-            response = await login(data);
+            response = await login(data, header, end);
   
             break;
   

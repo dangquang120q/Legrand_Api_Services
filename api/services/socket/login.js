@@ -1,7 +1,7 @@
 const sqlString = require("sqlstring");
 
 module.exports = {
-  login: async (request) => {
+  login: async (request, header, end) => {
     const { data } = request;
     const response = {
       result: 0,
@@ -18,7 +18,7 @@ module.exports = {
     if (dataCheck["rows"].length == 0) {
       result = 0;
     }
-    response.result = result;
+    response.result = header.concat(result).concat(end);
 
     return response;
   },

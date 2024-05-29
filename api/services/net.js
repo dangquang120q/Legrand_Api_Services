@@ -91,6 +91,7 @@ server.on("secureConnection", function (socket) {
         response.packetNo = packetNo;
       }
       //echo data
+      console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));
       var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end));
       if (is_kernel_buffer_full) {
         console.log(

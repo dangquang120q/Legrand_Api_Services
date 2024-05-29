@@ -18,7 +18,7 @@ module.exports = {
     if (dataCheck["rows"].length == 0) {
       result = 0;
     }
-    response.result = header.concat(result).concat(end);
+    response.result = result;
 
     return response;
   },

@@ -80,7 +80,7 @@ server.on("secureConnection", function (socket) {
       if (cmdType) {
         switch (cmdType) {
           case SOCKET_REQUEST.login:
-            response = await login(data, header, end);
+            response = await login(data);
   
             break;
   
@@ -91,7 +91,7 @@ server.on("secureConnection", function (socket) {
         response.packetNo = packetNo;
       }
       //echo data
-      var is_kernel_buffer_full = socket.write(JSON.stringify(response));
+      var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end));
       if (is_kernel_buffer_full) {
         console.log(
           "Data was flushed successfully from kernel buffer i.e written successfully!"

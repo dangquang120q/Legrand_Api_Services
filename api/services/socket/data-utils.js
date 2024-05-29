@@ -1,10 +1,12 @@
 module.exports = {
     extractData: function (request) {
-        const { data } = request;
-        const header = request.substring(0, 6);
-        const body = request.substring(6, request.length - 1);
-        const end = request[request.length-1];
-
+        var firstPosBody = request.indexOf("{");
+        var lastPosBody = request.lastIndexOf("}");
+        const header = request.substring(0, firstPosBody);
+        const body = request.substring(firstPosBody, lastPosBody + 1);
+        const end = request.substring(lastPosBody + 1, request.length);
+        console.log("header " + header.toString(16));
+        console.log("end " + end.toString(16));
         return {header, body, end};
     },
     

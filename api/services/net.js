@@ -68,7 +68,8 @@ server.on("secureConnection", function (socket) {
   });
 
   socket.on("data", async function (request) {
-    log("Data sent to server : " + request);
+    var a = String.fromCharCode(request.split(" "));
+    log("Data sent to server : " + a);
     var { header, body, end } = dataUtils.extractData(request);
     try{
       var data = JSON.parse(body);

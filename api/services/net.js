@@ -58,14 +58,7 @@ server.on("secureConnection", function (socket) {
 
   socket.setEncoding("utf8");
 
-  socket.setTimeout(120000, function () {
-    // called after timeout -> same as socket.on('timeout')
-    // it just tells that soket timed out => its ur job to end or destroy the socket.
-    // socket.end() vs socket.destroy() => end allows us to send final data and allows some i/o activity to finish before destroying the socket
-    // whereas destroy kills the socket immediately irrespective of whether any i/o operation is goin on or not...force destry takes place
-    socket.end("Timed out!"); // Kết thúc kết nối
-    console.log("Socket timed out");
-  });
+
 
   socket.on("data", async function (request) {
     log("Data sent to server : " + request);

@@ -98,6 +98,9 @@ server.on("secureConnection", function (socket) {
           "Data was flushed successfully from kernel buffer i.e written successfully!"
         );
       } else {
+        console.log(
+          "Data was flushed unsuccessfully from kernel buffer i.e written unsuccessfully!"
+        );
         socket.pause();
       }
     }

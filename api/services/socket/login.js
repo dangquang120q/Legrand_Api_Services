@@ -19,7 +19,10 @@ module.exports = {
       result = 0;
     }
     response.result = result;
-
+    response.data = {
+      "timestamp": Date.now(),
+      "timezone": "UTC"
+    }
     return response;
   },
 };

@@ -2,6 +2,7 @@ const tls = require('tls');
 var fs = require('fs');
 const { log } = require("./log");
 const { login } = require("./socket/login");
+const { heartbeat } = require("./socket/heartbeat");
 const { SOCKET_REQUEST } = require("./const");
 const dataUtils = require('./socket/data-utils');
 
@@ -17,7 +18,7 @@ var server = tls.createServer(options);
 server.on("close", function () {
   console.log("Server closed !");
 });
-
+var list_account = {};
 // emitted when new client connects
 server.on("secureConnection", function (socket) {
   //this property shows the number of characters currently buffered to be written. (Number of characters is approximately equal to the number of bytes to be written, but the buffer may contain strings, and the strings are lazily encoded, so the exact number of bytes is not known.)
@@ -74,9 +75,12 @@ server.on("secureConnection", function (socket) {
         switch (cmdType) {
           case SOCKET_REQUEST.login:
             response = await login(data);
-  
+            list_account[socket.remoteAddress] = data.data["dn"];
             break;
-  
+          case SOCKET_REQUEST.heartbeat:
+            log(list_account[socket.remoteAddress]);
+            response = await heartbeat(data);
+            break;
           default:
             break;
         }

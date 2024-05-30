@@ -24,7 +24,7 @@ var client = tls.connect(options, function () {
   // writing data to server
   client.write(
     JSON.stringify({
-      cmdType: "login",
+      cmdType: "heartbeat",
       packetNo: 1,
       data: {
         dn: 1234,

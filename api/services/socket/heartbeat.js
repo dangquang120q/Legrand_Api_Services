@@ -1,7 +1,7 @@
 const sqlString = require("sqlstring");
 
 module.exports = {
-  heartbeat: async function (request, lts_mac) {
+  heartbeat: async (request, lts_mac) => {
     // const { data } = request;
     const response = {
       result: 0,

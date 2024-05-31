@@ -13,8 +13,6 @@ module.exports = {
       let dataTime = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlTime);
-      console.log(Date.now());
-      console.log(dataTime["rows"][0]["last_ping_time"]);
       if (Date.now() - dataTime["rows"][0]["last_ping_time"] < 120000) {
         result = 0;
       }

@@ -108,7 +108,7 @@ server.on("secureConnection", function (socket) {
       }
     }
     catch (error) {
-      log('error');
+      log('error' + error);
   }
   });
 

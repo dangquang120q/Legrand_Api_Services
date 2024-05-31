@@ -8,16 +8,15 @@ module.exports = {
     };
     console.log("lts_mac == " + lts_mac);
     let result = 1;
-    log(result);
+    console.log(result);
     let sqlTime = sqlString.format(
       "Select last_ping_time from lts_device_control where lts_mac = ?",
       [lts_mac]
     );
-    log("sqlTime == " + sqlTime);
+    console.log("sqlTime == " + sqlTime);
     let dataTime = await sails
       .getDatastore(process.env.MYSQL_DATASTORE)
       .sendNativeQuery(sqlTime);
-    log(JSON.stringify(dataTime["rows"][0]));
     if (Date.now() - dataTime["rows"][0]["last_ping_time"] < 120) {
       let sqlUpdateTime = sqlString.format(
         "update lts_device_control set last_ping_time = ? where lts_mac = ?",

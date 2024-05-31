@@ -91,7 +91,7 @@ server.on("secureConnection", function (socket) {
       console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));
       var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end));
       setTimeout(async () => {
-        let response = await checkPing(data.data["dn"]);
+        let response = await checkPing(list_account[socket.remoteAddress]);
         if (response == -1) {
           socket.end("Timed out!");
         }

@@ -5,6 +5,7 @@ const { login } = require("./socket/login");
 const { heartbeat } = require("./socket/heartbeat");
 const { SOCKET_REQUEST } = require("./const");
 const dataUtils = require('./socket/data-utils');
+const checkPing = require('./socket/checkPing');
 
 const options = {
   key: fs.readFileSync('privkey.pem'),
@@ -89,6 +90,12 @@ server.on("secureConnection", function (socket) {
       //echo data
       console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));
       var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end));
+      setTimeout(async () => {
+        let response = await checkPing(data.data["dn"]);
+        if (response == -1) {
+          socket.end("Timed out!");
+        }
+      }, 130000);
       if (is_kernel_buffer_full) {
         console.log(
           "Data was flushed successfully from kernel buffer i.e written successfully!"

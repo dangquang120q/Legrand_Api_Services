@@ -7,7 +7,7 @@ module.exports = {
       result: 0,
     };
     console.log("lts_mac == " + lts_mac);
-    let result = -1;
+    let result = 1;
     log(result);
     let sqlTime = sqlString.format(
       "Select last_ping_time from lts_device_control where lts_mac = ?",
@@ -29,7 +29,7 @@ module.exports = {
       result = 0;
     }
     else{
-      result = -1;
+      result = 1;
     }
     response.result = result;
     return response;

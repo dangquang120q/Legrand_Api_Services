@@ -6,13 +6,13 @@ module.exports = {
     const response = {
       result: 0,
     };
-    console.log(lts_mac);
+    console.log("lts_mac == " + lts_mac);
     let result = -1;
     let sqlTime = sqlString.format(
       "Select last_ping_time from lts_device_control where lts_mac = ?",
       [lts_mac]
     );
-    log(sqlTime);
+    log("sqlTime == " + sqlTime);
     let dataTime = await sails
       .getDatastore(process.env.MYSQL_DATASTORE)
       .sendNativeQuery(sqlTime);

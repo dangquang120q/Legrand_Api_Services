@@ -24,13 +24,20 @@ var client = tls.connect(options, function () {
   // writing data to server
   client.write(
     JSON.stringify({
-      cmdType: "heartbeat",
+      cmdType: "login",
       packetNo: 1,
       data: {
         dn: 1234,
-        timestamp: "1713675544000",
-        timezone: "Asia/Shanghai",
+        account: "quang",
+        password: "1202002",
       },
+    })
+  );
+
+  client.write(
+    JSON.stringify({
+      cmdType: "heartbeat",
+      packetNo: 2
     })
   );
 });

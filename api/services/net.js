@@ -78,8 +78,7 @@ server.on("secureConnection", function (socket) {
             list_account[socket.remoteAddress] = data.data["dn"];
             break;
           case SOCKET_REQUEST.heartbeat:
-            log(list_account[socket.remoteAddress]);
-            response = await heartbeat(data);
+            response = await heartbeat(data,list_account[socket.remoteAddress]);
             break;
           default:
             break;

@@ -1,20 +1,30 @@
 module.exports = {
-  heartbeat: async function (request) {
+  heartbeat: async function (request, lts_mac) {
     const { data } = request;
     log(data);
     const response = {
       result: 0,
     };
-    let result = 1;
-    let sqlCheck = sqlString.format(
-      "Select last_ping_time from user_account where lts_mac = ?",
-      [data["dn"]]
+    let result = -1;
+    let sqlTime = sqlString.format(
+      "Select last_ping_time from lts_device_control where lts_mac = ?",
+      [lts_mac]
     );
-    let dataCheck = await sails
+    let dataTime = await sails
       .getDatastore(process.env.MYSQL_DATASTORE)
-      .sendNativeQuery(sqlCheck);
-    if (dataCheck["rows"].length == 0) {
+      .sendNativeQuery(sqlTime);
+    if (Date.now() - dataTime["rows"][0] < 120) {
+      let sqlUpdateTime = sqlString.format(
+        "update lts_device_control set last_ping_time = ? where lts_mac = ?",
+        [Date.now(),lts_mac]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlUpdateTime);
       result = 0;
+    }
+    else{
+      result = -1;
     }
     response.result = result;
     return response;

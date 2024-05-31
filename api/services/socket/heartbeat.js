@@ -10,6 +10,7 @@ module.exports = {
       "Select last_ping_time from lts_device_control where lts_mac = ?",
       [lts_mac]
     );
+    log(sqlTime);
     let dataTime = await sails
       .getDatastore(process.env.MYSQL_DATASTORE)
       .sendNativeQuery(sqlTime);

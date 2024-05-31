@@ -34,13 +34,14 @@ var client = tls.connect(options, function () {
     })
   );
   setTimeout(() => {
+    console.log(1);
     client.write(
       JSON.stringify({
         cmdType: "heartbeat",
         packetNo: 2
       })
     );
-  }, 60000);
+  }, 6000);
 });
 
 client.setEncoding("utf8");

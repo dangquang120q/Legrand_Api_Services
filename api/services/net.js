@@ -3,9 +3,9 @@ var fs = require('fs');
 const { log } = require("./log");
 const { login } = require("./socket/login");
 const { heartbeat } = require("./socket/heartbeat");
+const { checkPing } = require("./socket/checkPing");
 const { SOCKET_REQUEST } = require("./const");
 const dataUtils = require('./socket/data-utils');
-const checkPing = require('./socket/checkPing');
 
 const options = {
   key: fs.readFileSync('privkey.pem'),

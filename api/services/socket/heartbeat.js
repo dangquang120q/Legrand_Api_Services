@@ -17,7 +17,7 @@ module.exports = {
     let dataTime = await sails
       .getDatastore(process.env.MYSQL_DATASTORE)
       .sendNativeQuery(sqlTime);
-    if (Date.now() - dataTime["rows"][0]["last_ping_time"] < 120) {
+    if (Date.now() - dataTime["rows"][0]["last_ping_time"] < 120000) {
       let sqlUpdateTime = sqlString.format(
         "update lts_device_control set last_ping_time = ? where lts_mac = ?",
         [Date.now(),lts_mac]

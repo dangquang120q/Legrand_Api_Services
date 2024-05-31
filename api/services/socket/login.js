@@ -16,6 +16,13 @@ module.exports = {
       .getDatastore(process.env.MYSQL_DATASTORE)
       .sendNativeQuery(sqlCheck);
     if (dataCheck["rows"].length == 0) {
+      let sqlUpdateTime = sqlString.format(
+        "update lts_device_control set last_ping_time = ? where lts_mac = ?",
+        [Date.now(),data["dn"]]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlUpdateTime);
       result = 0;
     }
     response.result = result;

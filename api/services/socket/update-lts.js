@@ -1,5 +1,5 @@
 module.exports = {
-  firmWareInfo: function (request) {
+  firmWareInfo: async function (request) {
     const { data } = request;
 
     const response = {
@@ -8,7 +8,7 @@ module.exports = {
     return response;
   },
 
-  LTSversion: function (request) {
+  LTSversion: async function (request) {
     const { data } = request;
 
     const response = {

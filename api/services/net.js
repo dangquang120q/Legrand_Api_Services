@@ -58,7 +58,7 @@ server.on("secureConnection", function (socket) {
     console.log("Number of concurrent connections to the server : " + count);
   });
 
-  socket.setEncoding("utf16");
+  socket.setEncoding("latin1");
 
 
 

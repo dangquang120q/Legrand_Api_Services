@@ -85,7 +85,6 @@ server.on("secureConnection", function (socket) {
             break;
         }
         response.cmdType = cmdType + "Ack";
-        response.packetNo = packetNo;
       }
       //echo data
       console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));

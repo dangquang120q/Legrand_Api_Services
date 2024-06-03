@@ -2,7 +2,7 @@ const sqlString = require("sqlstring");
 
 module.exports = {
   login: async (request, header, end) => {
-    const { data } = request;
+    const { data, packetNo } = request;
     const response = {
       result: 0,
     };
@@ -28,6 +28,7 @@ module.exports = {
         .sendNativeQuery(sqlUpdateTime);
     }
     response.result = result;
+    response.packetNo = 1;
     response.data = {
       "timestamp": Date.now(),
       "timezone": "UTC"

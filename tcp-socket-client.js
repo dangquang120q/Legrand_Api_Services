@@ -37,7 +37,7 @@ var client = tls.connect(options, function () {
     client.write(
       JSON.stringify({
         cmdType: "heartbeat",
-        packetNo: 2
+        packetNo: 1
       })
     );
   }, 15000);

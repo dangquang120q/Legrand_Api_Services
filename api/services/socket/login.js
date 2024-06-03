@@ -7,7 +7,7 @@ module.exports = {
       result: 0,
     };
 
-    let result = 1;
+    let result = 0;
     let sqlCheck = sqlString.format(
       "Select lts_device_id from lts_device_control where lts_mac = ?",
       [data["dn"]]
@@ -16,7 +16,7 @@ module.exports = {
       .getDatastore(process.env.MYSQL_DATASTORE)
       .sendNativeQuery(sqlCheck);
     if (dataCheck["rows"].length == 0) {
-      result = 0;
+      result = -1;
     }
     else{
       let sqlUpdateTime = sqlString.format(

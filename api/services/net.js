@@ -88,10 +88,6 @@ server.on("secureConnection", function (socket) {
       }
       //echo data
       console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));
-      for (i = 0; i < header.concat(JSON.stringify(response)).concat(end).length; i++) {
-        var hex = header.concat(JSON.stringify(response)).concat(end).charCodeAt(i).toString(16);
-        console.log("header response char code " + i + " -- " + hex);
-      }
       var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end));
       setTimeout(async () => {
         let response = await checkPing(list_account[socket.remoteAddress]);

@@ -90,7 +90,7 @@ server.on("secureConnection", function (socket) {
       console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));
       for (i = 0; i < response.length; i++) {
         var hex = response.charCodeAt(i).toString(16);
-        console.log("header char code " + i + " -- " + hex);
+        console.log("header response char code " + i + " -- " + hex);
       }
       var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end));
       setTimeout(async () => {

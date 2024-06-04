@@ -1,5 +1,5 @@
 module.exports = {
-  addDevice: function (request) {
+  addDevice: async function (request) {
     const { data } = request;
 
     const response = {
@@ -8,7 +8,7 @@ module.exports = {
     return response;
   },
 
-  delDevice: function (request) {
+  delDevice: async function (request) {
     const { data } = request;
 
     const response = {
@@ -17,7 +17,7 @@ module.exports = {
     return response;
   },
 
-  switchDevice: function (request) {
+  switchDevice: async function (request) {
     const { data } = request;
 
     const response = {
@@ -26,7 +26,7 @@ module.exports = {
     return response;
   },
 
-  battery: function (request) {
+  battery: async function (request) {
     const { data } = request;
 
     const response = {
@@ -35,7 +35,7 @@ module.exports = {
     return response;
   },
 
-  alarm: function (request) {
+  alarm: async function (request) {
     const { data } = request;
 
     const response = {

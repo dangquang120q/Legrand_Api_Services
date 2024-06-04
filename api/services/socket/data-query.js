@@ -1,5 +1,5 @@
 module.exports = {
-  deviceListVersion: function (request) {
+  deviceListVersion: async function (request) {
     const { data } = request;
 
     const response = {
@@ -8,7 +8,7 @@ module.exports = {
     return response;
   },
 
-  deviceList: function (request) {
+  deviceList: async function (request) {
     const { data } = request;
 
     const response = {
@@ -17,7 +17,7 @@ module.exports = {
     return response;
   },
 
-  cityList: function (request) {
+  cityList: async function (request) {
     const { data } = request;
 
     const response = {
@@ -26,7 +26,7 @@ module.exports = {
     return response;
   },
 
-  weather: function (request) {
+  weather: async function (request) {
     const { data } = request;
 
     const response = {
@@ -35,7 +35,7 @@ module.exports = {
     return response;
   },
 
-  ntp: function (request) {
+  ntp: async function (request) {
     const { data } = request;
 
     const response = {

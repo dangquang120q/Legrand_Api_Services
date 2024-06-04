@@ -4,6 +4,15 @@ const { log } = require("./log");
 const { login } = require("./socket/login");
 const { heartbeat } = require("./socket/heartbeat");
 const { checkPing } = require("./socket/checkPing");
+const { addDevice, delDevice,switchDevice, battery, alarm } = require("./socket/data-report");
+const {
+  deviceList,
+  deviceListVersion,
+  cityList,
+  ntp,
+  weather,
+} = require("./socket/data-query");
+const { firmWareInfo, LTSversion } = require("./socket/update-lts");
 const { SOCKET_REQUEST } = require("./const");
 const dataUtils = require('./socket/data-utils');
 
@@ -58,7 +67,7 @@ server.on("secureConnection", function (socket) {
     console.log("Number of concurrent connections to the server : " + count);
   });
 
-  socket.setEncoding("utf8");
+  socket.setEncoding("latin1");
 
 
 
@@ -80,6 +89,42 @@ server.on("secureConnection", function (socket) {
             break;
           case SOCKET_REQUEST.heartbeat:
             response = await heartbeat(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.addDevice:
+            response = await addDevice(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.delDevice:
+            response = await delDevice(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.switch:
+            response = await switchDevice(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.battery:
+            response = await battery(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.alarm:
+            response = await alarm(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.deviceListVersion:
+            response = await deviceListVersion(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.deviceList:
+            response = await deviceList(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.cityList:
+            response = await cityList(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.weather:
+            response = await weather(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.ntp:
+            response = await ntp(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.LTSVersion:
+            response = await LTSversion(data,list_account[socket.remoteAddress]);
+            break;
+          case SOCKET_REQUEST.firmwareInfo:
+            response = await firmWareInfo(data,list_account[socket.remoteAddress]);
             break;
           default:
             break;

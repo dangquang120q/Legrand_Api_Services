@@ -27,7 +27,7 @@ var client = tls.connect(options, function () {
       cmdType: "login",
       packetNo: 1,
       data: {
-        dn: 1234,
+        dn: "9E675FFEFF47B660",
         account: "quang",
         password: "1202002",
       },

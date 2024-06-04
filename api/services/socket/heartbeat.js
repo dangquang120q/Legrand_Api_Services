@@ -42,7 +42,7 @@ module.exports = {
       response.packetNo = 1;
       response.data = {
         "timestamp": Date.now(),
-        "timezone": "UTC"
+        "timezone": "Asia/Shanghai"
       }
       return response;
     }

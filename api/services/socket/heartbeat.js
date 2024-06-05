@@ -3,7 +3,7 @@ const sqlString = require("sqlstring");
 module.exports = {
   heartbeat: async (request, lts_mac) => {
     // const { data } = request;
-    try{
+    try {
       const response = {
         result: 0,
       };
@@ -21,29 +21,27 @@ module.exports = {
       if (Date.now() - dataTime["rows"][0]["last_ping_time"] < 120000) {
         let sqlUpdateTime = sqlString.format(
           "update lts_device_control set last_ping_time = ? where lts_mac = ?",
-          [Date.now(),lts_mac]
+          [Date.now(), lts_mac]
         );
         await sails
           .getDatastore(process.env.MYSQL_DATASTORE)
           .sendNativeQuery(sqlUpdateTime);
         result = 0;
-      }
-      else{
+      } else {
         result = -1;
       }
       response.packetNo = request.packetNo;
       response.result = result;
       return response;
-    }
-    catch{
+    } catch {
       const response = {
         result: -1,
       };
       response.packetNo = 1;
       response.data = {
-        "timestamp": Date.now(),
-        "timezone": "Asia/Shanghai"
-      }
+        timestamp: Date.now().toString(),
+        timezone: "Asia/Shanghai",
+      };
       return response;
     }
   },

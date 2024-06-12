@@ -44,11 +44,89 @@ var client = tls.connect(options, function () {
   setTimeout(() => {
     client.write(
       JSON.stringify({
-        cmdType: "heartbeat",
-        packetNo: 1
+        cmdType: "addDevice",
+        packetNo: 1234,
+        "data": {
+          "has": [{
+            "nickName ": "a",
+            "location": "a",
+            "productKey": "a",
+            "deviceDn": "a",
+            "deviceId": "a"
+            },
+            {
+              "nickName ": "b",
+              "location": "b",
+              "productKey": "b",
+              "deviceDn": "b",
+              "deviceId": "b"
+            },
+          ],
+        }
       })
     );
-  }, 140000);
+  }, 17000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "delDevice",
+        packetNo: 1234,
+        "data": {
+          "gatewayDn":"dnstr", 
+          "deviceId":"idstr"
+        }
+      })
+    );
+  }, 18000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "switch",
+        packetNo: 1234,
+        "data": {"gatewayDn":"dnstr", "deviceId":"idstr"}
+      })
+    );
+  }, 19000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "battery",
+        packetNo: 1234,
+        "data": {"gatewayDn":"dnstr", "deviceId":"idstr", "batteryLevel":50}
+      })
+    );
+  }, 20000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "alarm",
+        packetNo: 1234,
+        "data": {
+          "gatewayDn":"dnstr",
+          "deviceId":"idstr", 
+          "alarmType":1, 
+          "time":"20230418 14:13:50", 
+          "reportTime":"1692122750795"
+        }
+      })
+    );
+  }, 21000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "LTSVersion",
+        packetNo: 1234,
+        "data": {
+          "system":"v1.0.0", 
+          "gatewayDn":"dnstr", 
+          "model":"693461", 
+          "PCBA":"A1", 
+          "appVersion":"v1.1.0", 
+          "mcuVersion":"1.10"
+        }
+      })
+    );
+  }, 22000);
 });
 
 client.setEncoding("utf8");

@@ -8,18 +8,19 @@ module.exports = {
     return response;
   },
 
-  LTSversion: async function (request) {
+  LTSversion: async function (request,lts_mac) {
     try {
       const response = {
         result: 0,
       };
-      console.log("request == " + request);
+      console.log("request == " + JSON.stringify(request));
       console.log("lts_mac == " + lts_mac);
       let result = 0;
       response.packetNo = request.packetNo;
       response.result = result;
       return response;
-    } catch {
+    } 
+    catch {
       const response = {
         result: -1,
       };

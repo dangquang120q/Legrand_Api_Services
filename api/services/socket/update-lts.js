@@ -1,4 +1,4 @@
-const { log } = require("./log");
+const sqlString = require("sqlstring");
 module.exports = {
   firmWareInfo: async function (request) {
     const { data } = request;

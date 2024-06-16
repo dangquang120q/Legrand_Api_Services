@@ -1,3 +1,4 @@
+const { log } = require("./log");
 module.exports = {
   firmWareInfo: async function (request) {
     const { data } = request;
@@ -26,7 +27,7 @@ module.exports = {
       return response;
     } 
     catch(error) {
-      log('error' + error);
+      console.log('error' + error);
       const response = {
         result: -1,
       };

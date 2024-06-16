@@ -25,7 +25,8 @@ module.exports = {
       response.result = result;
       return response;
     } 
-    catch {
+    catch(error) {
+      log('error' + error);
       const response = {
         result: -1,
       };

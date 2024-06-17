@@ -2,9 +2,7 @@ const sqlString = require("sqlstring");
 
 module.exports = {
   checkVersion: async (lts_mac) => {
-    const req = {
-      result: 0
-    };
+    const req = {};
     let result = -1;
     let sql2 = sqlString.format("Select * from lst_device_upload_firmware where lts_mac = ? ORDER BY id DESC LIMIT 1",[lts_mac]);
     let data2 = await sails

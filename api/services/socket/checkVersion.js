@@ -22,7 +22,6 @@ module.exports = {
     else{
         result = -1;
     }
-    console.log(JSON.stringify(data2["rows"][0]));
     req.packetNo = data2["rows"][0]["package_no"];
     req.data = {
         "system":data2["rows"][0]["system_ver"], 
@@ -32,6 +31,7 @@ module.exports = {
         "appVersion":data2["rows"][0]["app_ver"], 
         "mcuVersion":data2["rows"][0]["mcu_ver"]
     }
+    console.log(JSON.stringify(req));
     return req,result;
   },
 };

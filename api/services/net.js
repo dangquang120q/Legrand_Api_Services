@@ -4,6 +4,7 @@ const { log } = require("./log");
 const { login } = require("./socket/login");
 const { heartbeat } = require("./socket/heartbeat");
 const { checkPing } = require("./socket/checkPing");
+const { checkVersion } = require("./socket/checkVersion");
 const { addDevice, delDevice,switchDevice, battery, alarm } = require("./socket/data-report");
 const {
   deviceList,

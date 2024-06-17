@@ -16,7 +16,6 @@ const {
 const { firmWareInfo, LTSversion } = require("./socket/update-lts");
 const { SOCKET_REQUEST } = require("./const");
 const dataUtils = require('./socket/data-utils');
-const checkVersion = require('./socket/checkVersion');
 
 const options = {
   key: fs.readFileSync('privkey.pem'),

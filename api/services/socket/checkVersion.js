@@ -29,7 +29,6 @@ module.exports = {
         "appVersion":data2["rows"][0]["app_ver"], 
         "mcuVersion":data2["rows"][0]["mcu_ver"]
     }
-    console.log(JSON.stringify(req));
-    return req,result;
+    return {req,result};
   },
 };

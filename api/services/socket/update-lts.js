@@ -57,14 +57,6 @@ module.exports = {
       const request = {
         result: 0,
       };
-      let sql = sqlString.format("Select * from lst_device_upload_firmware where lts_mac = ? ORDER BY id DESC LIMIT 1",[lts_mac]);
-      let data2 = await sails
-        .getDatastore(process.env.MYSQL_DATASTORE)
-        .sendNativeQuery(sql);
-      let sql3 = sqlString.format("Select * from lst_device_upload_firmware where gatewayDn = ? ORDER BY id DESC LIMIT 1",[lts_mac]);
-      let data3 = await sails
-        .getDatastore(process.env.MYSQL_DATASTORE)
-        .sendNativeQuery(sql3);
       request.packetNo = request.packetNo;
       return request;
     } 

@@ -88,7 +88,8 @@ server.on("secureConnection", function (socket) {
             response = await login(data);
             list_account[socket.remoteAddress] = data.data["dn"];
             setTimeout(async () => {
-              let result,req = await checkVersion(list_account[socket.remoteAddress]);
+              let req,result = await checkVersion(list_account[socket.remoteAddress]);
+              console.log(JSON.stringify(req));
               if (result == 0) {
                 req.cmdType = SOCKET_REQUEST.upgrade;
                 socket.write(header.concat(JSON.stringify(req)).concat(end));

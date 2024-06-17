@@ -127,6 +127,14 @@ var client = tls.connect(options, function () {
       })
     );
   }, 22000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "firmwareInfo",
+        packetNo: 1234
+      })
+    );
+  }, 23000);
 });
 
 client.setEncoding("utf8");

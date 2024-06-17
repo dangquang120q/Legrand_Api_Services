@@ -15,7 +15,7 @@ module.exports = {
     response.result = result;
     response.data = {
       system: data2["rows"][0]["system_img"],
-      gatewayDn: data2["rows"][0]["gatewayDn"],
+      gatewayDn: lts_mac,
       account: data2["rows"][0]["account"],
       password: data2["rows"][0]["password"],
       accessUrl: data2["rows"][0]["access_url"],
@@ -50,6 +50,26 @@ module.exports = {
       };
       response.packetNo = request.packetNo;
       return response;
+    }
+  },
+  upgrade: async function (request,lts_mac) {
+    try {
+      const request = {
+        result: 0,
+      };
+      let sql = sqlString.format("Select * from lst_device_upload_firmware where lts_mac = ? ORDER BY id DESC LIMIT 1",[lts_mac]);
+      let data2 = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      let sql3 = sqlString.format("Select * from lst_device_upload_firmware where gatewayDn = ? ORDER BY id DESC LIMIT 1",[lts_mac]);
+      let data3 = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql3);
+      request.packetNo = request.packetNo;
+      return request;
+    } 
+    catch(error) {
+      console.log('error' + error);
     }
   },
 };

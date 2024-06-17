@@ -15,6 +15,7 @@ const {
 const { firmWareInfo, LTSversion } = require("./socket/update-lts");
 const { SOCKET_REQUEST } = require("./const");
 const dataUtils = require('./socket/data-utils');
+const checkVersion = require('./socket/checkVersion');
 
 const options = {
   key: fs.readFileSync('privkey.pem'),
@@ -86,6 +87,7 @@ server.on("secureConnection", function (socket) {
           case SOCKET_REQUEST.login:
             response = await login(data);
             list_account[socket.remoteAddress] = data.data["dn"];
+            req = await upgrade();
             break;
           case SOCKET_REQUEST.heartbeat:
             response = await heartbeat(data,list_account[socket.remoteAddress]);
@@ -143,6 +145,12 @@ server.on("secureConnection", function (socket) {
           socket.end("Timed out!");
         }
       }, 130000);
+      setTimeout(async () => {
+        let result,req = await checkVersion(list_account[socket.remoteAddress]);
+        if (result == 0) {
+          socket.write(header.concat(JSON.stringify(req)).concat(end));
+        }
+      }, 1000);
       if (is_kernel_buffer_full) {
         console.log(
           "Data was flushed successfully from kernel buffer i.e written successfully!"

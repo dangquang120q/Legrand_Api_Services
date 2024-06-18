@@ -22,12 +22,12 @@ module.exports = {
     }
     req.packetNo = data2["rows"][0]["package_no"];
     req.data = {
-        "systemVersion":data2["rows"][0]["system_ver"], 
+        "systemVersion":data["rows"][0]["system_ver"], 
         "gatewayDn":data2["rows"][0]["lts_mac"], 
         "model": data2["rows"][0]["model"], 
         "PCBA":data2["rows"][0]["PCBA"], 
-        "appVersion":data2["rows"][0]["app_ver"], 
-        "mcuVersion":data2["rows"][0]["mcu_ver"]
+        "appVersion":data["rows"][0]["app_ver"], 
+        "mcuVersion":data["rows"][0]["mcu_ver"]
     }
     return {req,result};
   },

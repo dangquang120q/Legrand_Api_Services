@@ -26,8 +26,8 @@ module.exports = {
         "gatewayDn":data2["rows"][0]["lts_mac"], 
         "model": data2["rows"][0]["model"], 
         "PCBA":data2["rows"][0]["PCBA"], 
-        "appVersion":data["rows"][0]["app_ver"], 
-        "mcuVersion":data["rows"][0]["mcu_ver"]
+        "appVersion":data["rows"][0]["app"], 
+        "mcuVersion":data["rows"][0]["MCU"]
     }
     return {req,result};
   },

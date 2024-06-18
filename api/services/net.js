@@ -87,14 +87,6 @@ server.on("secureConnection", function (socket) {
           case SOCKET_REQUEST.login:
             response = await login(data);
             list_account[socket.remoteAddress] = data.data["dn"];
-            setTimeout(async () => {
-              let {req,result} = await checkVersion(list_account[socket.remoteAddress]);
-              console.log(JSON.stringify(req));
-              if (result == 0) {
-                req.cmdType = SOCKET_REQUEST.upgrade;
-                socket.write(header.concat(JSON.stringify(req)).concat(end));
-              }
-            }, 1000);
             break;
           case SOCKET_REQUEST.heartbeat:
             response = await heartbeat(data,list_account[socket.remoteAddress]);
@@ -131,6 +123,14 @@ server.on("secureConnection", function (socket) {
             break;
           case SOCKET_REQUEST.LTSVersion:
             response = await LTSversion(data,list_account[socket.remoteAddress]);
+            setTimeout(async () => {
+              let { req, result } = await checkVersion(list_account[socket.remoteAddress]);
+              console.log(JSON.stringify(req));
+              if (result == 0) {
+                req.cmdType = SOCKET_REQUEST.upgrade;
+                socket.write(header.concat(JSON.stringify(req)).concat(end));
+              }
+            }, 1000);
             break;
           case SOCKET_REQUEST.firmwareInfo:
             response = await firmWareInfo(data,list_account[socket.remoteAddress]);

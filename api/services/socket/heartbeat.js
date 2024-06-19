@@ -38,10 +38,6 @@ module.exports = {
         result: -1,
       };
       response.packetNo = 1;
-      response.data = {
-        timestamp: Date.now().toString(),
-        timezone: "Asia/Shanghai",
-      };
       return response;
     }
   },

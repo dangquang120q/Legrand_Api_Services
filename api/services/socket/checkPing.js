@@ -24,6 +24,7 @@ module.exports = {
       return response;
     }
     catch(err){
+      console.log(err);
       const response = {
         result: -1,
       };

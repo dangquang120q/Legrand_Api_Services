@@ -231,6 +231,7 @@ module.exports = {
   getNetamoToken: async (req, res) => {
     const { grant_type, client_id, client_secret, code, redirect_uri, scope } =
       req.body;
+    log("Get netamo oauth token ");
     try {
       const data = await getAuthToken({
         grant_type,

@@ -133,3 +133,4 @@ lib-cov
 *.pid
 .env
 package-lock.json
+*.pem

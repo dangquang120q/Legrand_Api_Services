@@ -14,7 +14,7 @@ module.exports = {
         redirect_uri,
         scope,
       } = params;
-
+      log(API_URL + "/oauth2/token");
       log("Get netamo oauth token: " + JSON.stringify(params));
       const res = await axios.post(API_URL + "/oauth2/token", {
         grant_type,

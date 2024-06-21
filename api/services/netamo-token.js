@@ -1,12 +1,8 @@
 var { Axios } = require("axios");
 const { log } = require("./log");
 
-const axiosNetamo = new Axios({
-  baseURL: process.env.NETAMO_API,
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
-});
+const API_URL = process.env.NETAMO_API;
+const axiosNetamo = new Axios();
 
 module.exports = {
   getAuthToken: async (params) => {
@@ -21,7 +17,7 @@ module.exports = {
       } = params;
 
       log("Get netamo oauth token: " + JSON.stringify(params));
-      const res = await axiosNetamo.post("/oauth2/token", {
+      const res = await axiosNetamo.post(API_URL + "/oauth2/token", {
         grant_type,
         client_id,
         client_secret,

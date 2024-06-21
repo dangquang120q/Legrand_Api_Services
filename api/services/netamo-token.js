@@ -1,5 +1,5 @@
 var { Axios } = require("axios");
-const log = require("./log");
+const { log } = require("./log");
 
 const axiosNetamo = new Axios({
   baseURL: process.env.NETAMO_API,

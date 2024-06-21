@@ -26,8 +26,8 @@ module.exports = {
         redirect_uri,
         scope,
       });
-      log("Netamo auth token:" + JSON.stringify(res.data));
-      return res.data;
+      log("Netamo auth token:" + JSON.stringify(res));
+      return res;
     } catch (error) {
       log("Get netamo oauth token error: " + error);
     }

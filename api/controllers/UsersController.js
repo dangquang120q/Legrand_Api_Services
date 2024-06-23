@@ -233,6 +233,7 @@ module.exports = {
     const client_id = "665febbf67d9b37028016359";
     const client_secret = "ZsvFbr0gnnsBOP8bQ5yOOJKstWvphSZKHIpY0OHbO4q";
     const scope = "read_station";
+    const redirect_uri = "";
     try {
       const data = await getAuthToken({
         grant_type,

@@ -227,10 +227,12 @@ module.exports = {
     }
   },
 
-  //   Test
   getNetamoToken: async (req, res) => {
-    const { grant_type, client_id, client_secret, code, redirect_uri, scope } =
-      req.body;
+    const { state, code } = req.params;
+    const grant_type = "authorization_code";
+    const client_id = "665febbf67d9b37028016359";
+    const client_secret = "ZsvFbr0gnnsBOP8bQ5yOOJKstWvphSZKHIpY0OHbO4q";
+    const scope = "read_station";
     try {
       const data = await getAuthToken({
         grant_type,

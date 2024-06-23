@@ -144,8 +144,13 @@ server.on("secureConnection", function (socket) {
         }
       }
       //echo data
+      for (i = 0; i < header.length; i++) {
+        var hex = header.charCodeAt(i).toString(16);
+        console.log("header char code at response: " + i + " -- " + hex);
+      }
+      console.log("header " + header.toString(16));
       console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));
-      var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end));
+      var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end), 'latin1');
       setTimeout(async () => {
         let response = await checkPing(list_account[socket.remoteAddress]);
         if (response.result == -1) {

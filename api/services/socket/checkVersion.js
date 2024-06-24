@@ -1,5 +1,5 @@
 const sqlString = require("sqlstring");
-
+const { SOCKET_REQUEST } = require("../const");
 module.exports = {
   checkVersion: async (lts_mac) => {
     try{

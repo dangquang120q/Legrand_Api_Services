@@ -23,6 +23,7 @@ module.exports = {
       else{
           result = -1;
       }
+      req.cmdType = SOCKET_REQUEST.upgrade;
       req.packetNo = data2["rows"][0]["package_no"];
       req.data = {
           "systemVersion":data["rows"][0]["system_ver"], 

@@ -127,7 +127,7 @@ server.on("secureConnection", function (socket) {
               let { req, result } = await checkVersion(list_account[socket.remoteAddress]);
               console.log(JSON.stringify(req));
               if (result == 0) {
-                req.cmdType = SOCKET_REQUEST.upgrade;
+                
                 socket.write(header.concat(JSON.stringify(req)).concat(end));
               }
             }, 1000);

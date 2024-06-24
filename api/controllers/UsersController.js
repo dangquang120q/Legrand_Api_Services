@@ -234,7 +234,7 @@ module.exports = {
     const client_secret = "ZsvFbr0gnnsBOP8bQ5yOOJKstWvphSZKHIpY0OHbO4q";
     const scope = "read_station";
     const redirect_uri = "";
-    log("=> getNetamoToken params:" + JSON.stringify(req.params));
+    log("=> getNetamoToken params:" + JSON.stringify(req));
     let response;
     try {
       const data = await getAuthToken({

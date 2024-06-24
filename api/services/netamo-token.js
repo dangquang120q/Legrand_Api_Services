@@ -16,13 +16,36 @@ module.exports = {
       } = params;
       log(API_URL + "/oauth2/token");
       log("Get netamo oauth token: " + JSON.stringify(params));
-      const res = await axios.post(API_URL + "/oauth2/token", {
-        grant_type,
-        client_id,
-        client_secret,
-        code,
-        redirect_uri,
-        scope,
+      //   const res = await axios.post(API_URL + "/oauth2/token", {
+      //     grant_type,
+      //     client_id,
+      //     client_secret,
+      //     code,
+      //     redirect_uri,
+      //     scope,
+      //   });
+      const reqBody = {
+        grant_type: grant_type + "",
+        client_id: client_id + "",
+        client_secret: client_secret + "",
+        code: code + "",
+        redirect_uri: redirect_uri + "",
+        scope: scope + "",
+      };
+      log(reqBody);
+      const res = await fetch(API_URL + "/oauth2/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        body: new URLSearchParams({
+          grant_type: grant_type + "",
+          client_id: client_id + "",
+          client_secret: client_secret + "",
+          code: code + "",
+          redirect_uri: redirect_uri + "",
+          scope: scope + "",
+        }),
       });
 
       log("Netamo auth token:" + JSON.stringify(res));

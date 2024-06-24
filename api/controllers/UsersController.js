@@ -228,13 +228,13 @@ module.exports = {
   },
 
   getNetamoToken: async (req, res) => {
-    const { state, code } = req.params;
+    const { state, code } = req.query;
     const grant_type = code;
     const client_id = "665febbf67d9b37028016359";
     const client_secret = "ZsvFbr0gnnsBOP8bQ5yOOJKstWvphSZKHIpY0OHbO4q";
     const scope = "read_station";
     const redirect_uri = "";
-    log("=> getNetamoToken params:" + JSON.stringify(req));
+    log("=> getNetamoToken params:" + JSON.stringify(req.query));
     let response;
     try {
       const data = await getAuthToken({

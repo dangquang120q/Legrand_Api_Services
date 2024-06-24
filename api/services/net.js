@@ -128,7 +128,7 @@ server.on("secureConnection", function (socket) {
               console.log(JSON.stringify(req));
               if (result == 0) {
                 
-                socket.write(header.concat(JSON.stringify(req)).concat(end));
+                socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
               }
             }, 1000);
             break;

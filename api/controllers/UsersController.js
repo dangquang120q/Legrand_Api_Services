@@ -233,7 +233,7 @@ module.exports = {
     const client_id = "665febbf67d9b37028016359";
     const client_secret = "ZsvFbr0gnnsBOP8bQ5yOOJKstWvphSZKHIpY0OHbO4q";
     const scope = "read_station";
-    const redirect_uri = "";
+    const redirect_uri = "http://172.104.188.248:9000/user/getNetamoApi";
     log("=> getNetamoToken params:" + JSON.stringify(req.query));
     let response;
     try {

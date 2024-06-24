@@ -15,7 +15,9 @@ module.exports = {
       let data = await sails
       .getDatastore(process.env.MYSQL_DATASTORE)
       .sendNativeQuery(sql);
-      if (data2["rows"][0]["app_ver"] != data["rows"][0]["app"]) {
+      if (data2["rows"][0]["app_ver"] != data["rows"][0]["app"]
+        || data2["rows"][0]["mcu_ver"] != data["rows"][0]["MCU"]
+        || data2["rows"][0]["system_ver"] != data["rows"][0]["system_ver"]) {
           result = 0;
       }
       else{

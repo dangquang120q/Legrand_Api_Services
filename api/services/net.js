@@ -139,9 +139,9 @@ server.on("secureConnection", function (socket) {
             break;
         }
         response.cmdType = cmdType + "Ack";
-        if (cmdType == SOCKET_REQUEST.LTSVersion) {
-          response.cmdType = "deviceVersionAck";
-        }
+        // if (cmdType == SOCKET_REQUEST.LTSVersion) {
+        //   response.cmdType = "deviceVersionAck";
+        // }
       }
       //echo data
       for (i = 0; i < header.length; i++) {

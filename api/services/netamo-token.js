@@ -26,9 +26,15 @@ module.exports = {
       });
 
       log("Netamo auth token:" + JSON.stringify(res));
-      return res;
+      return {
+        data: res,
+        error: -1,
+      };
     } catch (error) {
       log("Get netamo oauth token error: " + error);
+      return {
+        error: error,
+      };
     }
   },
 };

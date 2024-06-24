@@ -234,6 +234,7 @@ module.exports = {
     const client_secret = "ZsvFbr0gnnsBOP8bQ5yOOJKstWvphSZKHIpY0OHbO4q";
     const scope = "read_station";
     const redirect_uri = "";
+    let response;
     try {
       const data = await getAuthToken({
         grant_type,
@@ -243,8 +244,20 @@ module.exports = {
         redirect_uri,
         scope,
       });
-      return res.send(data);
+      if (data.error != -1) {
+        response = new HttpResponse(data.error, {
+          statusCode: 400,
+          error: true,
+        });
+      } else {
+        response = new HttpResponse(data.data, {
+          statusCode: 200,
+          error: true,
+        });
+      }
+      return res.send(response);
     } catch (error) {
+      response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(error);
     }
   },

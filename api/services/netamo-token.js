@@ -48,13 +48,11 @@ module.exports = {
           redirect_uri: redirect_uri + "",
           scope: scope + "",
         }),
-      }).then((response) => {
-        log("Netamo auth token:" + JSON.stringify(response));
-        return response;
       });
-
+      const data = await res.json();
+      log("Netamo oauth token data: " + JSON.stringify(data));
       return {
-        data: res,
+        data: data,
         error: -1,
       };
     } catch (error) {

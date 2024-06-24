@@ -150,23 +150,26 @@ server.on("secureConnection", function (socket) {
       }
       console.log("header " + header.toString(16));
       console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));
-      var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end), 'latin1');
+      if (cmdType != SOCKET_REQUEST.upgradeAck) {
+        var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end), 'latin1');
+        if (is_kernel_buffer_full) {
+          console.log(
+            "Data was flushed successfully from kernel buffer i.e written successfully!"
+          );
+        } else {
+          console.log(
+            "Data was flushed unsuccessfully from kernel buffer i.e written unsuccessfully!"
+          );
+          socket.pause();
+        }
+      }
       setTimeout(async () => {
         let response = await checkPing(list_account[socket.remoteAddress]);
         if (response.result == -1) {
           socket.end("Timed out!");
         }
       }, 130000);
-      if (is_kernel_buffer_full) {
-        console.log(
-          "Data was flushed successfully from kernel buffer i.e written successfully!"
-        );
-      } else {
-        console.log(
-          "Data was flushed unsuccessfully from kernel buffer i.e written unsuccessfully!"
-        );
-        socket.pause();
-      }
+    
     }
     catch (error) {
       log('error' + error);

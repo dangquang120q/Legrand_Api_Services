@@ -34,5 +34,6 @@ module.exports = {
     LTSVersion: "LTSVersion",
     upgrade: "upgrade",
     firmwareInfo: "firmwareInfo",
+    upgradeAck: "upgradeAck",
   },
 };

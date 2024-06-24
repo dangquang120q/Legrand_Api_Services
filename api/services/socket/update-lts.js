@@ -34,7 +34,7 @@ module.exports = {
       const { data } = request;
       console.log("request == " + JSON.stringify(request));
       console.log("lts_mac == " + lts_mac);
-      let sql = sqlString.format("CALL sp_upload_version(?,?,?,?,?,?,?,?)", [data.system, data.gatewayDn,data.model,data.PCBA,data.appVersion,data.mcuVersion, lts_mac, request.packetNo]);
+      let sql = sqlString.format("CALL sp_upload_version(?,?,?,?,?,?,?,?)", [data.systemVersion, data.gatewayDn,data.model,data.PCBA,data.appVersion,data.mcuVersion, lts_mac, request.packetNo]);
       let data2 = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);

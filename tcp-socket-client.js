@@ -117,11 +117,11 @@ var client = tls.connect(options, function () {
         cmdType: "LTSVersion",
         packetNo: 1234,
         "data": {
-          "system":"v1.0.0", 
+          "system":"v1.0.1", 
           "gatewayDn":"dnstr", 
           "model":"693461", 
           "PCBA":"A1", 
-          "appVersion":"v1.1.0", 
+          "appVersion":"v1.1.1", 
           "mcuVersion":"1.10"
         }
       })

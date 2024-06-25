@@ -153,6 +153,7 @@ module.exports = {
     log("CreateRoom => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let room_name = req.body.room_name;
+    let accessToken = req.headers["access-token"];
     let response;
     try {
       let decodedToken = jwtoken.decode(jwtToken);
@@ -253,7 +254,7 @@ module.exports = {
       } else {
         response = new HttpResponse(data.data, {
           statusCode: 200,
-          error: true,
+          error: false,
         });
       }
       return res.send(response);

@@ -216,8 +216,8 @@ module.exports = {
         access_token,
         home_id
       });
-      for (let index = 0; index < data.length; index++) {
-        const element = data[index];
+      for (let index = 0; index < data.data.length; index++) {
+        const element = data.data[index];
         log(JSON.stringify(element));
       }
       if (data.error != -1) {

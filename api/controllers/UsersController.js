@@ -218,7 +218,7 @@ module.exports = {
       });
       for (let index = 0; index < data.length; index++) {
         const element = data[index];
-        log(element);
+        log(JSON.stringify(element));
       }
       if (data.error != -1) {
         response = new HttpResponse(data.error, {

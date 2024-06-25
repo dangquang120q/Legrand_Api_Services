@@ -68,7 +68,7 @@ module.exports = {
         access_token,
         home_id
       } = params;
-      log(params);
+      log(JSON.stringify(params));
       const res = await fetch(API_URL + "/api/homesdata", {
         method: "GET",
         headers: {
@@ -77,7 +77,6 @@ module.exports = {
         },
       });
       const data = await res.json();
-      log("Netamo homesdata data: " + JSON.stringify(data));
       return {
         data: data,
         error: -1,

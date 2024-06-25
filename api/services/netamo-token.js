@@ -69,9 +69,7 @@ module.exports = {
         home_id
       } = params;
       log(params);
-      const res = await fetch(API_URL + "/api/homesdata" + new URLSearchParams({
-        home_id: home_id
-      }), {
+      const res = await fetch(API_URL + "/api/homesdata", {
         method: "GET",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",

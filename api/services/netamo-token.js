@@ -68,7 +68,7 @@ module.exports = {
         access_token,
         home_id
       } = params;
-      log("Get netamo homesdata: " + JSON.stringify(reqBody));
+      log(params);
       const res = await fetch(API_URL + "/api/homesdata" + new URLSearchParams({
         home_id: home_id
       }), {

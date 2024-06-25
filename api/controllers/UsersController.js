@@ -216,10 +216,8 @@ module.exports = {
         access_token,
         home_id
       });
-      log(JSON.stringify(homes));
       for (let index = 0; index < data.homes.length; index++) {
         const element = data.homes[index];
-        log(JSON.stringify(element));
         let home_data = {
           "id": element["id"],
           "name": element["name"],

@@ -10,7 +10,7 @@ const jwtoken = require("../services/jwtoken");
 const CryptoJS = require("crypto-js");
 const { HttpResponse } = require("../services/http-response");
 const { log } = require("../services/log");
-const { getAuthToken } = require("../services/netamo-token");
+const { getAuthToken, getHomeData } = require("../services/netamo-token");
 // const Users = require('../models/Users');
 
 module.exports = {
@@ -205,18 +205,28 @@ module.exports = {
   getListDepartment: async (req, res) => {
     log("getListDepartment => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
+    let access_token = req.headers["access-token"];
+    let home_id = req.body.home_id || "";
     let response;
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
-      let sql = sqlString.format(
-        "Select dept_id,dept_name,owner_id as user_id,dept_address as address from department where owner_id = ?",
-        [userId]
-      );
-      let data = await sails
-        .getDatastore(process.env.MYSQL_DATASTORE)
-        .sendNativeQuery(sql);
-      response = new HttpResponse(data["rows"], {
+      let response_data = [];
+      const data = await getHomeData({
+        access_token,
+        home_id
+      });
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+        log(element);
+      }
+      if (data.error != -1) {
+        response = new HttpResponse(data.error, {
+          statusCode: 400,
+          error: true,
+        });
+      }
+      response = new HttpResponse(response_data, {
         statusCode: 200,
         error: false,
       });

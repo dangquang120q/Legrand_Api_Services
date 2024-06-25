@@ -62,4 +62,33 @@ module.exports = {
       };
     }
   },
+  getHomeData: async (params) => {
+    try {
+      const {
+        access_token,
+        home_id
+      } = params;
+      log("Get netamo homesdata: " + JSON.stringify(reqBody));
+      const res = await fetch(API_URL + "/api/homesdata" + new URLSearchParams({
+        home_id: home_id
+      }), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          "Authorization": 'Bearer ' + access_token
+        },
+      });
+      const data = await res.json();
+      log("Netamo homesdata data: " + JSON.stringify(data));
+      return {
+        data: data,
+        error: -1,
+      };
+    } catch (error) {
+      log("Get netamo oauth token error: " + error);
+      return {
+        error: error,
+      };
+    }
+  },
 };

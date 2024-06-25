@@ -78,7 +78,8 @@ module.exports = {
       });
       const data = await res.json();
       return {
-        data: data,
+        homes: data.body.homes,
+        user: data.body.user,
         error: -1,
       };
     } catch (error) {

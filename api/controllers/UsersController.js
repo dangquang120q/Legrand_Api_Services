@@ -216,6 +216,7 @@ module.exports = {
         access_token,
         home_id
       });
+      log(JSON.stringify(data));
       for (let index = 0; index < data.data.length; index++) {
         const element = data.data[index];
         log(JSON.stringify(element));
@@ -226,7 +227,7 @@ module.exports = {
           error: true,
         });
       }
-      response = new HttpResponse(response_data, {
+      response = new HttpResponse(data.data, {
         statusCode: 200,
         error: false,
       });

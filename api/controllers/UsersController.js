@@ -220,6 +220,25 @@ module.exports = {
       for (let index = 0; index < data.homes.length; index++) {
         const element = data.homes[index];
         log(JSON.stringify(element));
+        let home_data = {
+          "id": element["id"],
+          "name": element["name"],
+          "scenarios": [
+            {
+              "id": "",
+              "name": "",
+              "selected": "",
+              "roomName": "",
+            },
+          ],
+          "waterLeakage": {
+            value: "off",
+            alarm: "off",
+          },
+          "doorLock": true,
+          "rooms": element["rooms"]
+        }
+        response_data.push(home_data);
       }
       if (data.error != -1) {
         response = new HttpResponse(data.error, {
@@ -227,7 +246,7 @@ module.exports = {
           error: true,
         });
       }
-      response = new HttpResponse(data.homes, {
+      response = new HttpResponse(response_data, {
         statusCode: 200,
         error: false,
       });

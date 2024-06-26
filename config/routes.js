@@ -28,6 +28,7 @@ module.exports.routes = {
   "POST /user/getListDepartment": "UsersController.getListDepartment",
 
   "GET /user/getNetamoApi": "UsersController.getNetamoToken",
+  "GET /user/getNetamoInfo": "UsersController.getNetamoInfo",
   /***************************************************************************
    *                                                                          *
    * More custom routes here...                                               *

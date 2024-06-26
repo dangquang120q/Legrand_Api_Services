@@ -15,17 +15,6 @@ module.exports = {
         scope,
       } = params;
 
-      //   const res = await axios.post(
-      //     API_URL + "/oauth2/token",
-      //     new URLSearchParams({
-      //       grant_type: grant_type + "",
-      //       client_id: client_id + "",
-      //       client_secret: client_secret + "",
-      //       code: code + "",
-      //       redirect_uri: redirect_uri + "",
-      //       scope: scope + "",
-      //     })
-      //   );
       const reqBody = {
         grant_type: grant_type + "",
         client_id: client_id + "",

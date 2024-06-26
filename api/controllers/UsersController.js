@@ -291,4 +291,27 @@ module.exports = {
       return res.serverError(error);
     }
   },
+  getNetamoInfo: async (req, res) => {
+    const clientId = process.env.NETAMO_CLIENT_ID;
+    const clientSecret = process.env.NETAMO_CLIENT_SECRET;
+    const scope = "read_station";
+    const state = (Math.random() + 1).toString(36).substring(7);
+    let response;
+    try {
+      const response_data = {
+        "clientId" : clientId,
+        "clientSecret" : clientSecret,
+        "scope" : scope,
+        "state" : state
+      }
+      response = new HttpResponse(response_data, {
+        statusCode: 200,
+        error: false,
+      });
+      return res.send(response);
+    } catch (error) {
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(error);
+    }
+  },
 };

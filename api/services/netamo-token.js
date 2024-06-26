@@ -64,7 +64,7 @@ module.exports = {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
           "Authorization": 'Bearer ' + access_token
         },
-        body: new URLSearchParams({
+        params: new URLSearchParams({
           home_id: home_id + ""
         }),
       });

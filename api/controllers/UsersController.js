@@ -227,7 +227,7 @@ module.exports = {
           .sendNativeQuery(sql);
         let home_data = {
           "id": element["id"],
-          "name": dataName["rows"].length > 0 ? dataName["rows"][0]["dept_name"] : "",
+          "name": dataName["rows"].length > 0 ? dataName["rows"][0]["dept_name"] : "Home" + index,
           "scenarios": [
             {
               "id": "",

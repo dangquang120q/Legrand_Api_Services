@@ -66,6 +66,7 @@ module.exports = {
         },
       });
       const data = await res.json();
+      log(data.body);
       return {
         homes: data.body.homes || [],
         user: data.body.user,

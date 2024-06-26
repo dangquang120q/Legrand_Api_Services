@@ -67,7 +67,7 @@ module.exports = {
       });
       const data = await res.json();
       return {
-        homes: data.body.homes,
+        homes: data.body.homes || [],
         user: data.body.user,
         error: -1,
       };

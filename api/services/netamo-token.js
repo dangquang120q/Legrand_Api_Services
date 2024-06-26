@@ -58,15 +58,14 @@ module.exports = {
         home_id
       } = params;
       log(JSON.stringify(params));
-      const res = await fetch(API_URL + "/api/homesdata", {
+      const res = await fetch(API_URL + "/api/homesdata" + new URLSearchParams({
+        home_id: home_id + ""
+        }), {
         method: "GET",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
           "Authorization": 'Bearer ' + access_token
         },
-        params: new URLSearchParams({
-          home_id: home_id + ""
-        }),
       });
       const data = await res.json();
       // log(JSON.stringify(data));

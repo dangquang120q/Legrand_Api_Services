@@ -218,9 +218,16 @@ module.exports = {
       });
       for (let index = 0; index < data.homes.length; index++) {
         const element = data.homes[index];
+        let sql = sqlString.format(
+          "Select dept_name from department where dept_id = ?",
+          [element["id"]]
+        );
+        let data = await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(sql);
         let home_data = {
           "id": element["id"],
-          "name": element["name"],
+          "name": data["rows"][0]["dept_name"],
           "scenarios": [
             {
               "id": "",

@@ -222,12 +222,12 @@ module.exports = {
           "Select dept_name from department where dept_id = ?",
           [element["id"]]
         );
-        let data = await sails
+        let dataName = await sails
           .getDatastore(process.env.MYSQL_DATASTORE)
           .sendNativeQuery(sql);
         let home_data = {
           "id": element["id"],
-          "name": data["rows"][0]["dept_name"] || "",
+          "name": dataName["rows"][0]["dept_name"] || "",
           "scenarios": [
             {
               "id": "",

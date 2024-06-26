@@ -227,7 +227,7 @@ module.exports = {
           .sendNativeQuery(sql);
         let home_data = {
           "id": element["id"],
-          "name": data["rows"][0]["dept_name"],
+          "name": data["rows"][0]["dept_name"] || "",
           "scenarios": [
             {
               "id": "",

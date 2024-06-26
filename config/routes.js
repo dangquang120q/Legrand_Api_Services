@@ -26,6 +26,8 @@ module.exports.routes = {
   "POST /user/createRoom": "UsersController.createRoom",
   "POST /user/getListRoom": "UsersController.getListRoom",
   "POST /user/getListDepartment": "UsersController.getListDepartment",
+  "POST /user/installNewDepartment": "UsersController.installNewDepartment",
+  "POST /user/changeNameDepartment": "UsersController.changeNameDepartment",
 
   "GET /user/getNetamoApi": "UsersController.getNetamoToken",
   "GET /user/getNetamoInfo": "UsersController.getNetamoInfo",

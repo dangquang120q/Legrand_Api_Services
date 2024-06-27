@@ -346,20 +346,18 @@ module.exports = {
   changeNameHome: async (req, res) => {
     log("changeNameHome => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
-    let dept_id = req.body.home_id || "";
     let dept_name = req.body.new_home_name || "";
     let response;
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
       let sql = sqlString.format(
-        "CALL sp_changeName_department(?,?,?)", [
+        "CALL sp_changeName_department(?,?)", [
           userId,
-          dept_id,
           dept_name
         ]
       );
-      let data = await sails
+      await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       response = new HttpResponse(

@@ -58,7 +58,14 @@ module.exports = {
         home_id
       } = params;
       log(JSON.stringify(params));
-      const res = await fetch(API_URL + `/api/homesdata?home_id=${home_id}`, {
+      let url = "";
+      if (home_id != "") {
+        url = API_URL + `/api/homesdata?home_id=${home_id}`;
+      }
+      else{
+        url = API_URL + `/api/homesdata`
+      }
+      const res = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",

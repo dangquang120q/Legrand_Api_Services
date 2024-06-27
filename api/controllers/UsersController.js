@@ -206,7 +206,7 @@ module.exports = {
     log("getListHomeNetatmo => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let access_token = req.headers["access-token"];
-    let home_id = req.body.home_id || "";
+    let home_id = req.body.net_home_id || "";
     let response;
     try {
       let decodedToken = jwtoken.decode(jwtToken);
@@ -408,7 +408,7 @@ module.exports = {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
       let sql = sqlString.format(
-        "CALL sp_install_department(?,?)", [
+        "CALL sp_map_home(?,?)", [
           userId,
           dept_id,
           home_id

@@ -73,7 +73,7 @@ module.exports = {
         },
       });
       const data = await res.json();
-      // log(JSON.stringify(data));
+      log(JSON.stringify(data));
       return {
         homes: data.body.homes || [],
         user: data.body.user,

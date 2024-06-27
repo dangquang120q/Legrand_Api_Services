@@ -408,7 +408,7 @@ module.exports = {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
       let sql = sqlString.format(
-        "CALL sp_map_home(?,?)", [
+        "CALL sp_map_home(?,?,?)", [
           userId,
           dept_id,
           home_id

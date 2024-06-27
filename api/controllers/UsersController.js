@@ -176,34 +176,34 @@ module.exports = {
   //     return res.serverError(response);
   //   }
   // },
-  getListRoom: async (req, res) => {
-    log("getListRoom => " + JSON.stringify(req.headers));
-    let jwtToken = req.headers["auth-token"];
-    let dept_id = req.body.dept_id;
-    let response;
-    try {
-      let decodedToken = jwtoken.decode(jwtToken);
-      let userId = decodedToken["userId"];
-      let sql = sqlString.format(
-        "Select room_id, room_name from dept_room where dept_id = ?",
-        [dept_id]
-      );
-      let data = await sails
-        .getDatastore(process.env.MYSQL_DATASTORE)
-        .sendNativeQuery(sql);
-      response = new HttpResponse(data["rows"], {
-        statusCode: 200,
-        error: false,
-      });
-      return res.ok(response);
-    } catch (error) {
-      log("getListRoom error => " + error.toString());
-      response = new HttpResponse(error, { statusCode: 500, error: true });
-      return res.serverError(response);
-    }
-  },
-  getListDepartment: async (req, res) => {
-    log("getListDepartment => " + JSON.stringify(req.headers));
+  // getListRoom: async (req, res) => {
+  //   log("getListRoom => " + JSON.stringify(req.headers));
+  //   let jwtToken = req.headers["auth-token"];
+  //   let dept_id = req.body.dept_id;
+  //   let response;
+  //   try {
+  //     let decodedToken = jwtoken.decode(jwtToken);
+  //     let userId = decodedToken["userId"];
+  //     let sql = sqlString.format(
+  //       "Select room_id, room_name from dept_room where dept_id = ?",
+  //       [dept_id]
+  //     );
+  //     let data = await sails
+  //       .getDatastore(process.env.MYSQL_DATASTORE)
+  //       .sendNativeQuery(sql);
+  //     response = new HttpResponse(data["rows"], {
+  //       statusCode: 200,
+  //       error: false,
+  //     });
+  //     return res.ok(response);
+  //   } catch (error) {
+  //     log("getListRoom error => " + error.toString());
+  //     response = new HttpResponse(error, { statusCode: 500, error: true });
+  //     return res.serverError(response);
+  //   }
+  // },
+  getListHomeNetatmo: async (req, res) => {
+    log("getListHomeNetatmo => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let access_token = req.headers["access-token"];
     let home_id = req.body.home_id || "";
@@ -218,16 +218,9 @@ module.exports = {
       });
       for (let index = 0; index < data.homes.length; index++) {
         const element = data.homes[index];
-        let sql = sqlString.format(
-          "Select dept_name from department where dept_id = ?",
-          [element["id"]]
-        );
-        let dataName = await sails
-          .getDatastore(process.env.MYSQL_DATASTORE)
-          .sendNativeQuery(sql);
         let home_data = {
           "id": element["id"],
-          "name": dataName["rows"].length > 0 ? dataName["rows"][0]["dept_name"] : "Home " + (index + 1),
+          "name": element["name"],
           "scenarios": [
             {
               "id": "",
@@ -237,7 +230,7 @@ module.exports = {
             },
           ],
           "waterLeakage": {
-            value: "off",
+            valve: "off",
             alarm: "off",
           },
           "doorLock": true,
@@ -257,7 +250,7 @@ module.exports = {
       });
       return res.ok(response);
     } catch (error) {
-      log("getListDepartment error => " + error.toString());
+      log("getListHomeNetatmo error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }
@@ -299,6 +292,7 @@ module.exports = {
     }
   },
   getNetamoInfo: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
     const clientId = process.env.NETAMO_CLIENT_ID;
     const clientSecret = process.env.NETAMO_CLIENT_SECRET;
     const scope = "read_station";
@@ -321,19 +315,17 @@ module.exports = {
       return res.serverError(error);
     }
   },
-  installNewDepartment: async (req, res) => {
-    log("installNewDepartment => " + JSON.stringify(req.headers));
+  installNewHome: async (req, res) => {
+    log("installNewHome => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
-    let dept_id = req.body.home_id || "";
     let dept_name = req.body.home_name || "";
     let response;
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
       let sql = sqlString.format(
-        "CALL sp_install_department(?,?,?)", [
+        "CALL sp_install_department(?,?)", [
           userId,
-          dept_id,
           dept_name
         ]
       );
@@ -341,18 +333,18 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       response = new HttpResponse(
-        { msg:"installNewDepartment Successfull"}, 
+        { msg:"installNewHome Successfull"}, 
         { statusCode: 200, error: false,
       });
       return res.ok(response);
     } catch (error) {
-      log("installNewDepartment error => " + error.toString());
+      log("installNewHome error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }
   },
-  changeNameDepartment: async (req, res) => {
-    log("changeNameDepartment => " + JSON.stringify(req.headers));
+  changeNameHome: async (req, res) => {
+    log("changeNameHome => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let dept_id = req.body.home_id || "";
     let dept_name = req.body.new_home_name || "";
@@ -371,12 +363,37 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       response = new HttpResponse(
-        { msg:"changeNameDepartment Successfull"}, 
+        { msg:"changeNameHome Successfull"}, 
         { statusCode: 200, error: false,
       });
       return res.ok(response);
     } catch (error) {
-      log("changeNameDepartment error => " + error.toString());
+      log("changeNameHome error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  getListHome: async (req, res) => {
+    log("getListHome => " + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format(
+        "Select id,dept_id as net_home_id,dept_name as name from department where owner_id = ?",
+        [userId]
+      );
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      response = new HttpResponse(
+        data["rows"], 
+        { statusCode: 200, error: false,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("getListHome error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

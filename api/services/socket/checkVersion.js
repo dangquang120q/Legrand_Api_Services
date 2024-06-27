@@ -19,6 +19,11 @@ module.exports = {
         || data2["rows"][0]["mcu_ver"] != data["rows"][0]["MCU"]
         || data2["rows"][0]["system_ver"] != data["rows"][0]["system_ver"]) {
           result = 0;
+
+        let updateSql = sqlString.format(
+          "update lst_device_upload_firmware set app_ver = ?, mcu_ver = ?, system_ver = ? where lts_mac = ?", [data["rows"][0]["app"], data["rows"][0]["MCU"], data["rows"][0]["system_ver"], lts_mac]
+        );
+        await sails.getDatastore(process.env.MYSQL_DATASTORE).sendNativeQuery(updateSql);
       }
       else{
           result = -1;

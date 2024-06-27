@@ -90,13 +90,13 @@ server.on("secureConnection", function (socket) {
             break;
           case SOCKET_REQUEST.heartbeat:
             response = await heartbeat(data,list_account[socket.remoteAddress]);
-            // setTimeout(async () => {
-            //   let { req, result } = await checkVersion(list_account[socket.remoteAddress]);
-            //   console.log(JSON.stringify(req));
-            //   if (result == 0) {
-            //     socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
-            //   }
-            // }, 1000);
+            setTimeout(async () => {
+              let { req, result } = await checkVersion(list_account[socket.remoteAddress]);
+              console.log(JSON.stringify(req));
+              if (result == 0) {
+                socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+              }
+            }, 1000);
             break;
           case SOCKET_REQUEST.addDevice:
             response = await addDevice(data,list_account[socket.remoteAddress]);

@@ -26,7 +26,7 @@ module.exports.routes = {
   "POST /user/createRoom": "UsersController.createRoom",
   "POST /user/getListRoom": "UsersController.getListRoom",
   "POST /user/getListHomeNetatmo": "UsersController.getListHomeNetatmo",
-  "POST /user/getListHome": "UsersController.getListHome",
+  "GET /user/getListHome": "UsersController.getListHome",
   "POST /user/installNewHome": "UsersController.installNewHome",
   "POST /user/changeNameHome": "UsersController.changeNameHome",
   "POST /user/mapHome": "UsersController.mapHome",

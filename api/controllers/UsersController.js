@@ -398,4 +398,34 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  mapHome: async (req, res) => {
+    log("mapHome => " + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
+    let dept_id = req.body.net_home_id || "";
+    let home_id = req.body.home_id  || "";
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format(
+        "CALL sp_install_department(?,?)", [
+          userId,
+          dept_id,
+          home_id
+        ]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      response = new HttpResponse(
+        { msg:"mapHome Successfull"}, 
+        { statusCode: 200, error: false,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("mapHome error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
 };

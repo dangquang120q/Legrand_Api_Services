@@ -24,10 +24,13 @@ module.exports.policies = {
     logout: "checkJwtoken",
     getListRoom: "checkJwtoken",
     createRoom: "checkJwtoken",
-    getListDepartment: "checkJwtoken",
+    getListHomeNetatmo: "checkJwtoken",
+    getListHome: "checkJwtoken",
     updateProfile: "checkJwtoken",
-    installNewDepartment: "checkJwtoken",
-    changeNameDepartment: "checkJwtoken"
+    installNewHome: "checkJwtoken",
+    changeNameHome: "checkJwtoken",
+    getNetamoInfo: "checkJwtoken",
+    mapHome: "checkJwtoken"
   },
 
 };

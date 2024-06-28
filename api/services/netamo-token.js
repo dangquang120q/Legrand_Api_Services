@@ -1422,8 +1422,8 @@ module.exports = {
           "time_server": 1719560956
         }
         return {
-          homes: dataDemo.body || [],
-          user: dataDemo.user,
+          homes: dataDemo.body.homes || [],
+          user: dataDemo.body.user,
           error: -1,
         };
       }

@@ -75,7 +75,7 @@ module.exports = {
       const data = await res.json();
       log(JSON.stringify(data));
       if (data["error"]) {
-        data =  
+        let dataDemo =  
         { "body" : [
           {
               "id": "6299cc4eee916a326a6cc557",
@@ -108,7 +108,12 @@ module.exports = {
           },
         ],
         "user": ""
-      }
+        }
+        return {
+          homes: dataDemo || [],
+          user: "",
+          error: -1,
+        };
       }
       return {
         homes: data.body.homes || [],

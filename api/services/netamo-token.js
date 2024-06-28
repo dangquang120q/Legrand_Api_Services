@@ -74,6 +74,42 @@ module.exports = {
       });
       const data = await res.json();
       log(JSON.stringify(data));
+      if (data["error"]) {
+        data =  
+        { "body" : [
+          {
+              "id": "6299cc4eee916a326a6cc557",
+              "name": "Legrand Demo",
+              "scenarios": [
+                  {
+                      "id": "",
+                      "name": "",
+                      "selected": "",
+                      "roomName": ""
+                  }
+              ],
+              "waterLeakage": {
+                  "valve": "off",
+                  "alarm": "off"
+              },
+              "doorLock": true,
+              "rooms": [
+                  {
+                      "id": "3148126183",
+                      "name": "Living Room",
+                      "type": "livingroom"
+                  },
+                  {
+                      "id": "1477203598",
+                      "name": "Electrical cabinet",
+                      "type": "electrical_cabinet"
+                  }
+              ]
+          },
+        ],
+        "user": ""
+      }
+      }
       return {
         homes: data.body.homes || [],
         user: data.body.user,

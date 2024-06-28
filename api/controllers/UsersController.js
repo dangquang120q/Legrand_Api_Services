@@ -207,11 +207,13 @@ module.exports = {
     let jwtToken = req.headers["auth-token"];
     let access_token = req.headers["access-token"];
     let home_id = req.body.net_home_id || "";
+    let get_user = req.body.get_user || false;
     let response;
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
-      let response_data = [];
+      let response_data = {};
+      let listhomes = [];
       const data = await getHomeData({
         access_token,
         home_id
@@ -236,7 +238,11 @@ module.exports = {
           "doorLock": true,
           "rooms": element["rooms"]
         }
-        response_data.push(home_data);
+        listhomes.push(home_data);
+      }
+      response_data.homes = listhomes;
+      if (get_user) {
+        response_data.user = data.user;
       }
       if (data.error != -1) {
         response = new HttpResponse(data.error, {

@@ -66,7 +66,9 @@
     <script>
       async function upgradeSocket() {
         try {
-          const res = await fetch("/user/upgradeSocket");
+          const res = await fetch("/user/upgradeSocket", {
+            method: "POST",
+          });
           const data = await res.json();
           console.log(data);
           alert("Upgrade Success!");

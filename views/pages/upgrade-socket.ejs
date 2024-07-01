@@ -61,5 +61,18 @@
   <body>
     <!-- HTML !-->
     <button class="button-3" role="button">Upgrade</button>
+    <script>
+      async function upgradeSocket() {
+        try {
+          const res = await fetch("/user/upgradeSocket");
+          const data = await res.json();
+          console.log(data);
+          alert("Upgrade Success!");
+        } catch (error) {
+          console.log(error);
+          alert("Upgrade Failed!");
+        }
+      }
+    </script>
   </body>
 </html>

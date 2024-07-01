@@ -216,28 +216,28 @@ module.exports = {
       let listhomes = [];
       const data = await getHomeData({
         access_token,
-        home_id
+        home_id,
       });
       for (let index = 0; index < data.homes.length; index++) {
         const element = data.homes[index];
         let home_data = {
-          "id": element["id"],
-          "name": element["name"],
-          "scenarios": [
+          id: element["id"],
+          name: element["name"],
+          scenarios: [
             {
-              "id": "",
-              "name": "",
-              "selected": "",
-              "roomName": "",
+              id: "",
+              name: "",
+              selected: "",
+              roomName: "",
             },
           ],
-          "waterLeakage": {
+          waterLeakage: {
             valve: "off",
             alarm: "off",
           },
-          "doorLock": true,
-          "rooms": element["rooms"]
-        }
+          doorLock: true,
+          rooms: element["rooms"],
+        };
         listhomes.push(home_data);
       }
       response_data.homes = listhomes;
@@ -306,11 +306,11 @@ module.exports = {
     let response;
     try {
       const response_data = {
-        "clientId" : clientId,
-        "clientSecret" : clientSecret,
-        "scope" : scope,
-        "state" : state
-      }
+        clientId: clientId,
+        clientSecret: clientSecret,
+        scope: scope,
+        state: state,
+      };
       response = new HttpResponse(response_data, {
         statusCode: 200,
         error: false,
@@ -329,19 +329,17 @@ module.exports = {
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
-      let sql = sqlString.format(
-        "CALL sp_install_department(?,?)", [
-          userId,
-          dept_name
-        ]
-      );
+      let sql = sqlString.format("CALL sp_install_department(?,?)", [
+        userId,
+        dept_name,
+      ]);
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       response = new HttpResponse(
-        { msg:"installNewHome Successfull"}, 
-        { statusCode: 200, error: false,
-      });
+        { msg: "installNewHome Successfull" },
+        { statusCode: 200, error: false }
+      );
       return res.ok(response);
     } catch (error) {
       log("installNewHome error => " + error.toString());
@@ -358,20 +356,18 @@ module.exports = {
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
-      let sql = sqlString.format(
-        "CALL sp_changeName_department(?,?,?)", [
-          userId,
-          home_id,
-          dept_name
-        ]
-      );
+      let sql = sqlString.format("CALL sp_changeName_department(?,?,?)", [
+        userId,
+        home_id,
+        dept_name,
+      ]);
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       response = new HttpResponse(
-        { msg:"changeNameHome Successfull"}, 
-        { statusCode: 200, error: false,
-      });
+        { msg: "changeNameHome Successfull" },
+        { statusCode: 200, error: false }
+      );
       return res.ok(response);
     } catch (error) {
       log("changeNameHome error => " + error.toString());
@@ -393,9 +389,9 @@ module.exports = {
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
-      response = new HttpResponse(
-        data["rows"], 
-        { statusCode: 200, error: false,
+      response = new HttpResponse(data["rows"], {
+        statusCode: 200,
+        error: false,
       });
       return res.ok(response);
     } catch (error) {
@@ -408,28 +404,39 @@ module.exports = {
     log("mapHome => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let dept_id = req.body.net_home_id || "";
-    let home_id = req.body.home_id  || "";
+    let home_id = req.body.home_id || "";
     let response;
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
-      let sql = sqlString.format(
-        "CALL sp_map_home(?,?,?)", [
-          userId,
-          dept_id,
-          home_id
-        ]
-      );
+      let sql = sqlString.format("CALL sp_map_home(?,?,?)", [
+        userId,
+        dept_id,
+        home_id,
+      ]);
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       response = new HttpResponse(
-        { msg:"mapHome Successfull"}, 
-        { statusCode: 200, error: false,
-      });
+        { msg: "mapHome Successfull" },
+        { statusCode: 200, error: false }
+      );
       return res.ok(response);
     } catch (error) {
       log("mapHome error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  upgradeSocket: (req, res) => {
+    try {
+      let response = new HttpResponse(
+        { msg: "Upgrade Successfull" },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("Upgrade Socket error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

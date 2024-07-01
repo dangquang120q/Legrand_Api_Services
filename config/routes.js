@@ -34,6 +34,7 @@ module.exports.routes = {
 
   "GET /user/getNetamoApi": "UsersController.getNetamoToken",
   "GET /user/getNetamoInfo": "UsersController.getNetamoInfo",
+  "POST /user/upgradeSocket": "UsersController.upgradeSocket",
   /***************************************************************************
    *                                                                          *
    * More custom routes here...                                               *

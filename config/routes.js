@@ -19,6 +19,7 @@ module.exports.routes = {
    ***************************************************************************/
 
   "/": { view: "pages/homepage" },
+  "/upgrade-socket": { view: "pages/upgrade-socket" },
   "POST /user/login": "UsersController.login",
   "POST /user/signup": "UsersController.signup",
   "POST /user/logout": "UsersController.logout",

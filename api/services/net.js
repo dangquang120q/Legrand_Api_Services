@@ -245,8 +245,8 @@ const upgradeVersion = async () => {
       if (socket) {
         let { req, result } = await checkVersion(account.dn);
         let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
-          .concat(dataUtils.fromCharCodeData(00)).concat(dataUtils.fromCharCodeData(07))
-          .concat(dataUtils.fromCharCodeData(00)).concat(dataUtils.fromCharCodeData(00));
+          .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+          .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
         let end = dataUtils.fromCharCodeData(16);
         if (result == 0) {
           console.log(account.dn);

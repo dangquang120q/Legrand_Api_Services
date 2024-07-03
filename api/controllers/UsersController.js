@@ -44,6 +44,7 @@ module.exports = {
         statusCode: 200,
         error: false,
       });
+      console.log(JSON.stringify(response));
       return res.ok(response);
     } catch (error) {
       log("Login error => " + error.toString());

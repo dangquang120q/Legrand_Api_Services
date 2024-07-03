@@ -244,10 +244,10 @@ const upgradeVersion = async () => {
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
         let { req, result } = await checkVersion(account.dn);
-        let header = 0x68.toString(16).concat(0x33.toString(16))
-          .concat(0x00.toString(16)).concat(0x07.toString(16))
-          .concat(0x00.toString(16)).concat(0x00.toString(16));
-        let end = 0x16.toString(16);
+        let header = 0x68.toString().concat(0x33.toString())
+          .concat(0x00.toString()).concat(0x07.toString())
+          .concat(0x00.toString()).concat(0x00.toString());
+        let end = 0x16.toString();
         if (result == 0) {
           console.log(account.dn);
           socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');

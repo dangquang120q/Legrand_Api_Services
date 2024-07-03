@@ -246,6 +246,7 @@ const upgradeVersion = async () => {
         let { req, result } = await checkVersion(account.dn);
         let header = "",end = "";
         if (result == 0) {
+          console.log(account.dn);
           socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
         }
       }

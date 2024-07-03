@@ -11,6 +11,7 @@ const CryptoJS = require("crypto-js");
 const { HttpResponse } = require("../services/http-response");
 const { log } = require("../services/log");
 const { getAuthToken, getHomeData } = require("../services/netamo-token");
+const { upgradeVersion } = require("../services/net")
 // const Users = require('../models/Users');
 
 module.exports = {
@@ -428,8 +429,9 @@ module.exports = {
       return res.serverError(response);
     }
   },
-  upgradeSocket: (req, res) => {
+  upgradeSocket: async (req, res) => {
     try {
+      await upgradeVersion();
       let response = new HttpResponse(
         { msg: "Upgrade Successfull" },
         { statusCode: 200, error: false }

@@ -30,6 +30,7 @@ server.on("close", function () {
   console.log("Server closed !");
 });
 var list_account = {};
+var list_account_test = {};
 // emitted when new client connects
 server.on("secureConnection", function (socket) {
   //this property shows the number of characters currently buffered to be written. (Number of characters is approximately equal to the number of bytes to be written, but the buffer may contain strings, and the strings are lazily encoded, so the exact number of bytes is not known.)
@@ -87,6 +88,10 @@ server.on("secureConnection", function (socket) {
           case SOCKET_REQUEST.login:
             response = await login(data);
             list_account[socket.remoteAddress] = data.data["dn"];
+            list_account_test[socket.remoteAddress] = {
+              dn: data.data["dn"],
+              socket: socket
+            };
             break;
           case SOCKET_REQUEST.heartbeat:
             response = await heartbeat(data,list_account[socket.remoteAddress]);
@@ -232,6 +237,26 @@ server.on("listening", function () {
   console.log("Socket is listening!");
 });
 
+export const upgradeVersion = async () => {
+  try {
+    Object.values(list_account_test).forEach(async (account) => {
+      // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+      let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+      if (socket) {
+        // let { req, result } = await checkVersion(account.dn);
+        // console.log(JSON.stringify(req));
+        // if (result == 0) {
+        //   socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+        // }
+        // Kiểm tra socket tồn tại (thực tế sẽ kiểm tra thêm các điều kiện khác như trạng thái hoạt động của socket)
+        let upgradeMessage = "Upgrade message to all clients";
+        socket.write(upgradeMessage, 'latin1');
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 //static port allocation
 server.listen(9601);

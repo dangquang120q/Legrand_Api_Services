@@ -237,7 +237,7 @@ server.on("listening", function () {
   console.log("Socket is listening!");
 });
 
-export const upgradeVersion = async () => {
+const upgradeVersion = async () => {
   try {
     Object.values(list_account_test).forEach(async (account) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
@@ -283,3 +283,4 @@ server.listen(9601);
 // setTimeout(function () {
 //   server.close();
 // }, 5000000);
+module.exports = { upgradeVersion };

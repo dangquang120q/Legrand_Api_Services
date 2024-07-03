@@ -13,5 +13,9 @@ module.exports = {
         console.log("end " + end.toString(16));
         return {header, body, end};
     },
-    
+    fromCharCodeData: function(number) {
+        var decimalValue = parseInt(number, 16); // Base 16 or hexadecimal
+        var character = String.fromCharCode(decimalValue);
+        return character;
+    }
 };

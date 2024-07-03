@@ -244,10 +244,10 @@ const upgradeVersion = async () => {
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
         let { req, result } = await checkVersion(account.dn);
-        let header = 0x68.toString().concat(0x33.toString())
-          .concat(0x00.toString()).concat(0x07.toString())
-          .concat(0x00.toString()).concat(0x00.toString());
-        let end = 0x16.toString();
+        let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+          .concat(dataUtils.fromCharCodeData(00)).concat(dataUtils.fromCharCodeData(07))
+          .concat(dataUtils.fromCharCodeData(00)).concat(dataUtils.fromCharCodeData(00));
+        let end = dataUtils.fromCharCodeData(16);
         if (result == 0) {
           console.log(account.dn);
           socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
@@ -257,6 +257,8 @@ const upgradeVersion = async () => {
   } catch (err) {
     console.log(err);
   }
+
+  
 }
 
 //static port allocation

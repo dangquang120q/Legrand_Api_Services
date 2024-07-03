@@ -243,14 +243,11 @@ const upgradeVersion = async () => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
-        // let { req, result } = await checkVersion(account.dn);
-        // console.log(JSON.stringify(req));
-        // if (result == 0) {
-        //   socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
-        // }
-        // Kiểm tra socket tồn tại (thực tế sẽ kiểm tra thêm các điều kiện khác như trạng thái hoạt động của socket)
-        let upgradeMessage = "Upgrade message to all clients";
-        socket.write(upgradeMessage, 'latin1');
+        let { req, result } = await checkVersion(account.dn);
+        let header = "",end = "";
+        if (result == 0) {
+          socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+        }
       }
     });
   } catch (err) {

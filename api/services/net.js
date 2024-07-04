@@ -92,16 +92,15 @@ server.on("secureConnection", function (socket) {
               dn: data.data["dn"],
               socket: socket
             };
+            setTimeout(async () => {
+              let response = await checkPing(list_account[socket.remoteAddress]);
+              if (response.result == -1) {
+                socket.end("Timed out!");
+              }
+            }, 130000);
             break;
           case SOCKET_REQUEST.heartbeat:
             response = await heartbeat(data,list_account[socket.remoteAddress]);
-            setTimeout(async () => {
-              let { req, result } = await checkVersion(list_account[socket.remoteAddress]);
-              console.log(JSON.stringify(req));
-              if (result == 0) {
-                socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
-              }
-            }, 1000);
             break;
           case SOCKET_REQUEST.addDevice:
             response = await addDevice(data,list_account[socket.remoteAddress]);
@@ -174,12 +173,12 @@ server.on("secureConnection", function (socket) {
           socket.pause();
         }
       }
-      setTimeout(async () => {
-        let response = await checkPing(list_account[socket.remoteAddress]);
-        if (response.result == -1) {
-          socket.end("Timed out!");
-        }
-      }, 130000);
+      // setTimeout(async () => {
+      //   let response = await checkPing(list_account[socket.remoteAddress]);
+      //   if (response.result == -1) {
+      //     socket.end("Timed out!");
+      //   }
+      // }, 130000);
     
     }
     catch (error) {

@@ -111,6 +111,14 @@ var client = tls.connect(options, function () {
       })
     );
   }, 21000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "deviceListVer",
+        packetNo: 1234
+      })
+    );
+  }, 9000);
   // setTimeout(() => {
   //   client.write(
   //     JSON.stringify({

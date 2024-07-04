@@ -5,6 +5,7 @@ module.exports = {
     const response = {
       result: 0,
     };
+    response.packetNo = request.packetNo;
     return response;
   },
 
@@ -14,6 +15,7 @@ module.exports = {
     const response = {
       result: 0,
     };
+    response.packetNo = request.packetNo;
     return response;
   },
 
@@ -23,6 +25,7 @@ module.exports = {
     const response = {
       result: 0,
     };
+    response.packetNo = request.packetNo;
     return response;
   },
 
@@ -32,6 +35,7 @@ module.exports = {
     const response = {
       result: 0,
     };
+    response.packetNo = request.packetNo;
     return response;
   },
 
@@ -41,6 +45,7 @@ module.exports = {
     const response = {
       result: 0,
     };
+    response.packetNo = request.packetNo;
     return response;
   },
 };

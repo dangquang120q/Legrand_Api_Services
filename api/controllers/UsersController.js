@@ -10,7 +10,11 @@ const jwtoken = require("../services/jwtoken");
 const CryptoJS = require("crypto-js");
 const { HttpResponse } = require("../services/http-response");
 const { log } = require("../services/log");
-const { getAuthToken, getHomeData } = require("../services/netamo-token");
+const {
+  getAuthToken,
+  getHomeData,
+  getRoomMeasure,
+} = require("../services/netamo-token");
 const { upgradeVersion } = require("../services/net");
 // const Users = require('../models/Users');
 
@@ -222,6 +226,19 @@ module.exports = {
       });
       for (let index = 0; index < data.homes.length; index++) {
         const element = data.homes[index];
+        let rooms = [];
+        for (let id = 0; id < element["rooms"].length; id++) {
+          const room = element["rooms"][id];
+          const temperature = await getRoomMeasure({
+            home_id: element["id"],
+            room_id: room["id"],
+            access_token: access_token,
+          });
+          rooms.push({
+            ...room,
+            temperature,
+          });
+        }
         let home_data = {
           id: element["id"],
           name: element["name"],
@@ -238,7 +255,7 @@ module.exports = {
             alarm: "off",
           },
           doorLock: true,
-          rooms: element["rooms"],
+          rooms: rooms,
         };
         listhomes.push(home_data);
       }

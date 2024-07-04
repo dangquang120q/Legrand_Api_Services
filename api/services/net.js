@@ -152,6 +152,10 @@ server.on("secureConnection", function (socket) {
         // if (cmdType == SOCKET_REQUEST.LTSVersion) {
         //   response.cmdType = "deviceVersionAck";
         // }
+
+        if (cmdType == SOCKET_REQUEST.deviceListVersion) {
+          response.cmdType = "devListVerAck";
+        }
       }
       //echo data
       for (i = 0; i < header.length; i++) {

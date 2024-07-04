@@ -2181,8 +2181,7 @@ module.exports = {
       };
 
       const url =
-        API_URL +
-        `api/getroommeasure?` +
+        `${API_URL}/api/getroommeasure?` +
         new URLSearchParams({
           ...searchParams,
           home_id,

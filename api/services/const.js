@@ -23,7 +23,7 @@ module.exports = {
     switch: "switch",
     battery: "battery",
     alarm: "alarm",
-    deviceListVersion: "deviceListVersion",
+    deviceListVersion: "deviceListVer",
     deviceList: "deviceList",
     cityList: "cityList",
     weather: "weather",

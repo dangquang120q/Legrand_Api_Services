@@ -1,5 +1,5 @@
 module.exports = {
-  deviceListVersion: async function (request,lts_mac) {
+  deviceListVersion: async (request,lts_mac) => {
     const { data } = request;
     console.log(JSON.stringify(request));
 
@@ -10,7 +10,7 @@ module.exports = {
     return response;
   },
 
-  deviceList: async function (request,lts_mac) {
+  deviceList: async (request,lts_mac) => {
     const { data } = request;
 
     const response = {
@@ -20,7 +20,7 @@ module.exports = {
     return response;
   },
 
-  cityList: async function (request,lts_mac) {
+  cityList: async (request,lts_mac) => {
     const { data } = request;
 
     const response = {
@@ -30,7 +30,7 @@ module.exports = {
     return response;
   },
 
-  weather: async function (request,lts_mac) {
+  weather: async (request,lts_mac) => {
     const { data } = request;
 
     const response = {
@@ -40,7 +40,7 @@ module.exports = {
     return response;
   },
 
-  ntp: async function (request,lts_mac) {
+  ntp: async (request,lts_mac) => {
     const { data } = request;
 
     const response = {

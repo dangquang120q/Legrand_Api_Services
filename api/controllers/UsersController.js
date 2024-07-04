@@ -269,8 +269,7 @@ module.exports = {
     const grant_type = "authorization_code";
     const client_id = process.env.NETAMO_CLIENT_ID;
     const client_secret = process.env.NETAMO_CLIENT_SECRET;
-    const scope =
-      "read_station read_thermosta read_magellan read_smarther read_bubendorff read_mhs1";
+    const scope = "read_station read_thermosta";
     const redirect_uri = "http://172.104.188.248:9000/user/getNetamoApi";
     log("=> getNetamoToken params:" + JSON.stringify(req.query));
     let response;

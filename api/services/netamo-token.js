@@ -2197,7 +2197,7 @@ module.exports = {
       });
       const data = await res.json();
       log("Netatmo getroommeasure data: " + JSON.stringify(data));
-      return data.body[0].value[0];
+      return data.body[0].value[0][0];
     } catch (error) {
       log("Netatmo getroommeasure error!: " + error);
       return null;

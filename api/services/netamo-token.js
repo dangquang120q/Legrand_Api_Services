@@ -2200,7 +2200,7 @@ module.exports = {
       return data.body[0].value[0][0];
     } catch (error) {
       log("Netatmo getroommeasure error!: " + error);
-      return null;
+      return 24;
     }
   },
 };

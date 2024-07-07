@@ -1,4 +1,5 @@
 const sqlString = require("sqlstring");
+const WEATHER_API_URL = process.env.WEATHER_API_URL;
 
 module.exports = {
   deviceListVersion: async (request,lts_mac) => {
@@ -64,6 +65,23 @@ module.exports = {
     const response = {
       result: 0,
     };
+    const searchParams = {
+      q: "London",
+      appid: "c3c7edff736a03db0bb150e86820ba68"
+    };
+    const url =
+    `${WEATHER_API_URL}/data/2.5/forecast?` +
+    new URLSearchParams({
+      ...searchParams
+    });
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+      },
+    });
+    const dataWeather = await res.json();
+    log("weather data == " + dataWeather);
     response.data = {
       "cityName": "北京",
       "realTime": {

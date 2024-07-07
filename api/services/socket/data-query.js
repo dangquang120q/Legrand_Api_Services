@@ -6,6 +6,11 @@ module.exports = {
     const response = {
       result: 0,
     };
+
+    response.data = {
+      "deviceVersion": "1000" 
+    }
+
     response.packetNo = request.packetNo;
     return response;
   },
@@ -16,6 +21,18 @@ module.exports = {
     const response = {
       result: 0,
     };
+    response.data = {
+      "leftNumber": 0,
+      "deviceVersion": "1.1.1",
+      "has": [{
+        "nickName ": "",
+        "location": "",
+        "productKey": "",
+        "deviceDn": "",
+        "deviceId": ""
+      }]
+    }
+      
     response.packetNo = request.packetNo;
     return response;
   },
@@ -26,6 +43,15 @@ module.exports = {
     const response = {
       result: 0,
     };
+    response.data ={
+      "cityList": [ 
+        {
+          "cityName":"深圳",
+          "cityCode":"755"
+        }
+      ]
+    }
+
     response.packetNo = request.packetNo;
     return response;
   },
@@ -36,6 +62,89 @@ module.exports = {
     const response = {
       result: 0,
     };
+    response.data = {
+      "cityName": "北京",
+      "realTime": {
+        "date": "2024-04-17",
+        "temperature": "25",
+        "temperatureScope": "12/29℃",
+        "weather": "晴",
+        "windDirect": "南<3",
+        "pm25": "46",
+        "img": "16",
+        "humidity": "29",
+        "aqi": "89",
+        "pm10": "128",
+        "quality": "良"
+      },
+      "future": [
+        {
+          "date": "2024-04-17",
+          "temperature": "",
+          "temperatureScope": "12/29℃",
+          "weather": "晴",
+          "windDirect": "南<2",
+          "pm25": "46",
+          "img": "16",
+          "humidity": "43",
+          "aqi": "89",
+          "pm10": "128",
+          "quality": "良"
+        },
+        {
+          "date": "2024-04-18",
+          "temperature": "",
+          "temperatureScope": "13/28℃",
+          "weather": "晴",
+          "windDirect": "东南<2",
+          "pm25": "",
+          "img": "16",
+          "humidity": "45",
+          "aqi": "",
+          "pm10": "",
+          "quality": ""
+        },
+        {
+          "date": "2024-04-19",
+          "temperature": "",
+          "temperatureScope": "13/19℃",
+          "weather": "阴",
+          "windDirect": "东<1",
+          "pm25": "",
+          "img": "25",
+          "humidity": "36",
+          "aqi": "",
+          "pm10": "",
+          "quality": ""
+        },
+        {
+          "date": "2024-04-20",
+          "temperature": "",
+          "temperatureScope": "10/20℃",
+          "weather": "多云",
+          "windDirect": "北<1",
+          "pm25": "",
+          "img": "10",
+          "humidity": "67",
+          "aqi": "",
+          "pm10": "",
+          "quality": ""
+        },
+        {
+          "date": "2024-04-21",
+          "temperature": "",
+          "temperatureScope": "14/26℃",
+          "weather": "晴",
+          "windDirect": "南<2",
+          "pm25": "",
+          "img": "16",
+          "humidity": "62",
+          "aqi": "",
+          "pm10": "",
+          "quality": ""
+        }
+      ]
+    }
     response.packetNo = request.packetNo;
     return response;
   },
@@ -46,6 +155,10 @@ module.exports = {
     const response = {
       result: 0,
     };
+    response.data = {
+      "url":"https://ntp.ubuntu.com"
+    }
+
     response.packetNo = request.packetNo;
     return response;
   },

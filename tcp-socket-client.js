@@ -41,84 +41,132 @@ var client = tls.connect(options, function () {
       })
     );
   }, 15000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "addDevice",
+  //       packetNo: 1234,
+  //       "data": {
+  //         "has": [{
+  //           "nickName ": "a",
+  //           "location": "a",
+  //           "productKey": "a",
+  //           "deviceDn": "a",
+  //           "deviceId": "a"
+  //           },
+  //           {
+  //             "nickName ": "b",
+  //             "location": "b",
+  //             "productKey": "b",
+  //             "deviceDn": "b",
+  //             "deviceId": "b"
+  //           },
+  //         ],
+  //       }
+  //     })
+  //   );
+  // }, 17000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "delDevice",
+  //       packetNo: 1234,
+  //       "data": {
+  //         "gatewayDn":"dnstr", 
+  //         "deviceId":"idstr"
+  //       }
+  //     })
+  //   );
+  // }, 18000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "switch",
+  //       packetNo: 1234,
+  //       "data": {"gatewayDn":"dnstr", "deviceId":"idstr"}
+  //     })
+  //   );
+  // }, 19000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "battery",
+  //       packetNo: 1234,
+  //       "data": {"gatewayDn":"dnstr", "deviceId":"idstr", "batteryLevel":50}
+  //     })
+  //   );
+  // }, 20000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "alarm",
+  //       packetNo: 1234,
+  //       "data": {
+  //         "gatewayDn":"dnstr",
+  //         "deviceId":"idstr", 
+  //         "alarmType":1, 
+  //         "time":"20230418 14:13:50", 
+  //         "reportTime":"1692122750795"
+  //       }
+  //     })
+  //   );
+  // }, 21000);
   setTimeout(() => {
     client.write(
       JSON.stringify({
-        cmdType: "addDevice",
-        packetNo: 1234,
-        "data": {
-          "has": [{
-            "nickName ": "a",
-            "location": "a",
-            "productKey": "a",
-            "deviceDn": "a",
-            "deviceId": "a"
-            },
-            {
-              "nickName ": "b",
-              "location": "b",
-              "productKey": "b",
-              "deviceDn": "b",
-              "deviceId": "b"
-            },
-          ],
-        }
-      })
-    );
-  }, 17000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "delDevice",
-        packetNo: 1234,
-        "data": {
-          "gatewayDn":"dnstr", 
-          "deviceId":"idstr"
-        }
-      })
-    );
-  }, 18000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "switch",
-        packetNo: 1234,
-        "data": {"gatewayDn":"dnstr", "deviceId":"idstr"}
-      })
-    );
-  }, 19000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "battery",
-        packetNo: 1234,
-        "data": {"gatewayDn":"dnstr", "deviceId":"idstr", "batteryLevel":50}
-      })
-    );
-  }, 20000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "alarm",
-        packetNo: 1234,
-        "data": {
-          "gatewayDn":"dnstr",
-          "deviceId":"idstr", 
-          "alarmType":1, 
-          "time":"20230418 14:13:50", 
-          "reportTime":"1692122750795"
-        }
-      })
-    );
-  }, 21000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "deviceListVer",
+        cmdType: "deviceListVersion",
         packetNo: 1234
       })
     );
   }, 9000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "deviceList",
+        packetNo: 1234,
+        data: {
+          "gatewayDn":"dnstr", 
+          "index":0, 
+          "number":50
+        }
+      })
+    );
+  }, 10000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "cityList",
+        packetNo: 1234
+      })
+    );
+  }, 11000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "cityList",
+        packetNo: 1234
+      })
+    );
+  }, 12000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "weather",
+        packetNo: 1234,
+        data:{
+          "cityCode":"dasd"
+        }
+      })
+    );
+  }, 13000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "ntp",
+        packetNo: 1234
+      })
+    );
+  }, 14000);
   // setTimeout(() => {
   //   client.write(
   //     JSON.stringify({
@@ -135,14 +183,14 @@ var client = tls.connect(options, function () {
   //     })
   //   );
   // }, 22000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "firmwareInfo",
-        packetNo: 1234
-      })
-    );
-  }, 23000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "firmwareInfo",
+  //       packetNo: 1234
+  //     })
+  //   );
+  // }, 23000);
 });
 
 client.setEncoding("utf8");

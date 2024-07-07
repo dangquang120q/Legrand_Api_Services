@@ -143,14 +143,6 @@ var client = tls.connect(options, function () {
   setTimeout(() => {
     client.write(
       JSON.stringify({
-        cmdType: "cityList",
-        packetNo: 1234
-      })
-    );
-  }, 12000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
         cmdType: "weather",
         packetNo: 1234,
         data:{

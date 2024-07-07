@@ -1,3 +1,5 @@
+const sqlString = require("sqlstring");
+
 module.exports = {
   deviceListVersion: async (request,lts_mac) => {
     const { data } = request;
@@ -43,15 +45,15 @@ module.exports = {
     const response = {
       result: 0,
     };
+    let sql = sqlString.format(
+      "Select cityCode,cityName from city_information"
+    );
+    let dataCity = await sails
+      .getDatastore(process.env.MYSQL_DATASTORE)
+      .sendNativeQuery(sql);
     response.data ={
-      "cityList": [ 
-        {
-          "cityName":"深圳",
-          "cityCode":"755"
-        }
-      ]
+      "cityList": dataCity["rows"] || []
     }
-
     response.packetNo = request.packetNo;
     return response;
   },

@@ -81,7 +81,7 @@ module.exports = {
       },
     });
     const dataWeather = await res.json();
-    console.log("weather data == " + dataWeather);
+    console.log("weather data == " + JSON.stringify(dataWeather));
     response.data = {
       "cityName": "北京",
       "realTime": {

@@ -494,7 +494,10 @@ module.exports = {
         return res.ok(response);
       }
       homeStatus = homeStatus.body.home;
-      let room = homeStatus.rooms.find((item) => item.id == room_id) || {};
+      let room = {
+        ...homeData.homes[0],
+        ...(homeStatus.rooms.find((item) => item.id == room_id) || {}),
+      };
       let roomDevices =
         homeData.homes[0].modules.filter((item) => item.room_id == room_id) ||
         [];

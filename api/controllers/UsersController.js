@@ -234,7 +234,7 @@ module.exports = {
         let rooms = [];
         for (let id = 0; id < element["rooms"].length; id++) {
           const room = element["rooms"][id];
-          const temperature = homeStatus.body.rooms
+          const temperature = homeStatus.body.home.rooms
             ? homeStatus.body.rooms.find((item) => item.id == room.id)
             : null;
 

@@ -143,7 +143,19 @@ module.exports = {
       });
       const data = await res.json();
       log("Netatmo getHomeStatus data: " + JSON.stringify(data));
-      return data;
+      if (data.status == "ok" && data.body) return data;
+      else
+        return {
+          status: "error",
+          ...data,
+          body: {
+            home: {
+              id: "",
+              rooms: [],
+              modules: [],
+            },
+          },
+        };
     } catch (error) {
       log("Netatmo getHomeStatus error: " + error);
       return {

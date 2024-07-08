@@ -510,8 +510,11 @@ module.exports = {
       });
 
       const response_data = {
-        ...room,
-        temperature: room.therm_measured_temperature || null,
+        id: room_id,
+        name: room["name"],
+        temperature: room["therm_measured_temperature"] || null,
+        humidity: room["humidity"] || null,
+        reachable: room["reachable"] || false,
         devices: {
           lights: roomDevices.filter((item) =>
             DEVICE_CODES.lights.includes(item.type)

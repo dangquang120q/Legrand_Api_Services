@@ -495,7 +495,7 @@ module.exports = {
       }
       homeStatus = homeStatus.body.home;
       let room = {
-        ...homeData.homes[0],
+        ...homeData.homes[0].rooms.find((item) => item.id == room_id),
         ...(homeStatus.rooms.find((item) => item.id == room_id) || {}),
       };
       let roomDevices =

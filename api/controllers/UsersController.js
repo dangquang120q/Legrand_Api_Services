@@ -17,6 +17,7 @@ const {
   getHomeStatus,
 } = require("../services/netamo-token");
 const { upgradeVersion } = require("../services/net");
+const { DEVICE_CODES } = require("../services/const");
 // const Users = require('../models/Users');
 
 module.exports = {
@@ -467,7 +468,7 @@ module.exports = {
       return res.serverError(response);
     }
   },
-  getRoomDevices: async (req, res) => {
+  getRoomDetail: async (req, res) => {
     log("getListHomeNetatmo => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let access_token = req.headers["access-token"];
@@ -475,6 +476,8 @@ module.exports = {
     let room_id = req.body.net_room_id;
     let response;
     try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
       const homeData = await getHomeData({
         access_token,
         home_id,
@@ -484,15 +487,37 @@ module.exports = {
         home_id,
       });
       homeStatus = homeStatus.body.home;
-      let roomDivices =
+      let room = homeStatus.rooms.find((item) => item.id == room_id) || {};
+      let roomDevices =
         homeData.homes[0].modules.find((item) => item.room_id == room_id) || [];
-      roomDivices = roomDivices.map((item) => {
-        const device = homeStatus.modules.find((dItem) => (dItem.id = item.id));
+      roomDevices = roomDevices.map((item) => {
+        const device = homeStatus.modules.find((dItem) => dItem.id == item.id);
         return {
           ...item,
           ...device,
         };
       });
-    } catch (error) {}
+
+      const response_data = {
+        ...room,
+        devices: {
+          lights: roomDevices.filter((item) =>
+            DEVICE_CODES.lights.includes(item.type)
+          ),
+          curtains: roomDevices.filter((item) =>
+            DEVICE_CODES.rollerShutter.includes(item.type)
+          ),
+        },
+      };
+      response = new HttpResponse(response_data, {
+        statusCode: 200,
+        error: false,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("getRoomDevice error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
   },
 };

@@ -38,13 +38,23 @@ module.exports = {
   },
 
   DEVICE_CODES: {
-    Gateway: ["NLG"],
-
-    Lights: ["Z3L", "NLD", "NLTS", "NLFE", "NLIS", "NLM", "NLF", "NLL", "NLFN"],
-
-    "Mechanical Ventilation System": ["NLLF"],
-
-    Power: [
+    gateway: ["NLG"],
+    lights: [
+      "Z3L",
+      "NLD",
+      "NLTS",
+      "NLFE",
+      "NLIS",
+      "NLM",
+      "NLF",
+      "NLL",
+      "NLFN",
+      "BNIL",
+      "BNLD",
+      "BN3L",
+    ],
+    ventilation: ["NLLF"],
+    power: [
       "NLAS",
       "NLPD",
       "NLPO",
@@ -56,10 +66,23 @@ module.exports = {
       "NLPM",
       "NLP",
       "NLPS",
+      "BNCS",
+      "BNXM",
     ],
-
-    "Roller Shutter": ["NLTV", "Z3V", "NLIV", "NLAV", "NLV", "NLLV"],
-
-    Scenario: ["NLAO", "NLPD", "NLT"],
+    heating: ["BNTH", "BNTR", "BNFC"],
+    rollerShutter: [
+      "NLTV",
+      "Z3V",
+      "NLIV",
+      "NLAV",
+      "NLV",
+      "NLLV",
+      "BNAB",
+      "BNAS",
+      "BNMS",
+    ],
+    scenario: ["NLAO", "NLPD", "NLT"],
+    thermostat: ["BNS"],
+    lock: ["BNLO"],
   },
 };

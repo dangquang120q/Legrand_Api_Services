@@ -486,6 +486,13 @@ module.exports = {
         access_token,
         home_id,
       });
+      if (homeStatus.error.code == 2) {
+        response = new HttpResponse(response_data, {
+          statusCode: 403,
+          error: homeStatus.error.message,
+        });
+        return res.ok(response);
+      }
       homeStatus = homeStatus.body.home;
       let room = homeStatus.rooms.find((item) => item.id == room_id) || {};
       let roomDevices =

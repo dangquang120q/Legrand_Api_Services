@@ -132,7 +132,7 @@ module.exports = {
   getHomeStatus: async (params) => {
     try {
       const { home_id, access_token } = params;
-      const url = `${API_URL}/homestatus?home_id=${home_id}`;
+      const url = `${API_URL}/api/homestatus?home_id=${home_id}`;
       log("Netatmo getHomeStatus: " + url);
       const res = await fetch(url, {
         method: "GET",

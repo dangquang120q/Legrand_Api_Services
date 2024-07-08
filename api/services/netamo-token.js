@@ -1,6 +1,6 @@
 var axios = require("axios");
 const { log } = require("./log");
-const {DATA_HOME_DEMO, DATA_LIST_HOME_DEMO} = require("./data-demo");
+const { DATA_HOME_DEMO, DATA_LIST_HOME_DEMO } = require("./data-demo");
 const API_URL = process.env.NETAMO_API;
 
 module.exports = {
@@ -127,6 +127,35 @@ module.exports = {
     } catch (error) {
       log("Netatmo getroommeasure error!: " + error);
       return 24;
+    }
+  },
+  getHomeStatus: async (params) => {
+    try {
+      const { home_id, access_token } = params;
+      const url = `${API_URL}/homestatus?home_id=${home_id}`;
+      log("Netatmo getHomeStatus: " + url);
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          Authorization: "Bearer " + access_token,
+        },
+      });
+      const data = await res.json();
+      log("Netatmo getHomeStatus data: " + JSON.stringify(data));
+      return data;
+    } catch (error) {
+      log("Netatmo getHomeStatus error: " + error);
+      return {
+        status: "error",
+        body: {
+          home: {
+            id: "",
+            rooms: [],
+            modules: [],
+          },
+        },
+      };
     }
   },
 };

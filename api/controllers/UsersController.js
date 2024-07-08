@@ -14,6 +14,7 @@ const {
   getAuthToken,
   getHomeData,
   getRoomMeasure,
+  getHomeStatus,
 } = require("../services/netamo-token");
 const { upgradeVersion } = require("../services/net");
 // const Users = require('../models/Users');
@@ -224,19 +225,24 @@ module.exports = {
         access_token,
         home_id,
       });
+      const homeStatus = await getHomeStatus({
+        home_id,
+        access_token,
+      });
       for (let index = 0; index < data.homes.length; index++) {
         const element = data.homes[index];
         let rooms = [];
         for (let id = 0; id < element["rooms"].length; id++) {
           const room = element["rooms"][id];
-          const temperature = await getRoomMeasure({
-            home_id: element["id"],
-            room_id: room["id"],
-            access_token: access_token,
-          });
+          const temperature = homeStatus.body.rooms
+            ? homeStatus.body.rooms.find((item) => item.id == room.id)
+            : null;
+
           rooms.push({
             ...room,
-            temperature,
+            temperature: temperature
+              ? temperature.therm_measured_temperature
+              : null,
           });
         }
         let home_data = {

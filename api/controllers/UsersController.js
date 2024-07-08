@@ -487,10 +487,15 @@ module.exports = {
         home_id,
       });
       if (homeStatus.error?.code == 2) {
-        response = new HttpResponse(response_data, {
-          statusCode: 403,
-          error: homeStatus.error.message,
-        });
+        response = new HttpResponse(
+          {
+            msg: homeStatus.error.message,
+          },
+          {
+            statusCode: 403,
+            error: true,
+          }
+        );
         return res.ok(response);
       }
       homeStatus = homeStatus.body.home;

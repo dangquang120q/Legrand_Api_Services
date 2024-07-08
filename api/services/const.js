@@ -36,4 +36,30 @@ module.exports = {
     firmwareInfo: "firmwareInfo",
     upgradeAck: "upgradeAck",
   },
+
+  DEVICE_CODES: {
+    Gateway: ["NLG"],
+
+    Lights: ["Z3L", "NLD", "NLTS", "NLFE", "NLIS", "NLM", "NLF", "NLL", "NLFN"],
+
+    "Mechanical Ventilation System": ["NLLF"],
+
+    Power: [
+      "NLAS",
+      "NLPD",
+      "NLPO",
+      "NLPT",
+      "NLPC",
+      "NLGS",
+      "NLE",
+      "NLC",
+      "NLPM",
+      "NLP",
+      "NLPS",
+    ],
+
+    "Roller Shutter": ["NLTV", "Z3V", "NLIV", "NLAV", "NLV", "NLLV"],
+
+    Scenario: ["NLAO", "NLPD", "NLT"],
+  },
 };

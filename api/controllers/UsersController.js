@@ -234,8 +234,8 @@ module.exports = {
         let rooms = [];
         for (let id = 0; id < element["rooms"].length; id++) {
           const room = element["rooms"][id];
-          const temperature = homeStatus.body.home.rooms
-            ? homeStatus.body.home.rooms.find((item) => item.id == room.id)
+          const temperature = homeStatus.body.home?.rooms
+            ? homeStatus.body.home?.rooms.find((item) => item.id == room.id)
             : null;
 
           rooms.push({
@@ -466,5 +466,33 @@ module.exports = {
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }
+  },
+  getRoomDevices: async (req, res) => {
+    log("getListHomeNetatmo => " + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
+    let access_token = req.headers["access-token"];
+    let home_id = req.body.net_home_id || "";
+    let room_id = req.body.net_room_id;
+    let response;
+    try {
+      const homeData = await getHomeData({
+        access_token,
+        home_id,
+      });
+      let homeStatus = await getHomeStatus({
+        access_token,
+        home_id,
+      });
+      homeStatus = homeStatus.body.home;
+      let roomDivices =
+        homeData.homes[0].modules.find((item) => item.room_id == room_id) || [];
+      roomDivices = roomDivices.map((item) => {
+        const device = homeStatus.modules.find((dItem) => (dItem.id = item.id));
+        return {
+          ...item,
+          ...device,
+        };
+      });
+    } catch (error) {}
   },
 };

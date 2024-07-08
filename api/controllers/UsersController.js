@@ -225,12 +225,12 @@ module.exports = {
         access_token,
         home_id,
       });
-      const homeStatus = await getHomeStatus({
-        home_id,
-        access_token,
-      });
       for (let index = 0; index < data.homes.length; index++) {
         const element = data.homes[index];
+        const homeStatus = await getHomeStatus({
+          home_id: element["id"],
+          access_token,
+        });
         let rooms = [];
         for (let id = 0; id < element["rooms"].length; id++) {
           const room = element["rooms"][id];

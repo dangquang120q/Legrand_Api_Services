@@ -489,7 +489,8 @@ module.exports = {
       homeStatus = homeStatus.body.home;
       let room = homeStatus.rooms.find((item) => item.id == room_id) || {};
       let roomDevices =
-        homeData.homes[0].modules.find((item) => item.room_id == room_id) || [];
+        homeData.homes[0].modules.filter((item) => item.room_id == room_id) ||
+        [];
       roomDevices = roomDevices.map((item) => {
         const device = homeStatus.modules.find((dItem) => dItem.id == item.id);
         return {

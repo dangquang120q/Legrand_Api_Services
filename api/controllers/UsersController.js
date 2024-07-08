@@ -501,6 +501,7 @@ module.exports = {
 
       const response_data = {
         ...room,
+        temperature: room.therm_measured_temperature || null,
         devices: {
           lights: roomDevices.filter((item) =>
             DEVICE_CODES.lights.includes(item.type)

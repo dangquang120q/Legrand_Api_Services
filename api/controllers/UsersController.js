@@ -226,6 +226,18 @@ module.exports = {
         access_token,
         home_id,
       });
+      if (data.error?.code) {
+        response = new HttpResponse(
+          {
+            msg: data.error.message,
+          },
+          {
+            statusCode: 400,
+            error: true,
+          }
+        );
+        return res.ok(response);
+      }
       for (let index = 0; index < data.homes.length; index++) {
         const element = data.homes[index];
         const homeStatus = await getHomeStatus({

@@ -71,22 +71,15 @@ module.exports = {
       const data = await res.json();
       log(JSON.stringify(data));
       if (data["error"]) {
-        let dataDemo = {};
-        if (home_id != "") {
-          dataDemo = DATA_HOME_DEMO;
-        } else {
-          dataDemo = DATA_LIST_HOME_DEMO;
-        }
         return {
-          homes: dataDemo.body.homes || [],
-          user: dataDemo.body.user,
-          error: -1,
+          ...data,
         };
       }
       return {
         homes: data.body.homes || [],
         user: data.body.user,
         error: -1,
+        status: "ok",
       };
     } catch (error) {
       log("Get netamo oauth token error: " + error);

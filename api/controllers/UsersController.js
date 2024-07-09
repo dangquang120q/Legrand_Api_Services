@@ -487,13 +487,13 @@ module.exports = {
         access_token,
         home_id,
       });
-      if (homeStatus.error?.code == 2) {
+      if (homeStatus.error?.code) {
         response = new HttpResponse(
           {
             msg: homeStatus.error.message,
           },
           {
-            statusCode: 403,
+            statusCode: 400,
             error: true,
           }
         );

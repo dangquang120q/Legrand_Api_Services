@@ -37,10 +37,11 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       if (data["rows"][0].length == 0) {
-        response = new HttpResponse(
-          { msg: "Wrong email or password" },
-          { statusCode: 400, error: true }
-        );
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Wrong email or password",
+        });
         return res.ok(response);
       }
       let response_data = {};

@@ -26,7 +26,9 @@ class HttpResponse {
     if (options.deleted) {
       this.deleted = options.deleted;
     }
-    if (Array.isArray(filteredData)) {
+    if (data == null) {
+      this.data = data;
+    } else if (Array.isArray(filteredData)) {
       this.data = [...filteredData];
       this.totalCount = options.totalCount || undefined;
     } else if (typeof filteredData === "object") {
@@ -37,20 +39,22 @@ class HttpResponse {
   }
 
   filterData(data) {
-    if (Array.isArray(data)) {
-      data.map((x, index) => {
-        Object.keys(x).forEach((key) => {
+    if (data != null) {
+      if (Array.isArray(data)) {
+        data.map((x, index) => {
+          Object.keys(x).forEach((key) => {
+            if (defaultExcludedItemsFromResponse.includes(key)) {
+              delete data[index][key];
+            }
+          });
+        });
+      } else if (typeof data === "object") {
+        Object.keys(data).forEach((key) => {
           if (defaultExcludedItemsFromResponse.includes(key)) {
-            delete data[index][key];
+            delete data[key];
           }
         });
-      });
-    } else if (typeof data === "object") {
-      Object.keys(data).forEach((key) => {
-        if (defaultExcludedItemsFromResponse.includes(key)) {
-          delete data[key];
-        }
-      });
+      }
     }
     return data;
   }

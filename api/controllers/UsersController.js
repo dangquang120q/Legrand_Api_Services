@@ -95,10 +95,11 @@ module.exports = {
         });
         return res.ok(response);
       } else {
-        response = new HttpResponse(
-          { msg: "Email has already in use" },
-          { statusCode: 405, error: true }
-        );
+        response = new HttpResponse(null, {
+          statusCode: 405,
+          error: true,
+          errorMsg: "Email has already in use",
+        });
         return res.ok(response);
       }
     } catch (error) {
@@ -462,16 +463,12 @@ module.exports = {
         );
         return res.ok(response);
       } else {
-        response = new HttpResponse(
-          {
-            msg: "House have already mapped!",
-          },
-          {
-            statusCode: 400,
-            error: true,
-          }
-        );
-        return res.send(response);
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "House has already mapped!",
+        });
+        return res.ok(response);
       }
     } catch (error) {
       log("mapHome error => " + error.toString());

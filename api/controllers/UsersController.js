@@ -451,7 +451,7 @@ module.exports = {
       let sql = sqlString.format("CALL sp_map_home(?,?,?)", [
         userId,
         dept_id,
-        home_id,
+        +home_id,
       ]);
       const data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)

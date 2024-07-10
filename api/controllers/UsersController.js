@@ -573,9 +573,10 @@ module.exports = {
           -1,
         ]);
       }
-      await sails
+      const data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
-        .sendNativeQuery(sql);
+        .sendNativeQuery(sqlStr);
+      console.log(data["rows"][0]);
       response = new HttpResponse(
         { msg: "Remove Mapped Home Successfull!" },
         { statusCode: 200, error: false }

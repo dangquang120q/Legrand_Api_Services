@@ -84,7 +84,10 @@ module.exports = {
     } catch (error) {
       log("Get netamo oauth token error: " + error);
       return {
-        error: error,
+        error: {
+          code: 500,
+          error: "Server error!",
+        },
       };
     }
   },
@@ -160,6 +163,38 @@ module.exports = {
             modules: [],
           },
         },
+      };
+    }
+  },
+  turnOnTheLight: async (params) => {
+    const { on, home_id, module_id, bridge, access_token } = params;
+    try {
+      const body = {
+        home: {
+          id: home_id,
+          modules: [
+            {
+              id: module_id,
+              on: on,
+              bridge,
+            },
+          ],
+        },
+      };
+      const res = await fetch(API_URL + "/api/setstate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          Authorization: "Bearer " + access_token,
+        },
+        body: new URLSearchParams(body),
+      });
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      log("Turn on light error: " + JSON.stringify(error));
+      return {
+        error: error,
       };
     }
   },

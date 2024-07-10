@@ -227,18 +227,14 @@ module.exports = {
         home_id,
       });
       if (data.error?.code) {
-        response = new HttpResponse(
-          {
-            msg: data.error.message,
-          },
-          {
-            statusCode: 400,
-            error: true,
-          }
-        );
-        return res.ok(response);
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
       }
-      for (let index = 0; index < data.homes.length; index++) {
+      for (let index = 0; index < data.homes?.length; index++) {
         const element = data.homes[index];
         const homeStatus = await getHomeStatus({
           home_id: element["id"],
@@ -282,15 +278,11 @@ module.exports = {
       if (get_user) {
         response_data.user = data.user;
       }
-      if (data.error != -1) {
-        response = new HttpResponse(data.error, {
-          statusCode: 400,
-          error: true,
-        });
-      }
+
       response = new HttpResponse(response_data, {
         statusCode: 200,
         error: false,
+        errorMsg: null,
       });
       return res.ok(response);
     } catch (error) {
@@ -511,32 +503,39 @@ module.exports = {
         access_token,
         home_id,
       });
+      if (homeData.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: homeData.error.message,
+        });
+        return res.send(response);
+      }
       let homeStatus = await getHomeStatus({
         access_token,
         home_id,
       });
       if (homeStatus.error?.code) {
-        response = new HttpResponse(
-          {
-            msg: homeStatus.error.message,
-          },
-          {
-            statusCode: 400,
-            error: true,
-          }
-        );
-        return res.ok(response);
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: homeStatus.error.message,
+        });
+        return res.send(response);
       }
       homeStatus = homeStatus.body.home;
       let room = {
-        ...homeData.homes[0].rooms.find((item) => item.id == room_id),
-        ...(homeStatus.rooms.find((item) => item.id == room_id) || {}),
+        ...homeData?.homes[0]?.rooms?.find((item) => item.id == room_id),
+        ...(homeStatus?.rooms?.find((item) => item.id == room_id) || {}),
       };
       let roomDevices =
-        homeData.homes[0].modules.filter((item) => item.room_id == room_id) ||
-        [];
+        homeData?.homes[0]?.modules?.filter(
+          (item) => item.room_id == room_id
+        ) || [];
       roomDevices = roomDevices.map((item) => {
-        const device = homeStatus.modules.find((dItem) => dItem.id == item.id);
+        const device = homeStatus?.modules?.find(
+          (dItem) => dItem.id == item.id
+        );
         return {
           ...item,
           ...device,
@@ -561,6 +560,7 @@ module.exports = {
       response = new HttpResponse(response_data, {
         statusCode: 200,
         error: false,
+        errorMsg: null,
       });
       return res.ok(response);
     } catch (error) {
@@ -603,5 +603,10 @@ module.exports = {
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }
+  },
+  turnOnLight: async (req, res) => {
+    const {} = req.body;
+    try {
+    } catch (error) {}
   },
 };

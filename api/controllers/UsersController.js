@@ -440,11 +440,11 @@ module.exports = {
     }
   },
   mapHome: async (req, res) => {
-    log("mapHome => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let dept_id = req.body.net_home_id || "";
     let home_id = req.body.home_id || "";
     let response;
+    log("mapHome => " + JSON.stringify(req.headers) + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
@@ -457,7 +457,7 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       const ref = data["rows"][1][0]["ref"];
-      console.log(ref, data["rows"][1]);
+
       if (ref == 1) {
         response = new HttpResponse(
           { msg: "Map Home Successfull", homes: data["rows"][0] },

@@ -458,7 +458,7 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       const ref = data["rows"][1][0]["ref"];
-
+      console.log(data["rows"], ref);
       if (ref == 1) {
         response = new HttpResponse(
           { msg: "Map Home Successfull", homes: data["rows"][0] },

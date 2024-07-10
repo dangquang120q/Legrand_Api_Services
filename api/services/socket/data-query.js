@@ -140,7 +140,7 @@ module.exports = {
         },
       });
       const dataWeather = await res.json();
-      console.log("weather data == " + JSON.stringify(dataWeather));
+      // console.log("weather data == " + JSON.stringify(dataWeather));
 
       const searchParamsPollution = {
         lat: dataWeather["city"]["coord"]["lat"],
@@ -159,12 +159,12 @@ module.exports = {
         },
       });
       const dataWeatherPollution = await resPollution.json();
-      console.log("weather Pollution data == " + JSON.stringify(dataWeatherPollution));
 
       let listWeather = [];
       for (let index = 0; index < 33; index++) {
         const element = dataWeather["list"][index];
         let pollution = dataWeatherPollution["list"][index * 3];
+        console.log(JSON.stringify(pollution));
         let weather = {
           "date": element["dt_txt"],
           "temp": KtoC(element["main"]["temp"]),

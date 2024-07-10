@@ -569,7 +569,7 @@ module.exports = {
       return res.serverError(response);
     }
   },
-  removeMappedHome: async (req, res) => {
+  removeMappingHome: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
     let home_id = req.body.net_home_id || "";
     let response;

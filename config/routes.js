@@ -36,7 +36,7 @@ module.exports.routes = {
   "GET /user/getNetamoInfo": "UsersController.getNetamoInfo",
   "POST /user/upgradeSocket": "UsersController.upgradeSocket",
   "POST /user/getRoomDetail": "UsersController.getRoomDetail",
-  "POST /user/removeMappedHome": "UsersController.removeMappedHome",
+  "POST /user/removeMappingHome": "UsersController.removeMappingHome",
 
   /***************************************************************************
    *                                                                          *

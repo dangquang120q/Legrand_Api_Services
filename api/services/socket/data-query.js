@@ -159,7 +159,7 @@ module.exports = {
         },
       });
       const dataWeatherPollution = await resPollution.json();
-      console.log("weather Pollution data == " + JSON.stringify(dataWeatherPollution));
+      console.log("weather Pollution data == " + dataWeatherPollution["list"].length);
 
       let listWeather = [];
       for (let index = 0; index < dataWeather["list"].length; index++) {

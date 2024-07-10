@@ -553,4 +553,38 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  removeMappedHome: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let home_id = req.body.net_home_id || "";
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      log("Remove Mapped Home: " + userId);
+      let sqlStr;
+      if (home_id) {
+        sqlStr = sqlString.format("call sp_remove_mapped_home(?,?)", [
+          userId,
+          home_id,
+        ]);
+      } else {
+        sqlStr = sqlString.format("call sp_remove_mapped_home(?,?)", [
+          userId,
+          -1,
+        ]);
+      }
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      response = new HttpResponse(
+        { msg: "Remove Mapped Home Successfull!" },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("Remove Mapped Home Error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
 };

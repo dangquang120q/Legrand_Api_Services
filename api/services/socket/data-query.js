@@ -1,6 +1,6 @@
 const sqlString = require("sqlstring");
 const WEATHER_API_URL = process.env.WEATHER_API_URL;
-
+const {KtoC, degreesToDirection} = require("../calculate");
 module.exports = {
   deviceListVersion: async (request,lts_mac) => {
     try {
@@ -166,10 +166,10 @@ module.exports = {
         let pollution = dataWeatherPollution["list"][index * 3];
         let weather = {
           "date": element["dt_txt"],
-          "temp": this.KtoC(element["main"]["temp"]),
-          "temperatureScope": this.KtoC(element["main"]["feels_like"]),
+          "temp": KtoC(element["main"]["temp"]),
+          "temperatureScope": KtoC(element["main"]["feels_like"]),
           "weather": element["weather"]["main"],
-          "windDirect": element["wind"]["deg"],
+          "windDirect": degreesToDirection(element["wind"]["deg"]),
           "pm25": pollution["components"]["pm2_5"],
           "humidity": element["main"]["humidity"],
           "aqi": pollution["main"]["aqi"],
@@ -218,12 +218,4 @@ module.exports = {
       return response;
     }
   },
-  KtoC: (K) => {
-    return K - 273,15;
-  },
-  degreesToDirection: (degrees) => {
-    const sectors = ["North", "North-East", "East", "South-East", "South", "South-West", "West", "North-West"];
-    const index = Math.round(degrees / 45) % 8;
-    return sectors[index];
-}
 };

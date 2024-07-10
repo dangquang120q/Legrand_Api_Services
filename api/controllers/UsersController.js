@@ -576,7 +576,7 @@ module.exports = {
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
-      log("Remove Mapped Home: " + userId);
+      log("Remove Mapping Home: " + userId);
       let sqlStr;
       if (home_id) {
         sqlStr = sqlString.format("call sp_remove_mapped_home(?,?)", [
@@ -593,13 +593,13 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlStr);
       response = new HttpResponse(
-        { msg: "Remove Mapped Home Successfull!", homes: data["rows"][0] },
+        { msg: "Remove Mapping Home Successfull!", homes: data["rows"][0] },
         { statusCode: 200, error: false }
       );
-      log("Remove Mapped Home Success: " + JSON.stringify(data["rows"][0]));
+      log("Remove Mapping Home Success: " + JSON.stringify(data["rows"][0]));
       return res.ok(response);
     } catch (error) {
-      log("Remove Mapped Home Error => " + error.toString());
+      log("Remove Mapping Home Error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

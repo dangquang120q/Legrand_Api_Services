@@ -456,8 +456,8 @@ module.exports = {
       const data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
-      const ref = data["rows"][1][ref];
       console.log(data["rows"]);
+      const ref = data["rows"][1]["ref"];
       response = new HttpResponse(
         { msg: "mapHome Successfull" },
         { statusCode: 200, error: false }

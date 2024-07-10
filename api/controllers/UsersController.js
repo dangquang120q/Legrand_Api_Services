@@ -230,7 +230,7 @@ module.exports = {
         response = new HttpResponse(
           {},
           {
-            statusCode: 400,
+            statusCode: "NET_" + data.error.code,
             error: true,
             errorMsg: data.error.message,
           }
@@ -510,7 +510,7 @@ module.exports = {
         response = new HttpResponse(
           {},
           {
-            statusCode: 400,
+            statusCode: "NET_" + homeData.error.code,
             error: true,
             errorMsg: homeData.error.message,
           }
@@ -525,7 +525,7 @@ module.exports = {
         response = new HttpResponse(
           {},
           {
-            statusCode: 400,
+            statusCode: "NET_" + homeData.error.code,
             error: true,
             errorMsg: homeStatus.error.message,
           }

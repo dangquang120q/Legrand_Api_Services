@@ -10,9 +10,21 @@ module.exports = {
       const response = {
         result: 0,
       };
-  
+      let sql = sqlString.format(
+        "Select lts_device_version from lts_device_control where lts_mac = ?", [lts_mac]
+      );
+      let dataVersion = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      if (dataVersion["rows"].length < 1) {
+        const responseErr = {
+          result: -1,
+        };
+        responseErr.packetNo = request.packetNo;
+        return responseErr;
+      }
       response.data = {
-        "deviceVersion": "1000" 
+        "deviceVersion": dataVersion["rows"][0]["lts_device_version"]
       }
   
       response.packetNo = request.packetNo;
@@ -31,13 +43,26 @@ module.exports = {
   deviceList: async (request,lts_mac) => {
     try{
       const { data } = request;
-  
+      let sqlVersion = sqlString.format(
+        "Select lts_device_version from lts_device_control where lts_mac = ?", [data.gatewayDn]
+      );
+      let dataVersion = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlVersion);
+      let sql = sqlString.format(
+        "Select * from lts_device_control where lts_mac = ?", [data.gatewayDn]
+      );
+      let dataListDevice = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
       const response = {
         result: 0,
       };
+      let deviceVersion = dataVersion["rows"][0]["lts_device_version"];
+      // let leftNumber = deviceVersion - data.
       response.data = {
         "leftNumber": 0,
-        "deviceVersion": "1.1.1",
+        "deviceVersion": deviceVersion,
         "has": [{
           "nickName ": "",
           "location": "",
@@ -98,6 +123,7 @@ module.exports = {
       const response = {
         result: 0,
       };
+
       const searchParams = {
         id: data.cityCode,
         appid: "c3c7edff736a03db0bb150e86820ba68"
@@ -115,88 +141,46 @@ module.exports = {
       });
       const dataWeather = await res.json();
       console.log("weather data == " + JSON.stringify(dataWeather));
-      response.data = {
-        "cityName": "北京",
-        "realTime": {
-          "date": "2024-04-17",
-          "temperature": "25",
-          "temperatureScope": "12/29℃",
-          "weather": "晴",
-          "windDirect": "南<3",
-          "pm25": "46",
-          "img": "16",
-          "humidity": "29",
-          "aqi": "89",
-          "pm10": "128",
-          "quality": "良"
+
+      const searchParamsPollution = {
+        lat: dataWeather["city"]["coord"]["lat"],
+        lon: dataWeather["city"]["coord"]["lon"],
+        appid: "c3c7edff736a03db0bb150e86820ba68"
+      };
+      const urlPollution =
+      `${WEATHER_API_URL}/data/2.5/air_pollution/forecast?` +
+      new URLSearchParams({
+        ...searchParamsPollution
+      });
+      const resPollution = await fetch(urlPollution, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
         },
-        "future": [
-          {
-            "date": "2024-04-17",
-            "temperature": "",
-            "temperatureScope": "12/29℃",
-            "weather": "晴",
-            "windDirect": "南<2",
-            "pm25": "46",
-            "img": "16",
-            "humidity": "43",
-            "aqi": "89",
-            "pm10": "128",
-            "quality": "良"
-          },
-          {
-            "date": "2024-04-18",
-            "temperature": "",
-            "temperatureScope": "13/28℃",
-            "weather": "晴",
-            "windDirect": "东南<2",
-            "pm25": "",
-            "img": "16",
-            "humidity": "45",
-            "aqi": "",
-            "pm10": "",
-            "quality": ""
-          },
-          {
-            "date": "2024-04-19",
-            "temperature": "",
-            "temperatureScope": "13/19℃",
-            "weather": "阴",
-            "windDirect": "东<1",
-            "pm25": "",
-            "img": "25",
-            "humidity": "36",
-            "aqi": "",
-            "pm10": "",
-            "quality": ""
-          },
-          {
-            "date": "2024-04-20",
-            "temperature": "",
-            "temperatureScope": "10/20℃",
-            "weather": "多云",
-            "windDirect": "北<1",
-            "pm25": "",
-            "img": "10",
-            "humidity": "67",
-            "aqi": "",
-            "pm10": "",
-            "quality": ""
-          },
-          {
-            "date": "2024-04-21",
-            "temperature": "",
-            "temperatureScope": "14/26℃",
-            "weather": "晴",
-            "windDirect": "南<2",
-            "pm25": "",
-            "img": "16",
-            "humidity": "62",
-            "aqi": "",
-            "pm10": "",
-            "quality": ""
-          }
-        ]
+      });
+      const dataWeatherPollution = await resPollution.json();
+
+      let listWeather = [];
+      for (let index = 0; index < dataWeather.length; index++) {
+        const element = dataWeather["list"][index];
+        let pollution = dataWeatherPollution["list"][index * 3];
+        let weather = {
+          "date": element["dt_txt"],
+          "temp": this.KtoC(element["main"]["temp"]),
+          "temperatureScope": this.KtoC(element["main"]["feels_like"]),
+          "weather": element["weather"]["main"],
+          "windDirect": element["wind"]["deg"],
+          "pm25": pollution["components"]["pm2_5"],
+          "humidity": element["main"]["humidity"],
+          "aqi": pollution["main"]["aqi"],
+          "pm10": pollution["components"]["pm10"],
+        }
+        listWeather.push(weather);
+      }
+      response.data = {
+        "cityName": dataWeather["city"]["name"],
+        "realTime": listWeather[0],
+        "future": listWeather
       }
       response.packetNo = request.packetNo;
       return response;
@@ -234,4 +218,12 @@ module.exports = {
       return response;
     }
   },
+  KtoC: (K) => {
+    return K - 273,15;
+  },
+  degreesToDirection: (degrees) => {
+    const sectors = ["North", "North-East", "East", "South-East", "South", "South-West", "West", "North-West"];
+    const index = Math.round(degrees / 45) % 8;
+    return sectors[index];
+}
 };

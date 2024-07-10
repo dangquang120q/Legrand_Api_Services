@@ -146,7 +146,7 @@ var client = tls.connect(options, function () {
         cmdType: "weather",
         packetNo: 1234,
         data:{
-          "cityCode":"dasd"
+          "cityCode":"1581130"
         }
       })
     );

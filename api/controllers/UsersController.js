@@ -228,9 +228,7 @@ module.exports = {
       });
       if (data.error?.code) {
         response = new HttpResponse(
-          {
-            data: null,
-          },
+          {},
           {
             statusCode: 400,
             error: true,
@@ -510,9 +508,7 @@ module.exports = {
       });
       if (homeData.error?.code) {
         response = new HttpResponse(
-          {
-            data: null,
-          },
+          {},
           {
             statusCode: 400,
             error: true,
@@ -527,9 +523,7 @@ module.exports = {
       });
       if (homeStatus.error?.code) {
         response = new HttpResponse(
-          {
-            data: null,
-          },
+          {},
           {
             statusCode: 400,
             error: true,

@@ -9,15 +9,14 @@
  */
 
 module.exports.policies = {
-
   /***************************************************************************
-  *                                                                          *
-  * Default policy for all controllers and actions, unless overridden.       *
-  * (`true` allows public access)                                            *
-  *                                                                          *
-  ***************************************************************************/
+   *                                                                          *
+   * Default policy for all controllers and actions, unless overridden.       *
+   * (`true` allows public access)                                            *
+   *                                                                          *
+   ***************************************************************************/
 
-  '*': true,
+  "*": true,
   UsersController: {
     login: true,
     signup: true,
@@ -30,7 +29,8 @@ module.exports.policies = {
     installNewHome: "checkJwtoken",
     changeNameHome: "checkJwtoken",
     getNetamoInfo: "checkJwtoken",
-    mapHome: "checkJwtoken"
+    mapHome: "checkJwtoken",
+    getRoomDetail: "checkJwtoken",
+    removeMappedHome: "checkJwtoken",
   },
-
 };

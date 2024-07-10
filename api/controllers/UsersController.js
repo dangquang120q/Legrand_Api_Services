@@ -229,14 +229,11 @@ module.exports = {
         home_id,
       });
       if (data.error?.code) {
-        response = new HttpResponse(
-          {},
-          {
-            statusCode: "NET_" + data.error.code,
-            error: true,
-            errorMsg: data.error.message,
-          }
-        );
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
         return res.send(response);
       }
       for (let index = 0; index < data.homes?.length; index++) {
@@ -505,14 +502,11 @@ module.exports = {
         home_id,
       });
       if (homeData.error?.code) {
-        response = new HttpResponse(
-          {},
-          {
-            statusCode: "NET_" + homeData.error.code,
-            error: true,
-            errorMsg: homeData.error.message,
-          }
-        );
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + homeData.error.code,
+          error: true,
+          errorMsg: homeData.error.message,
+        });
         return res.send(response);
       }
       let homeStatus = await getHomeStatus({
@@ -520,14 +514,11 @@ module.exports = {
         home_id,
       });
       if (homeStatus.error?.code) {
-        response = new HttpResponse(
-          {},
-          {
-            statusCode: "NET_" + homeData.error.code,
-            error: true,
-            errorMsg: homeStatus.error.message,
-          }
-        );
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + homeData.error.code,
+          error: true,
+          errorMsg: homeStatus.error.message,
+        });
         return res.send(response);
       }
       homeStatus = homeStatus.body.home;

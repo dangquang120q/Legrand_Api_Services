@@ -162,7 +162,7 @@ module.exports = {
       console.log("weather Pollution data == " + dataWeatherPollution["list"].length);
 
       let listWeather = [];
-      for (let index = 0; index < dataWeather["list"].length; index++) {
+      for (let index = 0; index < 32; index++) {
         const element = dataWeather["list"][index];
         let pollution = dataWeatherPollution["list"][index * 3];
         let weather = {

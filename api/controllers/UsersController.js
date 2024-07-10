@@ -576,11 +576,11 @@ module.exports = {
       const data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlStr);
-      console.log(data["rows"][0]);
       response = new HttpResponse(
-        { msg: "Remove Mapped Home Successfull!" },
+        { msg: "Remove Mapped Home Successfull!", homes: data["rows"][0] },
         { statusCode: 200, error: false }
       );
+      log("Remove Mapped Home Success: " + JSON.stringify(data["rows"][0]));
       return res.ok(response);
     } catch (error) {
       log("Remove Mapped Home Error => " + error.toString());

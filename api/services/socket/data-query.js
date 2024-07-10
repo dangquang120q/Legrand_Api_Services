@@ -161,7 +161,7 @@ module.exports = {
       const dataWeatherPollution = await resPollution.json();
 
       let listWeather = [];
-      for (let index = 0; index < dataWeather.length; index++) {
+      for (let index = 0; index < dataWeather["list"].length; index++) {
         const element = dataWeather["list"][index];
         let pollution = dataWeatherPollution["list"][index * 3];
         let weather = {

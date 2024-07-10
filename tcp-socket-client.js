@@ -125,7 +125,7 @@ var client = tls.connect(options, function () {
         cmdType: "deviceList",
         packetNo: 1234,
         data: {
-          "gatewayDn":"dnstr", 
+          "gatewayDn":"9E675FFEFF47B660", 
           "index":0, 
           "number":50
         }

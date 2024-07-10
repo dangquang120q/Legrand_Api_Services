@@ -456,13 +456,25 @@ module.exports = {
       const data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
-      console.log(data["rows"]);
-      const ref = data["rows"][1]["ref"];
-      response = new HttpResponse(
-        { msg: "mapHome Successfull" },
-        { statusCode: 200, error: false }
-      );
-      return res.ok(response);
+      const ref = data["rows"][1][0]["ref"];
+      if (ref == 1) {
+        response = new HttpResponse(
+          { msg: "Map Home Successfull", homes: data["rows"][0] },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      } else {
+        response = new HttpResponse(
+          {
+            msg: "House have already mapped!",
+          },
+          {
+            statusCode: 400,
+            error: true,
+          }
+        );
+        return res.send(response);
+      }
     } catch (error) {
       log("mapHome error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });

@@ -1,15 +1,15 @@
 module.exports = {
   apps : [{
-    name: 'api-sails-legrand',
+    name: 'api-sails-legrand_develop',
     script: './app.js',
     watch: '.',
     exec_mode: 'cluster',
     env: {
       NODE_ENV: 'DEVELOPMENT',
-      PORT: 9000
+      PORT: 9002
     },
     instances: 1,
-    autorestart: true
+    autorestart: false
   }]
 
   // deploy : {

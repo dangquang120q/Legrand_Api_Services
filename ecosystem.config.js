@@ -1,6 +1,6 @@
 module.exports = {
   apps : [{
-    name: 'api-sails-legrand_develop',
+    name: 'api-sails-legrand-develop',
     script: './app.js',
     watch: '.',
     exec_mode: 'cluster',

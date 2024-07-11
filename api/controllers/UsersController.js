@@ -162,22 +162,39 @@ module.exports = {
   changePassword: async (req, res) => {
     log("changePassword => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
-    let password = req.body.password;
+    let current_password = req.body.current_password;
+    let new_password = req.body.new_password;
     let response;
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
-      let sqlUpdate = sqlString.format(
-        "update user_account set password_comp = ? where user_id = ?",
-        [password, userId]
-      );
-      await sails
+      let sqlUpdate = sqlString.format("call sp_change_password(?,?,?)", [
+        userId,
+        new_password,
+        current_password,
+      ]);
+      const data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlUpdate);
-      response = new HttpResponse(
-        { msg: "Change Password Successful." },
-        { statusCode: 200, error: false }
-      );
+      const ref = data["rows"][0][0]["ref"];
+      if (ref == 1) {
+        response = new HttpResponse(
+          { msg: "Change Password Successful." },
+          { statusCode: 200, error: false }
+        );
+      } else if (ref == -1) {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Incorrect Current Password.",
+        });
+      } else {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Change Password Failed.",
+        });
+      }
       return res.ok(response);
     } catch (error) {
       log("Logout error => " + error.toString());

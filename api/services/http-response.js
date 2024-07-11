@@ -15,9 +15,8 @@ class HttpResponse {
       errorMsg: null,
     }
   ) {
-    this.statusCode = (options.statusCode || 200) + "";
+    this.statusCode = (options.statusCode || 200);
     this.error = options.error || false;
-    this.errorMsg = options.errorMsg || null;
     let filteredData = data;
 
     if (typeof filteredData === "object") {

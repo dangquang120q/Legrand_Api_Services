@@ -37,11 +37,10 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       if (data["rows"][0].length == 0) {
-        response = new HttpResponse(null, {
-          statusCode: 400,
-          error: true,
-          errorMsg: "Wrong email or password",
-        });
+        response = new HttpResponse(
+          { msg: "Wrong email or password" },
+          { statusCode: 400, error: true }
+        );
         return res.ok(response);
       }
       let response_data = {};
@@ -95,11 +94,10 @@ module.exports = {
         });
         return res.ok(response);
       } else {
-        response = new HttpResponse(null, {
-          statusCode: 405,
-          error: true,
-          errorMsg: "Email has already in use",
-        });
+        response = new HttpResponse(
+          { msg: "Email has already in use" },
+          { statusCode: 405, error: true }
+        );
         return res.ok(response);
       }
     } catch (error) {
@@ -228,15 +226,7 @@ module.exports = {
         access_token,
         home_id,
       });
-      if (data.error?.code) {
-        response = new HttpResponse(null, {
-          statusCode: "NET_" + data.error.code,
-          error: true,
-          errorMsg: data.error.message,
-        });
-        return res.send(response);
-      }
-      for (let index = 0; index < data.homes?.length; index++) {
+      for (let index = 0; index < data.homes.length; index++) {
         const element = data.homes[index];
         const homeStatus = await getHomeStatus({
           home_id: element["id"],
@@ -280,11 +270,15 @@ module.exports = {
       if (get_user) {
         response_data.user = data.user;
       }
-
+      if (data.error != -1) {
+        response = new HttpResponse(data.error, {
+          statusCode: 400,
+          error: true,
+        });
+      }
       response = new HttpResponse(response_data, {
         statusCode: 200,
         error: false,
-        errorMsg: null,
       });
       return res.ok(response);
     } catch (error) {
@@ -299,8 +293,7 @@ module.exports = {
     const grant_type = "authorization_code";
     const client_id = process.env.NETAMO_CLIENT_ID;
     const client_secret = process.env.NETAMO_CLIENT_SECRET;
-    const scope =
-      "read_station read_magellan read_smarther read_thermostat read_bubendorff read_mhs1";
+    const scope = "read_station read_thermostat read_smarther";
     const redirect_uri = "http://172.104.188.248:9000/user/getNetamoApi";
     log("=> getNetamoToken params:" + JSON.stringify(req.query));
     let response;
@@ -434,39 +427,27 @@ module.exports = {
     }
   },
   mapHome: async (req, res) => {
+    log("mapHome => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let dept_id = req.body.net_home_id || "";
     let home_id = req.body.home_id || "";
     let response;
-    log("mapHome => " + JSON.stringify(req.headers) + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
-
       let sql = sqlString.format("CALL sp_map_home(?,?,?)", [
         userId,
         dept_id,
-        +home_id,
+        home_id,
       ]);
-      const data = await sails
+      await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
-      const ref = data["rows"][1][0]["ref"];
-
-      if (ref == 1) {
-        response = new HttpResponse(
-          { msg: "Map Home Successfull", homes: data["rows"][0] },
-          { statusCode: 200, error: false }
-        );
-        return res.ok(response);
-      } else {
-        response = new HttpResponse(null, {
-          statusCode: 400,
-          error: true,
-          errorMsg: "House has already mapped!",
-        });
-        return res.ok(response);
-      }
+      response = new HttpResponse(
+        { msg: "mapHome Successfull" },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
     } catch (error) {
       log("mapHome error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
@@ -501,38 +482,32 @@ module.exports = {
         access_token,
         home_id,
       });
-      if (homeData.error?.code) {
-        response = new HttpResponse(null, {
-          statusCode: "NET_" + homeData.error.code,
-          error: true,
-          errorMsg: homeData.error.message,
-        });
-        return res.send(response);
-      }
       let homeStatus = await getHomeStatus({
         access_token,
         home_id,
       });
       if (homeStatus.error?.code == 2) {
-        response = new HttpResponse(response_data, {
-          statusCode: 403,
-          error: homeStatus.error.message,
-        });
+        response = new HttpResponse(
+          {
+            msg: homeStatus.error.message,
+          },
+          {
+            statusCode: 403,
+            error: true,
+          }
+        );
         return res.ok(response);
       }
       homeStatus = homeStatus.body.home;
       let room = {
-        ...homeData?.homes[0]?.rooms?.find((item) => item.id == room_id),
-        ...(homeStatus?.rooms?.find((item) => item.id == room_id) || {}),
+        ...homeData.homes[0].rooms.find((item) => item.id == room_id),
+        ...(homeStatus.rooms.find((item) => item.id == room_id) || {}),
       };
       let roomDevices =
-        homeData?.homes[0]?.modules?.filter(
-          (item) => item.room_id == room_id
-        ) || [];
+        homeData.homes[0].modules.filter((item) => item.room_id == room_id) ||
+        [];
       roomDevices = roomDevices.map((item) => {
-        const device = homeStatus?.modules?.find(
-          (dItem) => dItem.id == item.id
-        );
+        const device = homeStatus.modules.find((dItem) => dItem.id == item.id);
         return {
           ...item,
           ...device,
@@ -557,7 +532,6 @@ module.exports = {
       response = new HttpResponse(response_data, {
         statusCode: 200,
         error: false,
-        errorMsg: null,
       });
       return res.ok(response);
     } catch (error) {
@@ -565,45 +539,5 @@ module.exports = {
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }
-  },
-  removeMappingHome: async (req, res) => {
-    let jwtToken = req.headers["auth-token"];
-    let home_id = req.body.net_home_id || "";
-    let response;
-    try {
-      let decodedToken = jwtoken.decode(jwtToken);
-      let userId = decodedToken["userId"];
-      log("Remove Mapping Home: " + userId);
-      let sqlStr;
-      if (home_id) {
-        sqlStr = sqlString.format("call sp_remove_mapped_home(?,?)", [
-          userId,
-          home_id,
-        ]);
-      } else {
-        sqlStr = sqlString.format("call sp_remove_mapped_home(?,?)", [
-          userId,
-          -1,
-        ]);
-      }
-      const data = await sails
-        .getDatastore(process.env.MYSQL_DATASTORE)
-        .sendNativeQuery(sqlStr);
-      response = new HttpResponse(
-        { msg: "Remove Mapping Home Successfull!", homes: data["rows"][0] },
-        { statusCode: 200, error: false }
-      );
-      log("Remove Mapping Home Success: " + JSON.stringify(data["rows"][0]));
-      return res.ok(response);
-    } catch (error) {
-      log("Remove Mapping Home Error => " + error.toString());
-      response = new HttpResponse(error, { statusCode: 500, error: true });
-      return res.serverError(response);
-    }
-  },
-  turnOnLight: async (req, res) => {
-    const {} = req.body;
-    try {
-    } catch (error) {}
   },
 };

@@ -18,7 +18,7 @@ module.exports = {
     try {
       const data = await setState({
         action: SET_STATE_ACTION.turnOnLight,
-        value: on == "true" ? true : false,
+        value: on == "true" || on == true ? true : false,
         home_id: net_home_id,
         module_id: device_id,
         bridge: bridge,

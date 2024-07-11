@@ -168,7 +168,7 @@ module.exports = {
         let weather = {
           "date": element["dt_txt"],
           "temp": KtoC(element["main"]["temp"]),
-          "temperatureScope": KtoC(element["main"]["feels_like"]),
+          "temperatureScope": KtoC(element["main"]["temp_min"]) + "/" + KtoC(element["main"]["temp_max"]) + "°C",
           "weather": element["weather"]["main"],
           "windDirect": degreesToDirection(element["wind"]["deg"]),
           "pm25": pollution["components"]["pm2_5"],

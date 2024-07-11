@@ -149,7 +149,33 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlUpdate);
       response = new HttpResponse(
-        { msg: "updateProfile Successful" },
+        { msg: "Update Profile Successful." },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("Logout error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  changePassword: async (req, res) => {
+    log("changePassword => " + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
+    let password = req.body.password;
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sqlUpdate = sqlString.format(
+        "update user_account set password_comp = ? where user_id = ?",
+        [password, userId]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlUpdate);
+      response = new HttpResponse(
+        { msg: "Change Password Successful." },
         { statusCode: 200, error: false }
       );
       return res.ok(response);
@@ -228,6 +254,7 @@ module.exports = {
         access_token,
         home_id,
       });
+      log("get home data: ", JSON.stringify(data));
       if (data.error?.code) {
         response = new HttpResponse(null, {
           statusCode: "NET_" + data.error.code,
@@ -243,7 +270,7 @@ module.exports = {
           access_token,
         });
         let rooms = [];
-        for (let id = 0; id < element["rooms"].length; id++) {
+        for (let id = 0; id < element["rooms"]?.length; id++) {
           const room = element["rooms"][id];
           const temperature = homeStatus.body?.home?.rooms
             ? homeStatus.body?.home?.rooms.find((item) => item.id == room.id)

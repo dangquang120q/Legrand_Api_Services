@@ -25,6 +25,7 @@ module.exports.routes = {
   "POST /user/logout": "UsersController.logout",
   "POST /user/updateProfile": "UsersController.updateProfile",
   "POST /user/changePassword": "UsersController.changePassword",
+  "POST /user/shareAccount": "UsersController.shareAccount",
 
   "POST /user/createRoom": "UsersController.createRoom",
   "POST /user/getListRoom": "UsersController.getListRoom",

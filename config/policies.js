@@ -33,5 +33,6 @@ module.exports.policies = {
     getRoomDetail: "checkJwtoken",
     removeMappedHome: "checkJwtoken",
     changePassword: "checkJwtoken",
+    shareAccount: "checkJwtoken",
   },
 };

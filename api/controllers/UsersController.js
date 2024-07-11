@@ -185,6 +185,35 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  shareAccount: async (req, res) => {
+    log("shareAccount => " + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
+    let guestId = req.body.guest_id;
+    let homeId = req.body.home_id;
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      log(
+        "shareAccount" +
+          JSON.stringify({
+            guestId,
+            homeId,
+            userId,
+          })
+      );
+
+      response = new HttpResponse(
+        { msg: "Share Account Successful." },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("Logout error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
   // createRoom: async (req, res) => {
   //   log("CreateRoom => " + JSON.stringify(req.headers));
   //   let jwtToken = req.headers["auth-token"];

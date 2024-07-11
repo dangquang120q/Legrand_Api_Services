@@ -5,7 +5,7 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
-const { log } = require("grunt");
+const { log } = require("../services/log");
 const { SET_STATE_ACTION } = require("../services/const");
 const { setState } = require("../services/netamo-token");
 

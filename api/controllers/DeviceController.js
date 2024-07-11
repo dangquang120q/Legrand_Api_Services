@@ -24,7 +24,7 @@ module.exports = {
         bridge: bridge,
         access_token,
       });
-      log("turnOnLight data: " + data);
+      log("turnOnLight data: " + JSON.stringify(data));
       if (data.error?.code) {
         response = new HttpResponse(null, {
           statusCode: "NET_" + data.error.code,

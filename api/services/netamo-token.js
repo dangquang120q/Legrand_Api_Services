@@ -208,7 +208,7 @@ module.exports = {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
           Authorization: "Bearer " + access_token,
         },
-        body: new URLSearchParams(body),
+        body: body,
       });
       const data = await res.json();
       return data;

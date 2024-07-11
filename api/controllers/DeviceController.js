@@ -41,6 +41,7 @@ module.exports = {
         },
         { statusCode: 200, error: false }
       );
+      return res.ok(response);
     } catch (error) {
       log("Turn on light error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });

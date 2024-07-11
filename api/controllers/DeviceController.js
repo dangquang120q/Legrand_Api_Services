@@ -8,6 +8,7 @@
 const { log } = require("../services/log");
 const { SET_STATE_ACTION } = require("../services/const");
 const { setState } = require("../services/netamo-token");
+const { HttpResponse } = require("../services/http-response");
 
 module.exports = {
   turnOnLight: async (req, res) => {

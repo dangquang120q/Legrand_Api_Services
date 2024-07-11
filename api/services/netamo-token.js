@@ -205,10 +205,11 @@ module.exports = {
       const res = await fetch(API_URL + "/api/setstate", {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          Accept: "application/json",
+          "Content-Type": "application/json",
           Authorization: "Bearer " + access_token,
         },
-        body: body,
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       return data;

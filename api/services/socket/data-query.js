@@ -24,7 +24,7 @@ module.exports = {
         return responseErr;
       }
       response.data = {
-        "deviceVersion": dataVersion["rows"][0]["lts_device_version"]
+        "deviceVersion": (dataVersion["rows"][0]["lts_device_version"]).toString()
       }
   
       response.packetNo = request.packetNo;

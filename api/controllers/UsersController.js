@@ -513,13 +513,12 @@ module.exports = {
         access_token,
         home_id,
       });
-      if (homeStatus.error?.code) {
-        response = new HttpResponse(null, {
-          statusCode: "NET_" + homeData.error.code,
-          error: true,
-          errorMsg: homeStatus.error.message,
+      if (homeStatus.error?.code == 2) {
+        response = new HttpResponse(response_data, {
+          statusCode: 403,
+          error: homeStatus.error.message,
         });
-        return res.send(response);
+        return res.ok(response);
       }
       homeStatus = homeStatus.body.home;
       let room = {

@@ -675,9 +675,4 @@ module.exports = {
       return res.serverError(response);
     }
   },
-  turnOnLight: async (req, res) => {
-    const {} = req.body;
-    try {
-    } catch (error) {}
-  },
 };

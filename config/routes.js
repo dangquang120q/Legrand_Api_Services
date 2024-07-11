@@ -41,6 +41,8 @@ module.exports.routes = {
   "POST /user/getRoomDetail": "UsersController.getRoomDetail",
   "POST /user/removeMappingHome": "UsersController.removeMappingHome",
 
+  "POST /device/turnOnLight": "DeviceController.turnOnLight",
+
   /***************************************************************************
    *                                                                          *
    * More custom routes here...                                               *

@@ -200,7 +200,7 @@ module.exports = {
       default:
         break;
     }
-    log(JSON.stringify(body));
+    log("setstate request body: " + JSON.stringify(body));
     try {
       const res = await fetch(API_URL + "/api/setstate", {
         method: "POST",

@@ -15,6 +15,7 @@ const {
   getHomeData,
   getRoomMeasure,
   getHomeStatus,
+  getScenario,
 } = require("../services/netamo-token");
 const { upgradeVersion } = require("../services/net");
 const { DEVICE_CODES } = require("../services/const");
@@ -337,17 +338,30 @@ module.exports = {
             doorLock = doorStatus?.on || false;
           }
         }
+        // Scenario
+        const scenarios = await getScenario({
+          home_id: element["id"],
+          access_token,
+        });
+        if (scenarios.error?.code) {
+          response = new HttpResponse(null, {
+            statusCode: "NET_" + data.error.code,
+            error: true,
+            errorMsg: data.error.message,
+          });
+          return res.send(response);
+        }
+
         let home_data = {
           id: element["id"],
           name: element["name"],
-          scenarios: [
-            {
-              id: "",
-              name: "",
+          scenarios:
+            scenarios.body?.home?.scenarios.map((item) => ({
+              id: item.id,
+              name: item.type,
               selected: "",
-              roomName: "",
-            },
-          ],
+              roomName: item.category,
+            })) || [],
           waterLeakage: {
             valve: "off",
             alarm: "off",

@@ -316,18 +316,26 @@ module.exports = {
           access_token,
         });
         let rooms = [];
+        let doorLock = false;
         for (let id = 0; id < element["rooms"]?.length; id++) {
           const room = element["rooms"][id];
-          const temperature = homeStatus.body?.home?.rooms
-            ? homeStatus.body?.home?.rooms.find((item) => item.id == room.id)
-            : null;
+          if (room.name.toLowerCase() != "door lock") {
+            const temperature = homeStatus.body?.home?.rooms
+              ? homeStatus.body?.home?.rooms.find((item) => item.id == room.id)
+              : null;
 
-          rooms.push({
-            ...room,
-            temperature: temperature
-              ? temperature.therm_measured_temperature
-              : null,
-          });
+            rooms.push({
+              ...room,
+              temperature: temperature
+                ? temperature.therm_measured_temperature
+                : null,
+            });
+          } else {
+            const doorStatus = homeStatus.body?.home?.modules?.find(
+              (item) => item.id == room.module_ids[0]
+            );
+            doorLock = doorStatus?.on || false;
+          }
         }
         let home_data = {
           id: element["id"],
@@ -344,8 +352,8 @@ module.exports = {
             valve: "off",
             alarm: "off",
           },
-          doorLock: true,
-          rooms: rooms,
+          doorLock: !doorLock,
+          rooms,
         };
         listhomes.push(home_data);
       }

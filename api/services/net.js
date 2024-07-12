@@ -177,12 +177,12 @@ server.on("secureConnection", function (socket) {
           socket.pause();
         }
       }
-      // setTimeout(async () => {
-      //   let response = await checkPing(list_account[socket.remoteAddress]);
-      //   if (response.result == -1) {
-      //     socket.end("Timed out!");
-      //   }
-      // }, 130000);
+      setTimeout(async () => {
+        let response = await checkPing(list_account[socket.remoteAddress]);
+        if (response.result == -1) {
+          socket.end("Timed out!");
+        }
+      }, 130000);
     
     }
     catch (error) {

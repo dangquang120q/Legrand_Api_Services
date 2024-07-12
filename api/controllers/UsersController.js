@@ -345,9 +345,9 @@ module.exports = {
         });
         if (scenarios.error?.code) {
           response = new HttpResponse(null, {
-            statusCode: "NET_" + data.error.code,
+            statusCode: "NET_" + scenarios.error.code,
             error: true,
-            errorMsg: data.error.message,
+            errorMsg: scenarios.error.message,
           });
           return res.send(response);
         }

@@ -223,7 +223,7 @@ module.exports = {
   getScenario: async (params) => {
     const { home_id, access_token } = params;
     try {
-      const url = `${API_URL}/api/getscenario?home_id=${home_id}`;
+      const url = `${API_URL}/api/getscenarios?home_id=${home_id}`;
       log("Netatmo getScenario: " + url);
       const res = await fetch(url, {
         method: "GET",
@@ -233,7 +233,7 @@ module.exports = {
         },
       });
       const data = await res.json();
-      log("Netatmo getHomeStatus data: " + JSON.stringify(data));
+      log("Netatmo getScenario data: " + JSON.stringify(data));
       return data;
     } catch (error) {
       log("Netatmo getScenario error: " + error);

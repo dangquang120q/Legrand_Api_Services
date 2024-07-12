@@ -147,7 +147,79 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlUpdate);
       response = new HttpResponse(
-        { msg: "updateProfile Successful" },
+        { msg: "Update Profile Successful." },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("Logout error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  changePassword: async (req, res) => {
+    log("changePassword => " + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
+    let current_password = req.body.current_password;
+    let new_password = req.body.new_password;
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sqlUpdate = sqlString.format("call sp_change_password(?,?,?)", [
+        userId,
+        new_password,
+        current_password,
+      ]);
+      const data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlUpdate);
+      const ref = data["rows"][0][0]["ref"];
+      if (ref == 1) {
+        response = new HttpResponse(
+          { msg: "Change Password Successful." },
+          { statusCode: 200, error: false }
+        );
+      } else if (ref == -1) {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Incorrect Current Password.",
+        });
+      } else {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Change Password Failed.",
+        });
+      }
+      return res.ok(response);
+    } catch (error) {
+      log("Logout error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  shareAccount: async (req, res) => {
+    log("shareAccount => " + JSON.stringify(req.headers));
+    let jwtToken = req.headers["auth-token"];
+    let guestId = req.body.guest_id;
+    let homeId = req.body.home_id;
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      log(
+        "shareAccount" +
+          JSON.stringify({
+            guestId,
+            homeId,
+            userId,
+          })
+      );
+
+      response = new HttpResponse(
+        { msg: "Share Account Successful." },
         { statusCode: 200, error: false }
       );
       return res.ok(response);
@@ -226,25 +298,42 @@ module.exports = {
         access_token,
         home_id,
       });
-      for (let index = 0; index < data.homes.length; index++) {
+      log("get home data: ", JSON.stringify(data));
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
+      for (let index = 0; index < data.homes?.length; index++) {
         const element = data.homes[index];
         const homeStatus = await getHomeStatus({
           home_id: element["id"],
           access_token,
         });
         let rooms = [];
-        for (let id = 0; id < element["rooms"].length; id++) {
+        let doorLock = false;
+        for (let id = 0; id < element["rooms"]?.length; id++) {
           const room = element["rooms"][id];
-          const temperature = homeStatus.body?.home?.rooms
-            ? homeStatus.body?.home?.rooms.find((item) => item.id == room.id)
-            : null;
+          if (room.name.toLowerCase() != "door lock") {
+            const temperature = homeStatus.body?.home?.rooms
+              ? homeStatus.body?.home?.rooms.find((item) => item.id == room.id)
+              : null;
 
-          rooms.push({
-            ...room,
-            temperature: temperature
-              ? temperature.therm_measured_temperature
-              : null,
-          });
+            rooms.push({
+              ...room,
+              temperature: temperature
+                ? temperature.therm_measured_temperature
+                : null,
+            });
+          } else {
+            const doorStatus = homeStatus.body?.home?.modules?.find(
+              (item) => item.id == room.module_ids[0]
+            );
+            doorLock = doorStatus?.on || false;
+          }
         }
         let home_data = {
           id: element["id"],
@@ -261,8 +350,8 @@ module.exports = {
             valve: "off",
             alarm: "off",
           },
-          doorLock: true,
-          rooms: rooms,
+          doorLock: !doorLock,
+          rooms,
         };
         listhomes.push(home_data);
       }
@@ -536,6 +625,41 @@ module.exports = {
       return res.ok(response);
     } catch (error) {
       log("getRoomDevice error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  removeMappingHome: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let home_id = req.body.net_home_id || "";
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      log("Remove Mapping Home: " + userId);
+      let sqlStr;
+      if (home_id) {
+        sqlStr = sqlString.format("call sp_remove_mapped_home(?,?)", [
+          userId,
+          home_id,
+        ]);
+      } else {
+        sqlStr = sqlString.format("call sp_remove_mapped_home(?,?)", [
+          userId,
+          -1,
+        ]);
+      }
+      const data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlStr);
+      response = new HttpResponse(
+        { msg: "Remove Mapping Home Successfull!", homes: data["rows"][0] },
+        { statusCode: 200, error: false }
+      );
+      log("Remove Mapping Home Success: " + JSON.stringify(data["rows"][0]));
+      return res.ok(response);
+    } catch (error) {
+      log("Remove Mapping Home Error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

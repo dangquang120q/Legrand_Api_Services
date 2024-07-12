@@ -24,6 +24,9 @@ module.exports.routes = {
   "POST /user/signup": "UsersController.signup",
   "POST /user/logout": "UsersController.logout",
   "POST /user/updateProfile": "UsersController.updateProfile",
+  "POST /user/changePassword": "UsersController.changePassword",
+  "POST /user/shareAccount": "UsersController.shareAccount",
+
   "POST /user/createRoom": "UsersController.createRoom",
   "POST /user/getListRoom": "UsersController.getListRoom",
   "POST /user/getListHomeNetatmo": "UsersController.getListHomeNetatmo",
@@ -37,6 +40,8 @@ module.exports.routes = {
   "POST /user/upgradeSocket": "UsersController.upgradeSocket",
   "POST /user/getRoomDetail": "UsersController.getRoomDetail",
   "POST /user/removeMappingHome": "UsersController.removeMappingHome",
+
+  "POST /device/turnOnLight": "DeviceController.turnOnLight",
 
   /***************************************************************************
    *                                                                          *

@@ -1,6 +1,7 @@
 var axios = require("axios");
 const { log } = require("./log");
 const { DATA_HOME_DEMO, DATA_LIST_HOME_DEMO } = require("./data-demo");
+const { SET_STATE_ACTION } = require("./const");
 const API_URL = process.env.NETAMO_API;
 
 module.exports = {
@@ -166,28 +167,49 @@ module.exports = {
       };
     }
   },
-  turnOnTheLight: async (params) => {
-    const { on, home_id, module_id, bridge, access_token } = params;
+  setState: async (params) => {
+    const { action, value, home_id, module_id, bridge, access_token } = params;
+    const body = {
+      home: {
+        id: home_id,
+        modules: [],
+      },
+    };
+    switch (action) {
+      case SET_STATE_ACTION.turnOnLight:
+        body.home.modules.push({
+          id: module_id,
+          on: value,
+          bridge,
+        });
+        break;
+      case SET_STATE_ACTION.changeBrightness:
+        body.home.modules.push({
+          id: module_id,
+          brightness: value,
+          bridge,
+        });
+        break;
+      case SET_STATE_ACTION.openCurtain:
+        body.home.modules.push({
+          id: module_id,
+          target_position: value,
+          bridge,
+        });
+        break;
+      default:
+        break;
+    }
+    log("setstate request body: " + JSON.stringify(body));
     try {
-      const body = {
-        home: {
-          id: home_id,
-          modules: [
-            {
-              id: module_id,
-              on: on,
-              bridge,
-            },
-          ],
-        },
-      };
       const res = await fetch(API_URL + "/api/setstate", {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          Accept: "application/json",
+          "Content-Type": "application/json",
           Authorization: "Bearer " + access_token,
         },
-        body: new URLSearchParams(body),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       return data;

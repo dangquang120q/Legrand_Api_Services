@@ -85,4 +85,9 @@ module.exports = {
     thermostat: ["BNS"],
     lock: ["BNLO"],
   },
+  SET_STATE_ACTION: {
+    turnOnLight: "Turn on the light",
+    changeBrightness: "Change brightness of the light",
+    openCurtain: "Open the curtain",
+  },
 };

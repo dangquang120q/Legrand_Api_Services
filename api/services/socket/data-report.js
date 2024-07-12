@@ -11,7 +11,7 @@ module.exports = {
       console.log("lts_mac == " + lts_mac);
       let result = 0;
       let sql = sqlString.format(
-        "update lts_device_control set lts_device_version = lts_device_version + ? where lts_mac = ?", [data["has"].length,lts_mac]
+        "update lts_device_control set lts_device_version = lts_device_version + 1 where lts_mac = ?", [lts_mac]
       );
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)

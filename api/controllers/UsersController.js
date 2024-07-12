@@ -15,6 +15,7 @@ const {
   getHomeData,
   getRoomMeasure,
   getHomeStatus,
+  getScenario,
 } = require("../services/netamo-token");
 const { upgradeVersion } = require("../services/net");
 const { DEVICE_CODES } = require("../services/const");
@@ -37,10 +38,11 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       if (data["rows"][0].length == 0) {
-        response = new HttpResponse(
-          { msg: "Wrong email or password" },
-          { statusCode: 400, error: true }
-        );
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Wrong email or password",
+        });
         return res.ok(response);
       }
       let response_data = {};
@@ -94,10 +96,11 @@ module.exports = {
         });
         return res.ok(response);
       } else {
-        response = new HttpResponse(
-          { msg: "Email has already in use" },
-          { statusCode: 405, error: true }
-        );
+        response = new HttpResponse(null, {
+          statusCode: 405,
+          error: true,
+          errorMsg: "Email has already in use",
+        });
         return res.ok(response);
       }
     } catch (error) {
@@ -335,17 +338,30 @@ module.exports = {
             doorLock = doorStatus?.on || false;
           }
         }
+        // Scenario
+        const scenarios = await getScenario({
+          home_id: element["id"],
+          access_token,
+        });
+        if (scenarios.error?.code) {
+          response = new HttpResponse(null, {
+            statusCode: "NET_" + scenarios.error.code,
+            error: true,
+            errorMsg: scenarios.error.message,
+          });
+          return res.send(response);
+        }
+
         let home_data = {
           id: element["id"],
           name: element["name"],
-          scenarios: [
-            {
-              id: "",
-              name: "",
+          scenarios:
+            scenarios.body?.home?.scenarios.map((item) => ({
+              id: item.id,
+              name: item.type,
               selected: "",
-              roomName: "",
-            },
-          ],
+              roomName: item.category,
+            })) || [],
           waterLeakage: {
             valve: "off",
             alarm: "off",
@@ -359,15 +375,11 @@ module.exports = {
       if (get_user) {
         response_data.user = data.user;
       }
-      if (data.error != -1) {
-        response = new HttpResponse(data.error, {
-          statusCode: 400,
-          error: true,
-        });
-      }
+
       response = new HttpResponse(response_data, {
         statusCode: 200,
         error: false,
+        errorMsg: null,
       });
       return res.ok(response);
     } catch (error) {
@@ -382,7 +394,8 @@ module.exports = {
     const grant_type = "authorization_code";
     const client_id = process.env.NETAMO_CLIENT_ID;
     const client_secret = process.env.NETAMO_CLIENT_SECRET;
-    const scope = "read_station read_thermostat read_smarther";
+    const scope =
+      "read_station read_magellan read_smarther read_thermostat read_bubendorff read_mhs1";
     const redirect_uri = "http://172.104.188.248:9000/user/getNetamoApi";
     log("=> getNetamoToken params:" + JSON.stringify(req.query));
     let response;
@@ -516,27 +529,39 @@ module.exports = {
     }
   },
   mapHome: async (req, res) => {
-    log("mapHome => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let dept_id = req.body.net_home_id || "";
     let home_id = req.body.home_id || "";
     let response;
+    log("mapHome => " + JSON.stringify(req.headers) + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
+
       let sql = sqlString.format("CALL sp_map_home(?,?,?)", [
         userId,
         dept_id,
-        home_id,
+        +home_id,
       ]);
-      await sails
+      const data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
-      response = new HttpResponse(
-        { msg: "mapHome Successfull" },
-        { statusCode: 200, error: false }
-      );
-      return res.ok(response);
+      const ref = data["rows"][1][0]["ref"];
+
+      if (ref == 1) {
+        response = new HttpResponse(
+          { msg: "Map Home Successfull", homes: data["rows"][0] },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      } else {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "House has already mapped!",
+        });
+        return res.ok(response);
+      }
     } catch (error) {
       log("mapHome error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
@@ -571,32 +596,39 @@ module.exports = {
         access_token,
         home_id,
       });
+      if (homeData.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + homeData.error.code,
+          error: true,
+          errorMsg: homeData.error.message,
+        });
+        return res.send(response);
+      }
       let homeStatus = await getHomeStatus({
         access_token,
         home_id,
       });
-      if (homeStatus.error?.code == 2) {
-        response = new HttpResponse(
-          {
-            msg: homeStatus.error.message,
-          },
-          {
-            statusCode: 403,
-            error: true,
-          }
-        );
-        return res.ok(response);
+      if (homeStatus.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + homeData.error.code,
+          error: true,
+          errorMsg: homeStatus.error.message,
+        });
+        return res.send(response);
       }
       homeStatus = homeStatus.body.home;
       let room = {
-        ...homeData.homes[0].rooms.find((item) => item.id == room_id),
-        ...(homeStatus.rooms.find((item) => item.id == room_id) || {}),
+        ...homeData?.homes[0]?.rooms?.find((item) => item.id == room_id),
+        ...(homeStatus?.rooms?.find((item) => item.id == room_id) || {}),
       };
       let roomDevices =
-        homeData.homes[0].modules.filter((item) => item.room_id == room_id) ||
-        [];
+        homeData?.homes[0]?.modules?.filter(
+          (item) => item.room_id == room_id
+        ) || [];
       roomDevices = roomDevices.map((item) => {
-        const device = homeStatus.modules.find((dItem) => dItem.id == item.id);
+        const device = homeStatus?.modules?.find(
+          (dItem) => dItem.id == item.id
+        );
         return {
           ...item,
           ...device,
@@ -621,6 +653,7 @@ module.exports = {
       response = new HttpResponse(response_data, {
         statusCode: 200,
         error: false,
+        errorMsg: null,
       });
       return res.ok(response);
     } catch (error) {

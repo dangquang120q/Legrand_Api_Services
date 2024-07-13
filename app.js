@@ -31,7 +31,7 @@ var rc;
 
 require("dotenv").config();
 const admin = require('firebase-admin');
-const serviceAccount = require('../Legrand_Api_Services/config/legrand-dev-api-firebase-adminsdk-r0fjc-901a1347a2.json');//'./config/legrand-dev-api-firebase-adminsdk-r0fjc-901a1347a2.json');
+const serviceAccount = require('./config/legrand-dev-api-firebase-adminsdk-r0fjc-901a1347a2.json');//'./config/legrand-dev-api-firebase-adminsdk-r0fjc-901a1347a2.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });

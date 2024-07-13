@@ -23,7 +23,8 @@ const { DEVICE_CODES } = require("../services/const");
 const nodemailer = require('nodemailer');
 
 module.exports = {
-  sendEmail: async function (to, subject, text) {
+  sendEmail: async (req, res) => {
+    log("SendMail test => " + JSON.stringify(req.body));
     let transporter = nodemailer.createTransport({
       service: 'gmail', // hoặc một dịch vụ email khác như SendGrid
       auth: {
@@ -41,9 +42,9 @@ module.exports = {
 
     try {
       let info = await transporter.sendMail(mailOptions);
-      console.log('Email sent: ' + info.response);
+      log('Email sent: ' + info.response);
     } catch (error) {
-      console.log('Error sending email: ' + error);
+      log('Error sending email: ' + error);
     }
   },
   login: async (req, res) => {

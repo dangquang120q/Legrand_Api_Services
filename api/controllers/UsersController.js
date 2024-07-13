@@ -642,9 +642,12 @@ module.exports = {
         humidity: room["humidity"] || null,
         reachable: room["reachable"] || false,
         devices: {
-          lights: roomDevices.filter((item) =>
-            DEVICE_CODES.lights.includes(item.type)
-          ),
+          lights: roomDevices
+            .filter((item) => DEVICE_CODES.lights.includes(item.type))
+            .map((item) => ({
+              ...item,
+              controlType: item["target_position:step"] >= 100 ? 0 : 1,
+            })),
           curtains: roomDevices.filter((item) =>
             DEVICE_CODES.rollerShutter.includes(item.type)
           ),

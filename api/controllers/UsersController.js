@@ -20,8 +20,32 @@ const {
 const { upgradeVersion } = require("../services/net");
 const { DEVICE_CODES } = require("../services/const");
 // const Users = require('../models/Users');
+const nodemailer = require('nodemailer');
 
 module.exports = {
+  sendEmail: async function (to, subject, text) {
+    let transporter = nodemailer.createTransport({
+      service: 'gmail', // hoặc một dịch vụ email khác như SendGrid
+      auth: {
+        user: 'kiennt.k54@gmail.com', // email của bạn
+        pass: 'Kiennt1991@!'   // mật khẩu email của bạn
+      }
+    });
+
+    let mailOptions = {
+      from: 'kiennt.k54@gmail.com',
+      to: 'mrneo1991@gmail.com',
+      subject: 'This is test Firebase',
+      text: 'Này thì này'
+    };
+
+    try {
+      let info = await transporter.sendMail(mailOptions);
+      console.log('Email sent: ' + info.response);
+    } catch (error) {
+      console.log('Error sending email: ' + error);
+    }
+  },
   login: async (req, res) => {
     log("Login => " + JSON.stringify(req.body));
     let userId = CryptoJS.MD5(req.body.email).toString();

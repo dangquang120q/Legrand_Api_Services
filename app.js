@@ -30,6 +30,18 @@ var sails;
 var rc;
 
 require("dotenv").config();
+const admin = require('firebase-admin');
+const serviceAccount = require('./config/legrandFirebaseServiceAccount.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+admin.auth().listUsers(1)
+  .then(listUsersResult => {
+    console.log('Firebase Admin SDK khởi tạo thành công');
+  })
+  .catch(error => {
+    console.log('Lỗi khởi tạo Firebase Admin SDK:', error);
+  });
 
 try {
   sails = require("sails");

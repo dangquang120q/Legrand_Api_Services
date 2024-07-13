@@ -21,30 +21,26 @@ const { upgradeVersion } = require("../services/net");
 const { DEVICE_CODES } = require("../services/const");
 // const Users = require('../models/Users');
 const nodemailer = require('nodemailer');
+const mailgun = require('mailgun-js');
+const config = require('../../config/mailgun');
 
 module.exports = {
   sendEmail: async (req, res) => {
     log("SendMail test => " + JSON.stringify(req.body));
-    let transporter = nodemailer.createTransport({
-      service: 'gmail', // hoặc một dịch vụ email khác như SendGrid
-      auth: {
-        user: 'kiennt.k54@gmail.com', // email của bạn
-        pass: 'Kiennt1991@!'   // mật khẩu email của bạn
-      }
-    });
-
-    let mailOptions = {
-      from: 'kiennt.k54@gmail.com',
-      to: 'mrneo1991@gmail.com',
-      subject: 'This is test Firebase',
-      text: 'Này thì này'
+    const mg = mailgun({ apiKey: config.mailgun.apiKey, domain: config.mailgun.domain });
+    const data = {
+      from: 'postmaster@sandbox66c16a04267b478b98840690c8f1173d.mailgun.org', // Địa chỉ email gửi từ Mailgun
+      to: 'kiennt.k54@gmail.com',
+      subject: 'Tesst',
+      text: 'Nay thi nay'
     };
 
     try {
-      let info = await transporter.sendMail(mailOptions);
-      log('Email sent: ' + info.response);
+      const response = await mg.messages().send(data);
+      log("send mail: " + response.message);
+      return response;
     } catch (error) {
-      log('Error sending email: ' + error);
+      throw new Error(`Failed to send email: ${error.message}`);
     }
   },
   login: async (req, res) => {

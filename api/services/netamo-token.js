@@ -168,8 +168,9 @@ module.exports = {
     }
   },
   setState: async (params) => {
-    const { action, value, home_id, module_id, bridge, access_token } = params;
-    const body = {
+    const { action, value, home_id, module_id, bridge, access_token, room_id } =
+      params;
+    let body = {
       home: {
         id: home_id,
         modules: [],
@@ -197,6 +198,18 @@ module.exports = {
           bridge,
         });
         break;
+      case SET_STATE_ACTION.chageTemperatureSetpoint:
+        body = {
+          home: {
+            id: home_id,
+            rooms: [
+              {
+                id: room_id,
+                ...value,
+              },
+            ],
+          },
+        };
       default:
         break;
     }

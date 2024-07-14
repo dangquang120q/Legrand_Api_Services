@@ -39,5 +39,6 @@ module.exports.policies = {
     turnOnLight: "checkJwtoken",
     changeLightBrightness: "checkJwtoken",
     openCurtain: "checkJwtoken",
+    controlAirConditioner: "checkJwtoken",
   },
 };

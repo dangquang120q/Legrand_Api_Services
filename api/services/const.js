@@ -90,5 +90,6 @@ module.exports = {
     turnOnLight: "Turn on the light",
     changeBrightness: "Change brightness of the light",
     openCurtain: "Open the curtain",
+    chageTemperatureSetpoint: "Apply a temperature set point to a room",
   },
 };

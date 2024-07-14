@@ -118,4 +118,45 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  controlAirConditioner: async (req, res) => {
+    let access_token = req.headers["access-token"];
+    let { room_id, net_home_id, end_time, mode, temperature } = req.body;
+
+    let value = {
+      cooling_setpoint_mode: mode,
+      cooling_setpoint_temperature: +temperature,
+    };
+    if (end_time) {
+      value["cooling_setpoint_end_time"] = +end_time;
+    }
+    try {
+      const data = await setState({
+        action: SET_STATE_ACTION.chageTemperatureSetpoint,
+        value: value,
+        home_id: net_home_id,
+        room_id: room_id,
+        access_token,
+      });
+      log("controlAirConditioner data: " + JSON.stringify(data));
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
+      response = new HttpResponse(
+        {
+          msg: "Change air conditioner set point successfull",
+        },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("Change air conditioner set point error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
 };

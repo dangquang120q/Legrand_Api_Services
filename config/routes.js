@@ -44,6 +44,7 @@ module.exports.routes = {
   "POST /device/turnOnLight": "DeviceController.turnOnLight",
   "POST /device/changeLightBrightness":
     "DeviceController.changeLightBrightness",
+  "POST /device/openCurtain": "DeviceController.openCurtain",
 
   /***************************************************************************
    *                                                                          *

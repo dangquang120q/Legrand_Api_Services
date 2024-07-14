@@ -38,5 +38,6 @@ module.exports.policies = {
   DeviceController: {
     turnOnLight: "checkJwtoken",
     changeLightBrightness: "checkJwtoken",
+    openCurtain: "checkJwtoken",
   },
 };

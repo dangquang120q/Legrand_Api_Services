@@ -83,4 +83,39 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  openCurtain: async (req, res) => {
+    let access_token = req.headers["access-token"];
+    let { device_id, bridge, net_home_id, target_position } = req.body;
+
+    try {
+      const data = await setState({
+        action: SET_STATE_ACTION.openCurtain,
+        value: target_position,
+        home_id: net_home_id,
+        module_id: device_id,
+        bridge: bridge,
+        access_token,
+      });
+      log("openCurtain data: " + JSON.stringify(data));
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
+      response = new HttpResponse(
+        {
+          msg: "Open curtain successful",
+        },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("Open curtain error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
 };

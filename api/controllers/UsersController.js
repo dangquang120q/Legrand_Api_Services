@@ -634,7 +634,9 @@ module.exports = {
           ...device,
         };
       });
-
+      const fan = roomDevices.find((item) =>
+        DEVICE_CODES.fan.includes(item.type)
+      );
       const response_data = {
         id: room_id,
         name: room["name"],
@@ -652,6 +654,15 @@ module.exports = {
               ...item,
               controlType: item["target_position:step"] >= 100 ? 0 : 1,
             })),
+          airConditioner: room["therm_measured_temperature"]
+            ? {
+                temperature: room["cooling_setpoint_temperature"],
+                start_time: room["cooling_setpoint_start_time"],
+                end_time: room["cooling_setpoint_end_time"],
+                mode: room["cooling_setpoint_mode"],
+                fan: fan ? fan : null,
+              }
+            : null,
         },
       };
       response = new HttpResponse(response_data, {

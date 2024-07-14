@@ -55,7 +55,7 @@ module.exports = {
     try {
       const data = await setState({
         action: SET_STATE_ACTION.changeBrightness,
-        value: brightness,
+        value: +brightness,
         home_id: net_home_id,
         module_id: device_id,
         bridge: bridge,

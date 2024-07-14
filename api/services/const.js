@@ -84,6 +84,7 @@ module.exports = {
     scenario: ["NLAO", "NLPD", "NLT"],
     thermostat: ["BNS"],
     lock: ["BNLO"],
+    fan: ["LFCA"],
   },
   SET_STATE_ACTION: {
     turnOnLight: "Turn on the light",

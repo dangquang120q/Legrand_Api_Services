@@ -42,6 +42,8 @@ module.exports.routes = {
   "POST /user/removeMappingHome": "UsersController.removeMappingHome",
 
   "POST /device/turnOnLight": "DeviceController.turnOnLight",
+  "POST /device/changeLightBrightness":
+    "DeviceController.changeLightBrightness",
 
   /***************************************************************************
    *                                                                          *

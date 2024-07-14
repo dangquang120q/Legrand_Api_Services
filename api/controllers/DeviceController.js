@@ -90,7 +90,7 @@ module.exports = {
     try {
       const data = await setState({
         action: SET_STATE_ACTION.openCurtain,
-        value: target_position,
+        value: +target_position,
         home_id: net_home_id,
         module_id: device_id,
         bridge: bridge,

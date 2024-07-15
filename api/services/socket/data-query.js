@@ -50,7 +50,7 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlVersion);
       let sql = sqlString.format(
-        "Select * from lts_device_control where lts_mac = ?", [data.gatewayDn]
+        "Select * from lts_device_detail where lts_mac = ?", [data.gatewayDn]
       );
       let dataListDevice = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
@@ -58,12 +58,25 @@ module.exports = {
       const response = {
         result: 0,
       };
+      let listDevice = [];
+      for (let index = 0; index < dataListDevice["rows"].length; index++) {
+        const element = dataListDevice["rows"][index];
+        let obj = {
+          "gatewayDn": element["lts_mac"],
+          "nickname": element["name"],
+          "location": element["location"],
+          "productKey": element["productKey"] || "",
+          "parentDn": element["parentDn"],
+          "deviceId": element["deviceId"]
+        }
+        listDevice.push(obj);
+      }
       let deviceVersion = dataVersion["rows"][0]["lts_device_version"];
       // let leftNumber = deviceVersion - data.
       response.data = {
         "leftNumber": 0,
         "deviceVersion": deviceVersion,
-        "has": dataListDevice["rows"]
+        "has": listDevice
       }
         
       response.packetNo = request.packetNo;

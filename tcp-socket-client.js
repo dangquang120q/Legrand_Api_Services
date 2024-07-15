@@ -41,31 +41,31 @@ var client = tls.connect(options, function () {
       })
     );
   }, 15000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "addDevice",
-        packetNo: 1234,
-        "data": {
-          "has": [{
-            "nickName ": "a",
-            "location": "a",
-            "productKey": "a",
-            "deviceDn": "a",
-            "deviceId": "a"
-            },
-            {
-              "nickName ": "b",
-              "location": "b",
-              "productKey": "b",
-              "deviceDn": "b",
-              "deviceId": "b"
-            },
-          ],
-        }
-      })
-    );
-  }, 8000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "addDevice",
+  //       packetNo: 1234,
+  //       "data": {
+  //         "has": [{
+  //           "nickName ": "a",
+  //           "location": "a",
+  //           "productKey": "a",
+  //           "deviceDn": "a",
+  //           "deviceId": "a"
+  //           },
+  //           {
+  //             "nickName ": "b",
+  //             "location": "b",
+  //             "productKey": "b",
+  //             "deviceDn": "b",
+  //             "deviceId": "b"
+  //           },
+  //         ],
+  //       }
+  //     })
+  //   );
+  // }, 8000);
   // setTimeout(() => {
   //   client.write(
   //     JSON.stringify({

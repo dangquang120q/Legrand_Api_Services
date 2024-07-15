@@ -1,11 +1,12 @@
 const Mailjet = require('node-mailjet');
-const mailjet = Mailjet.apiConnect(
-    process.env.MAILJET_API_KEY,
-    process.env.MAILJET_SECRET_KEY
-);
+
 
 module.exports = {
     sendOTPEmail: async function (to, subject, text, html) {
+        const mailjet = Mailjet.apiConnect(
+            process.env.MAILJET_API_KEY,
+            process.env.MAILJET_SECRET_KEY
+        );
         const request = mailjet
             .post('send', { version: 'v3.1' })
             .request({

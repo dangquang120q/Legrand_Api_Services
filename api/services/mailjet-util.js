@@ -1,4 +1,5 @@
 const Mailjet = require('node-mailjet');
+const log = require('./log');
 
 
 module.exports = {
@@ -7,19 +8,20 @@ module.exports = {
             process.env.MAILJET_API_KEY,
             process.env.MAILJET_SECRET_KEY
         );
+        log("TO: " + to);
         const request = mailjet
             .post('send', { version: 'v3.1' })
             .request({
                 Messages: [
                     {
                         From: {
-                            Email: "legrand3partyotp@alfamail.com",
+                            Email: "kiennt.k54@gmail.com",
                             Name: "Legrand 3-party OTP"
                         },
                         To: [
                             {
                                 Email: to,
-                                Name: ""
+                                Name: "USER"
                             }
                         ],
                         Subject: subject,

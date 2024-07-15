@@ -63,13 +63,7 @@ module.exports = {
       response.data = {
         "leftNumber": 0,
         "deviceVersion": deviceVersion,
-        "has": [{
-          "nickName ": "",
-          "location": "",
-          "productKey": "",
-          "deviceDn": "",
-          "deviceId": ""
-        }]
+        "has": dataListDevice["rows"]
       }
         
       response.packetNo = request.packetNo;

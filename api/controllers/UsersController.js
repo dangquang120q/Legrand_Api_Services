@@ -616,8 +616,8 @@ module.exports = {
         });
         return res.send(response);
       }
-      homeStatus = homeStatus.body.home;
       let errors = homeStatus.body.errors;
+      homeStatus = homeStatus.body.home;
       let room = {
         ...homeData?.homes[0]?.rooms?.find((item) => item.id == room_id),
         ...(homeStatus?.rooms?.find((item) => item.id == room_id) || {}),

@@ -43,6 +43,8 @@ module.exports = {
   deviceList: async (request,lts_mac) => {
     try{
       const { data } = request;
+      let index = data.index || 0;
+      let number = data.number || 0;
       let sqlVersion = sqlString.format(
         "Select lts_device_version from lts_device_control where lts_mac = ?", [data.gatewayDn]
       );
@@ -50,8 +52,13 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlVersion);
       let sql = sqlString.format(
-        "Select * from lts_device_detail where lts_mac = ?", [data.gatewayDn]
+        "Select * from lts_device_detail where lts_mac = ? order by id limit ? offset ?", [data.gatewayDn,data.number,data.index * data.number]
       );
+      if (index == 0) {
+        sql = sqlString.format(
+          "Select * from lts_device_detail where lts_mac = ?", [data.gatewayDn]
+        );
+      }
       let dataListDevice = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);

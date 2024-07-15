@@ -627,11 +627,11 @@ module.exports = {
           ?.filter((item) => item.room_id == room_id)
           .map((item) => ({
             ...item,
-            reachable: errors?.find((error) =>
-              item["id"] == error.id || item["bridge"] == error.id
-                ? false
-                : true
-            ),
+            reachable: errors?.find(
+              (error) => item["id"] == error.id || item["bridge"] == error.id
+            )
+              ? false
+              : true,
           })) || [];
       roomDevices = roomDevices.map((item) => {
         const device = homeStatus?.modules?.find(

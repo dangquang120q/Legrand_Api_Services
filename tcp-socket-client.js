@@ -127,7 +127,7 @@ var client = tls.connect(options, function () {
         data: {
           "gatewayDn":"9E675FFEFF47B660", 
           "index":0, 
-          "number":50
+          "number":1
         }
       })
     );

@@ -54,7 +54,7 @@ module.exports = {
       let sql = sqlString.format(
         "Select * from lts_device_detail where lts_mac = ? order by id limit ? offset ?", [data.gatewayDn,data.number,data.index]
       );
-      if (index == 0) {
+      if (number == 0) {
         sql = sqlString.format(
           "Select * from lts_device_detail where lts_mac = ?", [data.gatewayDn]
         );

@@ -617,14 +617,22 @@ module.exports = {
         return res.send(response);
       }
       homeStatus = homeStatus.body.home;
+      let errors = homeStatus.body.errors;
       let room = {
         ...homeData?.homes[0]?.rooms?.find((item) => item.id == room_id),
         ...(homeStatus?.rooms?.find((item) => item.id == room_id) || {}),
       };
       let roomDevices =
-        homeData?.homes[0]?.modules?.filter(
-          (item) => item.room_id == room_id
-        ) || [];
+        homeData?.homes[0]?.modules
+          ?.filter((item) => item.room_id == room_id)
+          .map((item) => ({
+            ...item,
+            reachable:
+              errors?.code == 6 &&
+              (errors?.id == item["bridge"] || errors?.id == item["id"])
+                ? false
+                : true,
+          })) || [];
       roomDevices = roomDevices.map((item) => {
         const device = homeStatus?.modules?.find(
           (dItem) => dItem.id == item.id
@@ -652,7 +660,8 @@ module.exports = {
             .filter((item) => DEVICE_CODES.rollerShutter.includes(item.type))
             .map((item) => ({
               ...item,
-              controlType: item["target_position:step"] >= 100 ? 0 : 1,
+              controlType:
+                item["target_position:step"] || item["NLIV"] >= 100 ? 0 : 1,
             })),
           airConditioner: room["therm_measured_temperature"]
             ? {

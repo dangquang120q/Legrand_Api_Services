@@ -52,7 +52,7 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlVersion);
       let sql = sqlString.format(
-        "Select * from lts_device_detail where lts_mac = ? order by id limit ? offset ?", [data.gatewayDn,data.number,data.index * data.number]
+        "Select * from lts_device_detail where lts_mac = ? order by id limit ? offset ?", [data.gatewayDn,data.number,data.index]
       );
       if (index == 0) {
         sql = sqlString.format(

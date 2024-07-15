@@ -21,27 +21,55 @@ const { upgradeVersion } = require("../services/net");
 const { DEVICE_CODES } = require("../services/const");
 // const Users = require('../models/Users');
 const nodemailer = require('nodemailer');
-const mailgun = require('mailgun-js');
-const config = require('../../config/mailgun');
+const mailjet = require('node-mailjet').connect(
+  "7bbb77dcb58a50d9af50de0119b5ae63",
+  "a54b7d53f032f1971a5888656a9618db"
+);
 
 module.exports = {
   sendEmail: async (req, res) => {
     log("SendMail test => " + JSON.stringify(req.body));
-    const mg = mailgun({ apiKey: config.mailgun.apiKey, domain: config.mailgun.domain });
-    const data = {
-      from: 'postmaster@sandbox66c16a04267b478b98840690c8f1173d.mailgun.org', // Địa chỉ email gửi từ Mailgun
-      to: 'kiennt.k54@gmail.com',
-      subject: 'Tesst',
-      text: 'Nay thi nay'
-    };
+    // const mg = mailgun({ apiKey: config.mailgun.apiKey, domain: config.mailgun.domain });
+    // const data = {
+    //   from: 'postmaster@sandbox66c16a04267b478b98840690c8f1173d.mailgun.org', // Địa chỉ email gửi từ Mailgun
+    //   to: 'kiennt.k54@gmail.com',
+    //   subject: 'Tesst',
+    //   text: 'Nay thi nay'
+    // };
 
+    // try {
+    //   const response = await mg.messages().send(data);
+    //   log("send mail: " + response.message);
+    //   return response;
+    // } catch (error) {
+    //   throw new Error(`Failed to send email: ${error.message}`);
+    // }
     try {
-      const response = await mg.messages().send(data);
-      log("send mail: " + response.message);
-      return response;
-    } catch (error) {
-      throw new Error(`Failed to send email: ${error.message}`);
-    }
+    const request = mailjet.post('send', { version: 'v3.1' }).request({
+      Messages: [
+        {
+          From: {
+            Email: "kiennt.k54@gmail.com",
+            Name: "NEO"
+          },
+          To: [
+            {
+              Email: "mrneo1991@gmail.com",
+              Name: "ABC"
+            }
+          ],
+          Subject: "Verification",
+          TextPart: "NAY THI NAY",
+          HTMLPart: "<h1>nao thi nao</h1>"
+        }
+      ]
+    });
+    const result = await request;
+    return result.body;
+  } catch(error) {
+    sails.log.error('Error sending email:', error);
+    throw error;
+  }
   },
   login: async (req, res) => {
     log("Login => " + JSON.stringify(req.body));

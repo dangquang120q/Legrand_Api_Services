@@ -21,14 +21,15 @@ const { upgradeVersion } = require("../services/net");
 const { DEVICE_CODES } = require("../services/const");
 // const Users = require('../models/Users');
 const nodemailer = require('nodemailer');
-const mailjet = require('node-mailjet').connect(
-  "7bbb77dcb58a50d9af50de0119b5ae63",
-  "a54b7d53f032f1971a5888656a9618db"
-);
+const MAIL = require('node-mailjet');
 
 module.exports = {
   sendEmail: async (req, res) => {
     log("SendMail test => " + JSON.stringify(req.body));
+    const mailjet = MAIL.APIKeyConfiguration(
+      "7bbb77dcb58a50d9af50de0119b5ae63",
+      "a54b7d53f032f1971a5888656a9618db"
+    );
     // const mg = mailgun({ apiKey: config.mailgun.apiKey, domain: config.mailgun.domain });
     // const data = {
     //   from: 'postmaster@sandbox66c16a04267b478b98840690c8f1173d.mailgun.org', // Địa chỉ email gửi từ Mailgun

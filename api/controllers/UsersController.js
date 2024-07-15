@@ -26,7 +26,7 @@ const MAIL = require('node-mailjet');
 module.exports = {
   sendEmail: async (req, res) => {
     log("SendMail test => " + JSON.stringify(req.body));
-    const mailjet = MAIL.APIKeyConfiguration(
+    const mailjet = MAIL.apiConnect(
       "7bbb77dcb58a50d9af50de0119b5ae63",
       "a54b7d53f032f1971a5888656a9618db"
     );

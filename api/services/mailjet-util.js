@@ -1,5 +1,5 @@
 const Mailjet = require('node-mailjet');
-const log = require('./log');
+const log = require('./log').log;
 
 
 module.exports = {

@@ -94,21 +94,30 @@ module.exports = {
   },
   getRoomMeasure: async (params) => {
     try {
-      const { home_id, room_id, access_token } = params;
+      const {
+        home_id,
+        room_id,
+        access_token,
+        scale,
+        date_begin,
+        date_end,
+        limit,
+        type,
+      } = params;
       const searchParams = {
-        scale: "30min",
-        type: "temperature",
-        date_begin: new Date(Date.now() - 86400000).getTime() / 1000,
-        date_end: new Date().getTime() / 1000,
-        limit: 1,
+        home_id,
+        room_id,
+        scale,
+        type,
+        date_begin: date_begin,
+        date_end: date_end,
+        limit,
       };
 
       const url =
         `${API_URL}/api/getroommeasure?` +
         new URLSearchParams({
           ...searchParams,
-          home_id,
-          room_id,
         });
       log("Netatmo getroommeasure: " + url);
       const res = await fetch(url, {
@@ -120,10 +129,15 @@ module.exports = {
       });
       const data = await res.json();
       log("Netatmo getroommeasure data: " + JSON.stringify(data));
-      return data.body[0].value[0][0];
+      return data;
     } catch (error) {
       log("Netatmo getroommeasure error!: " + error);
-      return 24;
+      return {
+        error: {
+          code: 500,
+          message: "Server error",
+        },
+      };
     }
   },
   getHomeStatus: async (params) => {

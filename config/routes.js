@@ -48,6 +48,8 @@ module.exports.routes = {
   "POST /device/controlAirConditioner":
     "DeviceController.controlAirConditioner",
 
+  "POST /report/temperature": "ReportController.temperatureReport",
+
   /***************************************************************************
    *                                                                          *
    * More custom routes here...                                               *

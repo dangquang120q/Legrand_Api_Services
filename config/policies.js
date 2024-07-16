@@ -41,4 +41,7 @@ module.exports.policies = {
     openCurtain: "checkJwtoken",
     controlAirConditioner: "checkJwtoken",
   },
+  ReportController: {
+    temperatureReport: "checkJwtoken",
+  },
 };

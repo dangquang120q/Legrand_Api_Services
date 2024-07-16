@@ -1,7 +1,6 @@
-var axios = require("axios");
 const { log } = require("./log");
-const { DATA_HOME_DEMO, DATA_LIST_HOME_DEMO } = require("./data-demo");
 const { SET_STATE_ACTION } = require("./const");
+const { formatObject } = require("./utils");
 const API_URL = process.env.NETAMO_API;
 
 module.exports = {
@@ -104,15 +103,15 @@ module.exports = {
         limit,
         type,
       } = params;
-      const searchParams = {
+      const searchParams = formatObject({
         home_id,
         room_id,
         scale,
         type,
-        date_begin: date_begin,
-        date_end: date_end,
+        date_begin,
+        date_end,
         limit,
-      };
+      });
 
       const url =
         `${API_URL}/api/getroommeasure?` +

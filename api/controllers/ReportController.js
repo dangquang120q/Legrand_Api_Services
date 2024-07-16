@@ -25,8 +25,8 @@ module.exports = {
         limit,
         access_token,
       };
+      log("temperatureReport: " + JSON.stringify(request));
       const data = await getRoomMeasure(request);
-      log("temperatureReport data: " + JSON.stringify(data));
 
       if (data.error?.code) {
         response = new HttpResponse(null, {
@@ -36,7 +36,10 @@ module.exports = {
         });
         return res.send(response);
       }
-      response = new HttpResponse(data, { statusCode: 200, error: false });
+      response = new HttpResponse(data["body"] || [], {
+        statusCode: 200,
+        error: false,
+      });
       return res.ok(response);
     } catch (error) {
       log("Get temperatute report error => " + error.toString());

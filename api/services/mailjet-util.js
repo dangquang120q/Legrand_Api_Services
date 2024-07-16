@@ -33,6 +33,7 @@ module.exports = {
 
         try {
             const result = await request;
+            log("data: " + result.body);
             return result.body;
         } catch (error) {
             sails.log.error('Error sending email:', error);

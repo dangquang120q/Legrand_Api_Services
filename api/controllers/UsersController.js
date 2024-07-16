@@ -25,7 +25,7 @@ module.exports = {
   sendEmail: async (req, res) => {
     log("SendMail test => " + JSON.stringify(req.body));
     try {
-      const mailResponse = sendMailjet.sendOTPEmail("mrneo1991@gmail.com", "OTP", "ABC", "<h1>OTP IS: 1234</h1>");
+      const mailResponse = await sendMailjet.sendOTPEmail("mrneo1991@gmail.com", "OTP", "ABC", "<h1>OTP IS: 1234</h1>");
       log("mail result"  + mailResponse);
     } catch(error) {
       sails.log.error('Error sending email:', error);

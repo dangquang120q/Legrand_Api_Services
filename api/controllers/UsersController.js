@@ -664,7 +664,7 @@ module.exports = {
             .map((item) => ({
               ...item,
               controlType:
-                item["target_position:step"] || item["type"] == "NLIV" >= 100
+                item["target_position:step"] >= 100 || item["type"] == "NLIV"
                   ? 0
                   : 1,
             })),

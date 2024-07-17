@@ -77,14 +77,15 @@
     </button>
     <script>
       async function upgradeSocket() {
+        let 
         try {
           const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
-            body:{
+            body:JSON.stringify({
               "data": {
               },
               "cmdType": "upgrade"
-            }
+            })
           });
           const data = await res.json();
           console.log(data);
@@ -98,14 +99,14 @@
         try {
           const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
-            body:{
+            body:JSON.stringify({
               "data": {
                 "gatewayDn": "9E675FFEFF47B660",
                 "deviceId": "-1",
                 "switch" : "0",
               },
               "cmdType": "light"
-            }
+            })
           });
           const data = await res.json();
           console.log(data);
@@ -119,14 +120,14 @@
         try {
           const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
-            body:{
+            body:JSON.stringify({
               "data": {
                 "gatewayDn": "9E675FFEFF47B660",
                 "deviceId": "-1",
                 "location" : "Bedroom",
               },
               "cmdType": "deviceLocation"
-            }
+            })
           });
           const data = await res.json();
           console.log(data);
@@ -140,14 +141,14 @@
         try {
           const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
-            body:{
+            body:JSON.stringify({
               "data": {
                 "gatewayDn": "9E675FFEFF47B660",
                 "deviceId": "-1",
                 "name" : "Downlight",
               },
               "cmdType": "deviceName"
-            }
+            })
           });
           const data = await res.json();
           console.log(data);
@@ -161,13 +162,13 @@
         try {
           const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
-            body:{
+            body:JSON.stringify({
               "data": {
                 "gatewayDn": "9E675FFEFF47B660",
                 "passwrod": "newPassword"
               },
               "cmdType": "changePassword"
-            }
+            })
           });
           const data = await res.json();
           console.log(data);

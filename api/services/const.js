@@ -85,6 +85,7 @@ module.exports = {
     thermostat: ["BNS"],
     lock: ["BNLO"],
     fan: ["LFCA"],
+    airConditioner: ["BAC"],
   },
   SET_STATE_ACTION: {
     turnOnLight: "Turn on the light",

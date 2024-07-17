@@ -645,6 +645,9 @@ module.exports = {
       const fan = roomDevices.find((item) =>
         DEVICE_CODES.fan.includes(item.type)
       );
+      const airConditioner = roomDevices.find((item) =>
+        DEVICE_CODES.airConditioner.includes(item.type)
+      );
       const response_data = {
         id: room_id,
         name: room["name"],
@@ -663,8 +666,10 @@ module.exports = {
               controlType:
                 item["target_position:step"] || item["NLIV"] >= 100 ? 0 : 1,
             })),
-          airConditioner: room["therm_measured_temperature"]
+          airConditioner: airConditioner
             ? {
+                id: airConditioner.id,
+                reachable: airConditioner.reachable,
                 temperature: room["cooling_setpoint_temperature"],
                 start_time: room["cooling_setpoint_start_time"],
                 end_time: room["cooling_setpoint_end_time"],

@@ -664,16 +664,18 @@ module.exports = {
             .map((item) => ({
               ...item,
               controlType:
-                item["target_position:step"] || item["NLIV"] >= 100 ? 0 : 1,
+                item["target_position:step"] || item["type"] == "NLIV" >= 100
+                  ? 0
+                  : 1,
             })),
           airConditioner: airConditioner
             ? {
                 id: airConditioner.id,
                 reachable: airConditioner.reachable,
-                temperature: room["cooling_setpoint_temperature"],
-                start_time: room["cooling_setpoint_start_time"],
-                end_time: room["cooling_setpoint_end_time"],
-                mode: room["cooling_setpoint_mode"],
+                temperature: room["cooling_setpoint_temperature"] || null,
+                start_time: room["cooling_setpoint_start_time"] || null,
+                end_time: room["cooling_setpoint_end_time"] || null,
+                mode: room["cooling_setpoint_mode"] || null,
                 fan: fan ? fan : null,
               }
             : null,

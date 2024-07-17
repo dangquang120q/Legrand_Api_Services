@@ -61,7 +61,19 @@
   <body>
     <!-- HTML !-->
     <button class="button-3" role="button" onclick="upgradeSocket()">
-      Upgrade
+      Upgrade Version
+    </button>
+    <button class="button-3" role="button" onclick="controlLamp()">
+      Control Lamp
+    </button>
+    <button class="button-3" role="button" onclick="modDevLocation()">
+      Modify Device Location
+    </button>
+    <button class="button-3" role="button" onclick="modDevName()">
+      Modify Device Name
+    </button>
+    <button class="button-3" role="button" onclick="modLoginPasword()">
+      Modify Login Password
     </button>
     <script>
       async function upgradeSocket() {
@@ -75,6 +87,58 @@
         } catch (error) {
           console.log(error);
           alert("Upgrade Failed!");
+        }
+      }
+      async function controlLamp() {
+        try {
+          const res = await fetch("/user/controlLamp", {
+            method: "POST",
+          });
+          const data = await res.json();
+          console.log(data);
+          alert("controlLamp Success!");
+        } catch (error) {
+          console.log(error);
+          alert("controlLamp Failed!");
+        }
+      }
+      async function modDevLocation() {
+        try {
+          const res = await fetch("/user/modDevLocation", {
+            method: "POST",
+          });
+          const data = await res.json();
+          console.log(data);
+          alert("modDevLocation Success!");
+        } catch (error) {
+          console.log(error);
+          alert("modDevLocation Failed!");
+        }
+      }
+      async function modDevName() {
+        try {
+          const res = await fetch("/user/modDevName", {
+            method: "POST",
+          });
+          const data = await res.json();
+          console.log(data);
+          alert("modDevName Success!");
+        } catch (error) {
+          console.log(error);
+          alert("modDevName Failed!");
+        }
+      }
+      async function modLoginPasword() {
+        try {
+          const res = await fetch("/user/modLoginPasword", {
+            method: "POST",
+          });
+          const data = await res.json();
+          console.log(data);
+          alert("modLoginPasword Success!");
+        } catch (error) {
+          console.log(error);
+          alert("modLoginPasword Failed!");
         }
       }
     </script>

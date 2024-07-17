@@ -580,9 +580,7 @@ module.exports = {
   },
   sendRequestSocket: async (req, res) => {
     try {
-      let cmdTypeObj = SOCKET_REQUEST.find(
-        (item) => item == req.body.cmdType
-      );
+      let cmdTypeObj = SOCKET_REQUEST[req.body.cmdType];
       log(cmdTypeObj);
       if (req.body.cmdType == SOCKET_REQUEST.upgrade) {
         await upgradeVersion();

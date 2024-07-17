@@ -18,7 +18,7 @@ const {
   getScenario,
 } = require("../services/netamo-token");
 const { upgradeVersion } = require("../services/net");
-const { DEVICE_CODES } = require("../services/const");
+const { DEVICE_CODES, SOCKET_REQUEST } = require("../services/const");
 const sendMailjet = require("../services/mailjet-util");
 
 module.exports = {
@@ -578,14 +578,20 @@ module.exports = {
       return res.serverError(response);
     }
   },
-  upgradeSocket: async (req, res) => {
+  sendRequestSocket: async (req, res) => {
     try {
-      await upgradeVersion();
-      let response = new HttpResponse(
-        { msg: "Upgrade Successfull" },
-        { statusCode: 200, error: false }
+      let cmdTypeObj = SOCKET_REQUEST.find(
+        (item) => item == req.body.cmdType
       );
-      return res.ok(response);
+      log(cmdTypeObj);
+      if (req.body.cmdType == SOCKET_REQUEST.upgrade) {
+        await upgradeVersion();
+        let response = new HttpResponse(
+          { msg: "Upgrade Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      }
     } catch (error) {
       log("Upgrade Socket error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });

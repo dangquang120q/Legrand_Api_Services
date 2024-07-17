@@ -78,67 +78,103 @@
     <script>
       async function upgradeSocket() {
         try {
-          const res = await fetch("/user/upgradeSocket", {
+          const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
+            body:{
+              "data": {
+              },
+              "cmdType": "upgrade"
+            }
           });
           const data = await res.json();
           console.log(data);
-          alert("Upgrade Success!");
+          alert("Upgrade Firmware Success!");
         } catch (error) {
           console.log(error);
-          alert("Upgrade Failed!");
+          alert("Upgrade Firmware Failed!");
         }
       }
       async function controlLamp() {
         try {
-          const res = await fetch("/user/controlLamp", {
+          const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
+            body:{
+              "data": {
+                "gatewayDn": "9E675FFEFF47B660",
+                "deviceId": "-1",
+                "switch" : "0",
+              },
+              "cmdType": "light"
+            }
           });
           const data = await res.json();
           console.log(data);
-          alert("controlLamp Success!");
+          alert("Ordinary lamp control Success!");
         } catch (error) {
           console.log(error);
-          alert("controlLamp Failed!");
+          alert("Ordinary lamp control Failed!");
         }
       }
       async function modDevLocation() {
         try {
-          const res = await fetch("/user/modDevLocation", {
+          const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
+            body:{
+              "data": {
+                "gatewayDn": "9E675FFEFF47B660",
+                "deviceId": "-1",
+                "location" : "Bedroom",
+              },
+              "cmdType": "deviceLocation"
+            }
           });
           const data = await res.json();
           console.log(data);
-          alert("modDevLocation Success!");
+          alert("Modify the Device Location Success!");
         } catch (error) {
           console.log(error);
-          alert("modDevLocation Failed!");
+          alert("Modify the Device Location Failed!");
         }
       }
       async function modDevName() {
         try {
-          const res = await fetch("/user/modDevName", {
+          const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
+            body:{
+              "data": {
+                "gatewayDn": "9E675FFEFF47B660",
+                "deviceId": "-1",
+                "name" : "Downlight",
+              },
+              "cmdType": "deviceName"
+            }
           });
           const data = await res.json();
           console.log(data);
-          alert("modDevName Success!");
+          alert("Modify the device name Success!");
         } catch (error) {
           console.log(error);
-          alert("modDevName Failed!");
+          alert("Modify the device name Failed!");
         }
       }
       async function modLoginPasword() {
         try {
-          const res = await fetch("/user/modLoginPasword", {
+          const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
+            body:{
+              "data": {
+                "gatewayDn": "9E675FFEFF47B660",
+                "passwrod": "newPassword"
+              },
+              "cmdType": "changePassword"
+            }
           });
           const data = await res.json();
           console.log(data);
-          alert("modLoginPasword Success!");
+          alert("Change the login password Success!");
         } catch (error) {
           console.log(error);
-          alert("modLoginPasword Failed!");
+          alert("Change the login password Failed!");
         }
       }
     </script>

@@ -38,7 +38,7 @@ module.exports.routes = {
 
   "GET /user/getNetamoApi": "UsersController.getNetamoToken",
   "GET /user/getNetamoInfo": "UsersController.getNetamoInfo",
-  "POST /user/upgradeSocket": "UsersController.upgradeSocket",
+  "POST /user/sendRequestSocket": "UsersController.sendRequestSocket",
   "POST /user/getRoomDetail": "UsersController.getRoomDetail",
   "POST /user/removeMappingHome": "UsersController.removeMappingHome",
 

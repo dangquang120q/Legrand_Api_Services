@@ -580,6 +580,8 @@ module.exports = {
   },
   sendRequestSocket: async (req, res) => {
     try {
+      log(req.body.cmdType);
+      log(JSON.stringify(req.body));
       let cmdTypeObj = SOCKET_REQUEST[req.body.cmdType];
       log(cmdTypeObj);
       if (req.body.cmdType == SOCKET_REQUEST.upgrade) {

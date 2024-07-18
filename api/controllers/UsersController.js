@@ -580,7 +580,7 @@ module.exports = {
   },
   sendRequestSocket: async (req, res) => {
     try {
-      log(req.body.cmdType);
+      log("sendRequestSocket => " + JSON.stringify(req.body));
       log(JSON.stringify(req.body));
       let cmdTypeObj = SOCKET_REQUEST[req.body.cmdType];
       log(cmdTypeObj);

@@ -266,7 +266,7 @@ const controlLight = async (request) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
-        if (account.dn == request["gatewayDn"]) {
+        if (account.dn == request.data["gatewayDn"]) {
           let req = await doLampControl(request);
           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
@@ -286,7 +286,7 @@ const modLocation = async (request) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
-        if (account.dn == request["gatewayDn"]) {
+        if (account.dn == request.data["gatewayDn"]) {
           let req = await doModLocation(request);
           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
@@ -306,7 +306,7 @@ const modName = async (request) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
-        if (account.dn == request["gatewayDn"]) {
+        if (account.dn == request.data["gatewayDn"]) {
           let req = await doModName(request);
           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
@@ -326,7 +326,7 @@ const changePassword = async (request) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
-        if (account.dn == request["gatewayDn"]) {
+        if (account.dn == request.data["gatewayDn"]) {
           let req = await doChangePassword(request);
           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))

@@ -743,11 +743,31 @@ module.exports = {
       const data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlUpdate);
-      response = new HttpResponse(formatObject(data["rows"][0]), {
-        statusCode: 200,
-        error: false,
-      });
-      return res.ok(response);
+      if (data["rows"].length > 0) {
+        const userInfo = data["rows"][0];
+        response = new HttpResponse(
+          {
+            id: userInfo["id"],
+            user_id: userInfo["user_id"],
+            email: userInfo["email"],
+            full_name: userInfo["full_name"],
+            created_at: userInfo["created_at"],
+            updated_at: userInfo["updated_at"],
+          },
+          {
+            statusCode: 200,
+            error: false,
+          }
+        );
+        return res.ok(response);
+      } else {
+        response = new HttpResponse(null, {
+          statusCode: 404,
+          error: true,
+          errorMsg: "Can not find user!",
+        });
+        return res.send(response);
+      }
     } catch (error) {
       log("Logout error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });

@@ -6,7 +6,7 @@
  */
 const { log } = require("../services/log");
 const { HttpResponse } = require("../services/http-response");
-const { getRoomMeasure } = require("../services/netamo-token");
+const { getRoomMeasure, getMeasure } = require("../services/netamo-token");
 
 module.exports = {
   temperatureReport: async (req, res) => {
@@ -43,6 +43,42 @@ module.exports = {
       return res.ok(response);
     } catch (error) {
       log("Get temperatute report error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  electricityReport: async (req, res) => {
+    let response;
+    let access_token = req.headers["access-token"];
+    let { device_id, bridge, scale, date_begin, date_end, type } = req.body;
+    try {
+      const request = {
+        module_id: device_id,
+        device_id: bridge,
+        scale: scale || "30min",
+        type: type || "sum_energy_price",
+        date_begin,
+        date_end,
+        access_token,
+      };
+      log("electricityReport: " + JSON.stringify(request));
+      const data = await getMeasure(request);
+
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
+      response = new HttpResponse(data["body"] || [], {
+        statusCode: 200,
+        error: false,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("Get electricity report error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

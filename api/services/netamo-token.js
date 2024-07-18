@@ -134,7 +134,7 @@ module.exports = {
       return {
         error: {
           code: 500,
-          message: "Server error",
+          message: "Server error!",
         },
       };
     }
@@ -265,6 +265,52 @@ module.exports = {
       log("Netatmo getScenario error: " + error);
       return {
         error: error,
+      };
+    }
+  },
+  getMeasure: async (params) => {
+    try {
+      const {
+        device_id,
+        module_id,
+        access_token,
+        scale,
+        date_begin,
+        date_end,
+        type,
+      } = params;
+      const searchParams = formatObject({
+        module_id,
+        device_id,
+        scale,
+        type,
+        date_begin,
+        date_end,
+      });
+
+      const url =
+        `${API_URL}/api/getmeasure?` +
+        new URLSearchParams({
+          ...searchParams,
+        });
+      log("Netatmo getmeasure: " + url);
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          Authorization: "Bearer " + access_token,
+        },
+      });
+      const data = await res.json();
+      log("Netatmo getmeasure data: " + JSON.stringify(data));
+      return data;
+    } catch (error) {
+      log("Netatmo getmeasure error!: " + error);
+      return {
+        error: {
+          code: 500,
+          message: "Server error",
+        },
       };
     }
   },

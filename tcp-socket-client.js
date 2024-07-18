@@ -111,54 +111,54 @@ var client = tls.connect(options, function () {
   //     })
   //   );
   // }, 21000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "deviceListVersion",
-        packetNo: 1234
-      })
-    );
-  }, 9000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "deviceList",
-        packetNo: 1234,
-        data: {
-          "gatewayDn":"1234", 
-          "index":0, 
-          "number":1
-        }
-      })
-    );
-  }, 10000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "cityList",
-        packetNo: 1234
-      })
-    );
-  }, 11000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "weather",
-        packetNo: 1234,
-        data:{
-          "cityCode":"1581130"
-        }
-      })
-    );
-  }, 13000);
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "ntp",
-        packetNo: 1234
-      })
-    );
-  }, 14000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "deviceListVersion",
+  //       packetNo: 1234
+  //     })
+  //   );
+  // }, 9000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "deviceList",
+  //       packetNo: 1234,
+  //       data: {
+  //         "gatewayDn":"9E675FFEFF47B660", 
+  //         "index":0, 
+  //         "number":1
+  //       }
+  //     })
+  //   );
+  // }, 10000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "cityList",
+  //       packetNo: 1234
+  //     })
+  //   );
+  // }, 11000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "weather",
+  //       packetNo: 1234,
+  //       data:{
+  //         "cityCode":"1581130"
+  //       }
+  //     })
+  //   );
+  // }, 13000);
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "ntp",
+  //       packetNo: 1234
+  //     })
+  //   );
+  // }, 14000);
   // setTimeout(() => {
   //   client.write(
   //     JSON.stringify({

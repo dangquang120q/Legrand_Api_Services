@@ -17,7 +17,7 @@ const {
   getHomeStatus,
   getScenario,
 } = require("../services/netamo-token");
-const { upgradeVersion } = require("../services/net");
+const { upgradeVersion, controlLight, modLocation, modName, changePassword} = require("../services/net");
 const { DEVICE_CODES, SOCKET_REQUEST } = require("../services/const");
 const sendMailjet = require("../services/mailjet-util");
 
@@ -581,13 +581,42 @@ module.exports = {
   sendRequestSocket: async (req, res) => {
     try {
       log("sendRequestSocket => " + JSON.stringify(req.body));
-      log(JSON.stringify(req.body));
-      let cmdTypeObj = SOCKET_REQUEST[req.body.cmdType];
-      log(cmdTypeObj);
       if (req.body.cmdType == SOCKET_REQUEST.upgrade) {
-        await upgradeVersion();
+        await upgradeVersion(req.body);
         let response = new HttpResponse(
           { msg: "Upgrade Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      }
+      else if (req.body.cmdType == SOCKET_REQUEST.light) {
+        await controlLight(req.body);
+        let response = new HttpResponse(
+          { msg: "Ordinary Lamp Control Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      }
+      else if (req.body.cmdType == SOCKET_REQUEST.deviceLocation) {
+        await modLocation(req.body);
+        let response = new HttpResponse(
+          { msg: "Modify the Device Location Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      }
+      else if (req.body.cmdType == SOCKET_REQUEST.deviceName) {
+        await modName(req.body);
+        let response = new HttpResponse(
+          { msg: "Modify the Device Name Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      }
+      else if (req.body.cmdType == SOCKET_REQUEST.changePassword) {
+        await changePassword(req.body);
+        let response = new HttpResponse(
+          { msg: "Change the login password Successfull" },
           { statusCode: 200, error: false }
         );
         return res.ok(response);

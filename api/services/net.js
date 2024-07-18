@@ -6,6 +6,8 @@ const { heartbeat } = require("./socket/heartbeat");
 const { checkPing } = require("./socket/checkPing");
 const { checkVersion } = require("./socket/checkVersion");
 const { addDevice, delDevice,switchDevice, battery, alarm } = require("./socket/data-report");
+const { doChangePassword, doLampControl,doModLocation, doModName } = require("./socket/data-modify");
+
 const {
   deviceList,
   deviceListVersion,
@@ -240,19 +242,36 @@ server.on("listening", function () {
   console.log("Socket is listening!");
 });
 
-const upgradeVersion = async () => {
+const upgradeVersion = async (request) => {
   try {
     Object.values(list_account_test).forEach(async (account) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
-        let { req, result } = await checkVersion(account.dn);
+        let req = await checkVersion(account.dn);
         let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
           .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
           .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
         let end = dataUtils.fromCharCodeData(16);
-        if (result == 0) {
-          console.log(account.dn);
+        socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+const controlLight = async (request) => {
+  try {
+    Object.values(list_account_test).forEach(async (account) => {
+      // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+      let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+      if (socket) {
+        if (account.dn == request["gatewayDn"]) {
+          let req = await doLampControl(request);
+          let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+          let end = dataUtils.fromCharCodeData(16);
           socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
         }
       }
@@ -260,10 +279,67 @@ const upgradeVersion = async () => {
   } catch (err) {
     console.log(err);
   }
-
-  
 }
-
+const modLocation = async (request) => {
+  try {
+    Object.values(list_account_test).forEach(async (account) => {
+      // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+      let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+      if (socket) {
+        if (account.dn == request["gatewayDn"]) {
+          let req = await doModLocation(request);
+          let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+          let end = dataUtils.fromCharCodeData(16);
+          socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+        }
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+const modName = async (request) => {
+  try {
+    Object.values(list_account_test).forEach(async (account) => {
+      // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+      let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+      if (socket) {
+        if (account.dn == request["gatewayDn"]) {
+          let req = await doModName(request);
+          let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+          let end = dataUtils.fromCharCodeData(16);
+          socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+        }
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+const changePassword = async (request) => {
+  try {
+    Object.values(list_account_test).forEach(async (account) => {
+      // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+      let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+      if (socket) {
+        if (account.dn == request["gatewayDn"]) {
+          let req = await doChangePassword(request);
+          let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+          let end = dataUtils.fromCharCodeData(16);
+          socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+        }
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
 //static port allocation
 server.listen(9601);
 
@@ -289,4 +365,4 @@ server.listen(9601);
 // setTimeout(function () {
 //   server.close();
 // }, 5000000);
-module.exports = { upgradeVersion };
+module.exports = { upgradeVersion,changePassword,modLocation,modName,controlLight };

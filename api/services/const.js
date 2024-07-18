@@ -35,6 +35,7 @@ module.exports = {
     upgrade: "upgrade",
     firmwareInfo: "firmwareInfo",
     upgradeAck: "upgradeAck",
+    changePassword: "changePassword"
   },
 
   DEVICE_CODES: {

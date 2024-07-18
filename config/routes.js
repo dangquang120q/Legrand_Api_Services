@@ -51,6 +51,7 @@ module.exports.routes = {
 
   "POST /report/temperature": "ReportController.temperatureReport",
   "POST /report/electricity": "ReportController.electricityReport",
+  "POST /report/humidity": "ReportController.humidityReport",
 
   /***************************************************************************
    *                                                                          *

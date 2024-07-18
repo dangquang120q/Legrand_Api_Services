@@ -45,5 +45,6 @@ module.exports.policies = {
   ReportController: {
     temperatureReport: "checkJwtoken",
     electricityReport: "checkJwtoken",
+    humidityReport: "checkJwtoken",
   },
 };

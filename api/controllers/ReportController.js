@@ -83,4 +83,42 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  humidityReport: async (req, res) => {
+    let response;
+    let access_token = req.headers["access-token"];
+    let { home_id, room_id, scale, date_begin, date_end, limit, type } =
+      req.body;
+    try {
+      const request = {
+        home_id,
+        room_id,
+        scale: scale || "30min",
+        type: type || "humidity",
+        date_begin,
+        date_end,
+        limit,
+        access_token,
+      };
+      log("humidityReport: " + JSON.stringify(request));
+      const data = await getRoomMeasure(request);
+
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
+      response = new HttpResponse(data["body"] || [], {
+        statusCode: 200,
+        error: false,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("Get humidity report error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
 };

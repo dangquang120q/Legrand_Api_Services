@@ -266,6 +266,8 @@ const controlLight = async (request) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
+        console.log(account.dn);
+        console.log(request.data["gatewayDn"]);
         if (account.dn == request.data["gatewayDn"]) {
           let req = await doLampControl(request);
           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))

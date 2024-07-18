@@ -19,6 +19,7 @@ const {
 } = require("../services/netamo-token");
 const { upgradeVersion } = require("../services/net");
 const { DEVICE_CODES } = require("../services/const");
+const { formatObject } = require("../services/utils");
 // const Users = require('../models/Users');
 
 module.exports = {
@@ -742,7 +743,7 @@ module.exports = {
       const data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlUpdate);
-      response = new HttpResponse(data["rows"][0], {
+      response = new HttpResponse(formatObject(data["rows"][0]), {
         statusCode: 200,
         error: false,
       });

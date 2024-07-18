@@ -34,6 +34,7 @@ module.exports.policies = {
     removeMappedHome: "checkJwtoken",
     changePassword: "checkJwtoken",
     shareAccount: "checkJwtoken",
+    getUserInfo: "checkJwtoken",
   },
   DeviceController: {
     turnOnLight: "checkJwtoken",

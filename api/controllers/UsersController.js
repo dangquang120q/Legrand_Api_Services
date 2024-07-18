@@ -728,4 +728,29 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  getUserInfo: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      log("getUserInfo => " + JSON.stringify(userId));
+      let sqlUpdate = sqlString.format(
+        "SELECT * FROM user_account WHERE user_id = ?",
+        [userId]
+      );
+      const data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlUpdate);
+      response = new HttpResponse(data["rows"][0], {
+        statusCode: 200,
+        error: false,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("Logout error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
 };

@@ -314,4 +314,52 @@ module.exports = {
       };
     }
   },
+  getHomeMeasure: async (params) => {
+    try {
+      const {
+        home_id,
+        modules,
+        rooms,
+        type,
+        real_time,
+        scale,
+        date_begin,
+        date_end,
+        access_token,
+      } = params;
+      const searchParams = formatObject({
+        home_id,
+        modules: modules?.map((item) => ({ ...item, type: type })) || [],
+        rooms: rooms || [],
+        real_time: real_time || false,
+        scale: scale || "5min",
+        date_begin,
+        date_end,
+      });
+      const url =
+        `${API_URL}/api/gethomemeasure?` +
+        new URLSearchParams({
+          ...searchParams,
+        });
+      log("Netatmo gethomemeasure: " + url);
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          Authorization: "Bearer " + access_token,
+        },
+      });
+      const data = await res.json();
+      log("Netatmo gethomemeasure data: " + JSON.stringify(data));
+      return data;
+    } catch (error) {
+      log("Netatmo gethomemeasure error!: " + error);
+      return {
+        error: {
+          code: 500,
+          message: "Server error!",
+        },
+      };
+    }
+  },
 };

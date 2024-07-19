@@ -52,29 +52,11 @@ module.exports = {
           await sails
             .getDatastore(process.env.MYSQL_DATASTORE)
             .sendNativeQuery(sql);
-          log("Mail response: " + JSON.stringify(mailResponse));
-          if (
-            mailResponse?.Messages?.length > 0 &&
-            mailResponse?.Messages[0]?.Status == "success"
-          ) {
-            response = new HttpResponse(
-              {
-                mailResponse,
-                otp: otp,
-                email: email,
-              },
-              {
-                statusCode: 200,
-                error: false,
-              }
-            );
-          } else {
-            response = new HttpResponse(null, {
-              statusCode: 400,
-              error: true,
-              errorMsg: "Email sent failed!",
-            });
-          }
+
+          response = new HttpResponse(mailResponse, {
+            statusCode: 200,
+            error: false,
+          });
         } else {
           response = new HttpResponse(null, {
             statusCode: 400,

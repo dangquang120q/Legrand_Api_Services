@@ -44,7 +44,7 @@ module.exports = {
           const mailResponse = await sendMailjet.sendOTPEmail(email, text, otp);
           const expired_at = new Date(
             new Date().getTime() + process.env.OTP_EXPIRED_TIME * 1000
-          );
+          ).getTime();
           let sql = sqlString.format(
             "UPDATE user_account SET pass_otp = ?, otp_expired_at = ? WHERE user_id = ?",
             [otp, expired_at, userId]

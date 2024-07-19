@@ -53,6 +53,7 @@ module.exports = {
 
   doModName: async function (request) {
     try {
+      const { data } = request;
       const response = {
         result: 0,
       };

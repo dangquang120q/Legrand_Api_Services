@@ -53,10 +53,16 @@ module.exports = {
             .getDatastore(process.env.MYSQL_DATASTORE)
             .sendNativeQuery(sql);
           if (mailResponse.Message.Status == "success") {
-            response = new HttpResponse(mailResponse, {
-              statusCode: 200,
-              error: false,
-            });
+            response = new HttpResponse(
+              {
+                otp: otp,
+                email: email,
+              },
+              {
+                statusCode: 200,
+                error: false,
+              }
+            );
           } else {
             response = new HttpResponse(null, {
               statusCode: 400,

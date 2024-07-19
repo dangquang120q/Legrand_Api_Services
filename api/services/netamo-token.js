@@ -328,9 +328,11 @@ module.exports = {
         access_token,
       } = params;
       const searchParams = formatObject({
-        home_id,
-        modules: modules?.map((item) => ({ ...item, type: type })) || [],
-        rooms: rooms || [],
+        home: {
+          id: home_id,
+          modules: modules?.map((item) => ({ ...item, type: type })) || [],
+          rooms: rooms || [],
+        },
         real_time: real_time || false,
         scale: scale || "5min",
         date_begin,

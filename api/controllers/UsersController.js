@@ -39,7 +39,7 @@ module.exports = {
       try {
         const mailOptions = {
           from: '"YourAppName" <no-reply@yourapp.com>',
-          to: recipientEmail,
+          to: 'mrneo1991@gmail.com',
           subject: 'Your OTP Code',
           text: `Your OTP code is: 1234`,
           html: `<p>Your OTP code is: <b>1234</b></p>`

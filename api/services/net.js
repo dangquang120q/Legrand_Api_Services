@@ -15,7 +15,7 @@ const {
   ntp,
   weather,
 } = require("./socket/data-query");
-const { firmWareInfo, LTSversion } = require("./socket/update-lts");
+const { firmWareInfo, LTSversion,updateLight,modifyLocation,modifyName,changePasswordLTS } = require("./socket/update-lts");
 const { SOCKET_REQUEST } = require("./const");
 const dataUtils = require('./socket/data-utils');
 
@@ -80,6 +80,7 @@ server.on("secureConnection", function (socket) {
     var { header, body, end } = dataUtils.extractData(request);
     try{
       var data = JSON.parse(body);
+      let Ack = 0;
       const { cmdType, packetNo } = data;
       let response = {
         cmdType: "",
@@ -147,6 +148,22 @@ server.on("secureConnection", function (socket) {
           case SOCKET_REQUEST.firmwareInfo:
             response = await firmWareInfo(data,list_account[socket.remoteAddress]);
             break;
+          case SOCKET_REQUEST.lightAck:
+            await updateLight(data,list_account[socket.remoteAddress]);
+            Ack = 1;
+            break;
+          case SOCKET_REQUEST.deviceLocationAck:
+            await modLocation(data,list_account[socket.remoteAddress]);
+            Ack = 1;
+            break;
+          case SOCKET_REQUEST.deviceNameAck:
+            await modName(data,list_account[socket.remoteAddress]);
+            Ack = 1;
+            break;
+          case SOCKET_REQUEST.changePasswordAck:
+            await changePasswordLTS(data,list_account[socket.remoteAddress]);
+            Ack = 1;
+            break;
           default:
             break;
         }
@@ -166,7 +183,7 @@ server.on("secureConnection", function (socket) {
       }
       console.log("header " + header.toString(16));
       console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));
-      if (cmdType != SOCKET_REQUEST.upgradeAck) {
+      if (cmdType != SOCKET_REQUEST.upgradeAck && Ack != 1) {
         var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end), 'latin1');
         if (is_kernel_buffer_full) {
           console.log(

@@ -63,7 +63,7 @@ module.exports = {
       return response;
     }
   },
-  upgrade: async function (request,lts_mac) {
+  upgrade: async function (request) {
     try {
       const request = {
         result: 0,
@@ -78,6 +78,66 @@ module.exports = {
       };
       response.packetNo = request.packetNo;
       return response;
+    }
+  },
+  updateLight: async function (request) {
+    try {
+      const request = {
+        result: 0,
+      };
+      request.packetNo = request.packetNo;
+    } 
+    catch(error) {
+      console.log('error' + error);
+      const response = {
+        result: -1,
+      };
+      response.packetNo = request.packetNo;
+    }
+  },
+  modifyLocation: async function (request) {
+    try {
+      const request = {
+        result: 0,
+      };
+      request.packetNo = request.packetNo;
+    } 
+    catch(error) {
+      console.log('error' + error);
+      const response = {
+        result: -1,
+      };
+      response.packetNo = request.packetNo;
+    }
+  },
+  modifyName: async function (request) {
+    try {
+      const request = {
+        result: 0,
+      };
+      request.packetNo = request.packetNo;
+    } 
+    catch(error) {
+      console.log('error' + error);
+      const response = {
+        result: -1,
+      };
+      response.packetNo = request.packetNo;
+    }
+  },
+  changePasswordLTS: async function (request) {
+    try {
+      const request = {
+        result: 0,
+      };
+      request.packetNo = request.packetNo;
+    } 
+    catch(error) {
+      console.log('error' + error);
+      const response = {
+        result: -1,
+      };
+      response.packetNo = request.packetNo;
     }
   },
 };

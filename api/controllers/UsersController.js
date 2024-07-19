@@ -52,10 +52,18 @@ module.exports = {
           await sails
             .getDatastore(process.env.MYSQL_DATASTORE)
             .sendNativeQuery(sql);
-          response = new HttpResponse(mailResponse, {
-            statusCode: 200,
-            error: false,
-          });
+          if (mailResponse.Message.Status == "success") {
+            response = new HttpResponse(mailResponse, {
+              statusCode: 200,
+              error: false,
+            });
+          } else {
+            response = new HttpResponse(null, {
+              statusCode: 400,
+              error: true,
+              errorMsg: "Email sent failed!",
+            });
+          }
         } else {
           response = new HttpResponse(null, {
             statusCode: 400,
@@ -87,7 +95,7 @@ module.exports = {
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
-      let sql = sqlString(
+      let sql = sqlString.format(
         "SELECT pass_otp, otp_expired_at FROM user_account WHERE user_id = ?",
         [userId]
       );
@@ -98,7 +106,7 @@ module.exports = {
       if (value && value["pass_otp"] == otp) {
         let expired_at = +value["otp_expired_at"];
         if (expired_at > new Date().getTime()) {
-          let sqlUpdate = sqlString(
+          let sqlUpdate = sqlString.format(
             "UPDATE user_account SET pass_otp = NULL, otp_expired_at = NULL WHERE user_id = ?",
             [userId]
           );

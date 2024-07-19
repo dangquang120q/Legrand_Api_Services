@@ -1,6 +1,7 @@
 const { log } = require("./log");
 const { SET_STATE_ACTION } = require("./const");
 const { formatObject } = require("./utils");
+const qs = require("qs");
 const API_URL = process.env.NETAMO_API;
 
 module.exports = {
@@ -340,9 +341,10 @@ module.exports = {
       });
       const url =
         `${API_URL}/api/gethomemeasure?` +
-        new URLSearchParams({
+        qs.stringify({
           ...searchParams,
         });
+
       log("Netatmo gethomemeasure: " + url);
       const res = await fetch(url, {
         method: "GET",

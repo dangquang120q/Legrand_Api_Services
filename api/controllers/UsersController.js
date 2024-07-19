@@ -53,7 +53,10 @@ module.exports = {
             .getDatastore(process.env.MYSQL_DATASTORE)
             .sendNativeQuery(sql);
           log("Mail response: " + JSON.stringify(mailResponse));
-          if (mailResponse?.Message?.Status == "success") {
+          if (
+            mailResponse?.Messages?.length > 0 &&
+            mailResponse?.Messages[0]?.Status == "success"
+          ) {
             response = new HttpResponse(
               {
                 mailResponse,

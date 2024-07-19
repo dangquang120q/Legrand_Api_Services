@@ -13,8 +13,8 @@ module.exports = {
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
-      req.cmdType = request.cmdType;
       response.packetNo = request.packetNo;
+      response.cmdType = request.cmdType + "Ack";
       return response;
     } catch {
       const response = {
@@ -40,6 +40,7 @@ module.exports = {
         .sendNativeQuery(sql);
 
       response.packetNo = request.packetNo;
+      response.cmdType = request.cmdType + "Ack";
       return response;
     } catch {
       const response = {
@@ -62,7 +63,7 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       response.packetNo = request.packetNo;
-      response.result = result;
+      response.cmdType = request.cmdType + "Ack";
       return response;
     } catch {
       const response = {
@@ -85,6 +86,7 @@ module.exports = {
     //     .getDatastore(process.env.MYSQL_DATASTORE)
     //     .sendNativeQuery(sql);
       response.packetNo = request.packetNo;
+      response.cmdType = request.cmdType + "Ack";
       return response;
     } catch {
       const response = {

@@ -47,7 +47,7 @@ module.exports = {
           ).getTime();
           let sql = sqlString.format(
             "UPDATE user_account SET pass_otp = ?, otp_expired_at = ? WHERE user_id = ?",
-            [otp, expired_at, userId]
+            [otp, expired_at + "", userId]
           );
           await sails
             .getDatastore(process.env.MYSQL_DATASTORE)

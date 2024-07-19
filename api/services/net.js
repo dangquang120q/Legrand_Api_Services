@@ -248,12 +248,14 @@ const upgradeVersion = async (request) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
-        let req = await checkVersion(account.dn);
+        let {req,result} = await checkVersion(account.dn);
         let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
           .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
           .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
         let end = dataUtils.fromCharCodeData(16);
-        socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+        if (result == 0) {
+          socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+        }
       }
     });
   } catch (err) {
@@ -269,12 +271,14 @@ const controlLight = async (request) => {
         console.log(account.dn);
         console.log(request.data["gatewayDn"]);
         if (account.dn == request.data["gatewayDn"]) {
-          let req = await doLampControl(request);
+          let {req,result} = await doLampControl(request);
           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
           let end = dataUtils.fromCharCodeData(16);
-          socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+          if (result == 0) {
+            socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+          }
         }
       }
     });
@@ -289,12 +293,14 @@ const modLocation = async (request) => {
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
         if (account.dn == request.data["gatewayDn"]) {
-          let req = await doModLocation(request);
+          let {req,result} = await doModLocation(request);
           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
           let end = dataUtils.fromCharCodeData(16);
-          socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+          if (result == 0) {
+            socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+          }        
         }
       }
     });
@@ -309,12 +315,14 @@ const modName = async (request) => {
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
         if (account.dn == request.data["gatewayDn"]) {
-          let req = await doModName(request);
+          let {req,result} = await doModName(request);
           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
           let end = dataUtils.fromCharCodeData(16);
-          socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+          if (result == 0) {
+            socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+          }        
         }
       }
     });
@@ -329,12 +337,14 @@ const changePassword = async (request) => {
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
         if (account.dn == request.data["gatewayDn"]) {
-          let req = await doChangePassword(request);
+          let {req,result} = await doChangePassword(request);
           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
           let end = dataUtils.fromCharCodeData(16);
-          socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+          if (result == 0) {
+            socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+          }        
         }
       }
     });

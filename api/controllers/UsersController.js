@@ -20,6 +20,7 @@ const {
 const { upgradeVersion, controlLight, modLocation, modName, changePassword} = require("../services/net");
 const { DEVICE_CODES, SOCKET_REQUEST } = require("../services/const");
 const sendMailjet = require("../services/mailjet-util");
+const transporter = require("../services/mailtrap-utils");
 
 module.exports = {
   sendEmail: async (req, res) => {
@@ -28,6 +29,29 @@ module.exports = {
       const mailResponse = await sendMailjet.sendOTPEmail("dangquangpltnvn@gmail.com", "ABC", "2345");
       return res.json({ message: 'Email sent successfully!', mailResponse });
     } catch(error) {
+      sails.log.error('Error sending email:', error);
+      throw error;
+    }
+  },
+  sendEmailTrap: async (req, res) => {
+    log("SendMailTrap test => " + JSON.stringify(req.body));
+    try {
+      try {
+        const mailOptions = {
+          from: '"YourAppName" <no-reply@yourapp.com>',
+          to: recipientEmail,
+          subject: 'Your OTP Code',
+          text: `Your OTP code is: 1234`,
+          html: `<p>Your OTP code is: <b>1234</b></p>`
+        };
+
+        var mailResponse = await transporter.sendMail(mailOptions);
+        log('OTP email sent successfully.');
+      } catch (error) {
+        log('Error sending OTP email:' + error);
+      }
+      return res.json({ message: 'Email sent successfully!', mailResponse });
+    } catch (error) {
       sails.log.error('Error sending email:', error);
       throw error;
     }

@@ -101,7 +101,7 @@ module.exports = {
     }
   },
   verifyOTP: async (req, res) => {
-    log("verifyOtp => " + req.body);
+    log("verifyOtp => " + JSON.stringify(req.body));
     let { otp, userId } = req.body;
 
     let response;
@@ -352,6 +352,29 @@ module.exports = {
           errorMsg: "Change Password Failed.",
         });
       }
+      return res.ok(response);
+    } catch (error) {
+      log("Change password error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  createPassword: async (req, res) => {
+    log("createPassword => " + JSON.stringify(req.body));
+    let response;
+    const { password, userId } = req.body;
+    try {
+      let sqlUpdate = sqlString.format(
+        "UPDATE user_account SET password_comp = ? WHERE user_id = ?",
+        [password, userId]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlUpdate);
+      response = new HttpResponse(
+        { msg: "Create Password Successful." },
+        { statusCode: 200, error: false }
+      );
       return res.ok(response);
     } catch (error) {
       log("Logout error => " + error.toString());

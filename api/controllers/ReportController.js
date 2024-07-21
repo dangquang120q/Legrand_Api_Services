@@ -55,35 +55,34 @@ module.exports = {
   electricityReport: async (req, res) => {
     let response;
     let access_token = req.headers["access-token"];
-    let { device_id, bridge, scale, date_begin, date_end, type, home_id } =
-      req.body;
+    let { device_id, bridge, scale, date_begin, date_end, type } = req.body;
     try {
-      // const request = {
-      //   module_id: device_id,
-      //   device_id: bridge,
-      //   scale: scale || "30min",
-      //   type: type || "sum_energy_price",
-      //   date_begin,
-      //   date_end,
-      //   access_token,
-      // };
       const request = {
-        home_id,
-        modules: [
-          {
-            id: device_id,
-            bridge,
-          },
-        ],
-        scale,
+        module_id: device_id,
+        device_id: bridge,
+        scale: scale || "30min",
+        type: type || "sum_energy_price",
         date_begin,
         date_end,
         access_token,
-        type: ELECTRICITY_TYPE,
       };
+      // const request = {
+      //   home_id,
+      //   modules: [
+      //     {
+      //       id: device_id,
+      //       bridge,
+      //     },
+      //   ],
+      //   scale,
+      //   date_begin,
+      //   date_end,
+      //   access_token,
+      //   type: ELECTRICITY_TYPE,
+      // };
       log("electricityReport: " + JSON.stringify(request));
-      // const data = await getMeasure(request);
-      const data = await getHomeMeasure(request);
+      const data = await getMeasure(request);
+      // const data = await getHomeMeasure(request);
 
       if (data.error?.code) {
         response = new HttpResponse(null, {

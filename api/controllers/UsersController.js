@@ -53,8 +53,8 @@ module.exports = {
           return res.ok(response);
         }
         const otp = await sendMailjet.generateOTP();
+        const userId = findUser["rows"][0]["user_id"];
         if (otp != "" && userId) {
-          const userId = findUser["rows"][0]["user_id"];
           const mailResponse = await sendMailjet.sendOTPEmail(email, text, otp);
           const expired_at = new Date(
             new Date().getTime() + process.env.OTP_EXPIRED_TIME * 1000

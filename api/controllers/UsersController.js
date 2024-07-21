@@ -32,31 +32,51 @@ module.exports = {
   sendEmail: async (req, res) => {
     log("SendMail test => " + JSON.stringify(req.body));
     let { email, text } = req.body;
-    let jwtToken = req.headers["auth-token"];
+
     let response;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     try {
-      let decodedToken = jwtoken.decode(jwtToken);
-      let userId = decodedToken["userId"];
       if (emailRegex.test(email)) {
+        let sqlEmail = sqlString.format(
+          "SELECT user_id, id FROM user_account WHERE email = ?",
+          [email]
+        );
+        const findUser = await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(sqlEmail);
+        if (findUser["rows"].length == 0) {
+          response = new HttpResponse(null, {
+            statusCode: 400,
+            error: true,
+            errorMsg: "Email is not registered",
+          });
+          return res.ok(response);
+        }
         const otp = await sendMailjet.generateOTP();
-        if (otp != "") {
+        if (otp != "" && userId) {
+          const userId = findUser["rows"][0]["user_id"];
           const mailResponse = await sendMailjet.sendOTPEmail(email, text, otp);
           const expired_at = new Date(
             new Date().getTime() + process.env.OTP_EXPIRED_TIME * 1000
           ).getTime();
           let sql = sqlString.format(
-            "UPDATE user_account SET pass_otp = ?, otp_expired_at = ? WHERE user_id = ?",
+            "UPDATE user_account SET pass_otp = ?, otp_expired_at = ? WHERE userId = ?",
             [otp, expired_at + "", userId]
           );
           await sails
             .getDatastore(process.env.MYSQL_DATASTORE)
             .sendNativeQuery(sql);
 
-          response = new HttpResponse(mailResponse, {
-            statusCode: 200,
-            error: false,
-          });
+          response = new HttpResponse(
+            {
+              mailResponse,
+              userId: userId,
+            },
+            {
+              statusCode: 200,
+              error: false,
+            }
+          );
         } else {
           response = new HttpResponse(null, {
             statusCode: 400,
@@ -82,12 +102,10 @@ module.exports = {
   },
   verifyOTP: async (req, res) => {
     log("verifyOtp => " + req.body);
-    let { otp } = req.body;
-    let jwtToken = req.headers["auth-token"];
+    let { otp, userId } = req.body;
+
     let response;
     try {
-      let decodedToken = jwtoken.decode(jwtToken);
-      let userId = decodedToken["userId"];
       let sql = sqlString.format(
         "SELECT pass_otp, otp_expired_at FROM user_account WHERE user_id = ?",
         [userId]

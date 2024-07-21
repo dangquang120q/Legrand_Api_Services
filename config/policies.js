@@ -34,6 +34,8 @@ module.exports.policies = {
     removeMappedHome: "checkJwtoken",
     changePassword: "checkJwtoken",
     shareAccount: "checkJwtoken",
+    sendEmail: "checkJwtoken",
+    verifyOtp: "checkJwtoken",
     getUserInfo: "checkJwtoken",
     deleteAccount: "checkJwtoken",
   },

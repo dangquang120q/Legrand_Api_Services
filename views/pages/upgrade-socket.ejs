@@ -61,20 +61,125 @@
   <body>
     <!-- HTML !-->
     <button class="button-3" role="button" onclick="upgradeSocket()">
-      Upgrade
+      Upgrade Version
+    </button>
+    <button class="button-3" role="button" onclick="controlLamp()">
+      Control Lamp
+    </button>
+    <button class="button-3" role="button" onclick="modDevLocation()">
+      Modify Device Location
+    </button>
+    <button class="button-3" role="button" onclick="modDevName()">
+      Modify Device Name
+    </button>
+    <button class="button-3" role="button" onclick="modLoginPasword()">
+      Modify Login Password
     </button>
     <script>
       async function upgradeSocket() {
         try {
-          const res = await fetch("/user/upgradeSocket", {
+          const res = await fetch("/user/sendRequestSocket", {
             method: "POST",
+            body:JSON.stringify({
+              "data": {
+              },
+              "packetNo": "1234",
+              "cmdType": "upgrade"
+            })
           });
           const data = await res.json();
           console.log(data);
-          alert("Upgrade Success!");
+          alert("Upgrade Firmware Success!");
         } catch (error) {
           console.log(error);
-          alert("Upgrade Failed!");
+          alert("Upgrade Firmware Failed!");
+        }
+      }
+      async function controlLamp() {
+        try {
+          const res = await fetch("/user/sendRequestSocket", {
+            method: "POST",
+            body:JSON.stringify({
+              "data": {
+                "gatewayDn": "9E675FFEFF47B660",
+                "deviceId": "-1",
+                "switch" : "1",
+              },
+              "packetNo": "1234",
+              "cmdType": "light"
+            })
+          });
+          const data = await res.json();
+          console.log(data);
+          alert("Ordinary lamp control Success!");
+        } catch (error) {
+          console.log(error);
+          alert("Ordinary lamp control Failed!");
+        }
+      }
+      async function modDevLocation() {
+        try {
+          const res = await fetch("/user/sendRequestSocket", {
+            method: "POST",
+            body:JSON.stringify({
+              "data": {
+                "gatewayDn": "9E675FFEFF47B660",
+                "deviceId": "-1",
+                "location" : "Bedroom",
+              },
+              "packetNo": "1234",
+              "cmdType": "deviceLocation"
+            })
+          });
+          const data = await res.json();
+          console.log(data);
+          alert("Modify the Device Location Success!");
+        } catch (error) {
+          console.log(error);
+          alert("Modify the Device Location Failed!");
+        }
+      }
+      async function modDevName() {
+        try {
+          const res = await fetch("/user/sendRequestSocket", {
+            method: "POST",
+            body:JSON.stringify({
+              "data": {
+                "gatewayDn": "9E675FFEFF47B660",
+                "deviceId": "-1",
+                "name" : "Downlight",
+              },
+              "packetNo": "1234",
+              "cmdType": "deviceName"
+            })
+          });
+          const data = await res.json();
+          console.log(data);
+          alert("Modify the device name Success!");
+        } catch (error) {
+          console.log(error);
+          alert("Modify the device name Failed!");
+        }
+      }
+      async function modLoginPasword() {
+        try {
+          const res = await fetch("/user/sendRequestSocket", {
+            method: "POST",
+            body:JSON.stringify({
+              "data": {
+                "gatewayDn": "9E675FFEFF47B660",
+                "password": "newPassword"
+              },
+              "packetNo": "1234",
+              "cmdType": "changePassword"
+            })
+          });
+          const data = await res.json();
+          console.log(data);
+          alert("Change the login password Success!");
+        } catch (error) {
+          console.log(error);
+          alert("Change the login password Failed!");
         }
       }
     </script>

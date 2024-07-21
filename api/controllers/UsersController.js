@@ -17,12 +17,149 @@ const {
   getHomeStatus,
   getScenario,
 } = require("../services/netamo-token");
-const { upgradeVersion } = require("../services/net");
-const { DEVICE_CODES } = require("../services/const");
-const { formatObject } = require("../services/utils");
-// const Users = require('../models/Users');
+const {
+  upgradeVersion,
+  controlLight,
+  modLocation,
+  modName,
+  changePassword,
+} = require("../services/net");
+const { DEVICE_CODES, SOCKET_REQUEST } = require("../services/const");
+const sendMailjet = require("../services/mailjet-util");
+const transporter = require("../services/mailtrap-utils");
 
 module.exports = {
+  sendEmail: async (req, res) => {
+    log("SendMail test => " + JSON.stringify(req.body));
+    let { email, text } = req.body;
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      if (emailRegex.test(email)) {
+        const otp = await sendMailjet.generateOTP();
+        if (otp != "") {
+          const mailResponse = await sendMailjet.sendOTPEmail(email, text, otp);
+          const expired_at = new Date(
+            new Date().getTime() + process.env.OTP_EXPIRED_TIME * 1000
+          ).getTime();
+          let sql = sqlString.format(
+            "UPDATE user_account SET pass_otp = ?, otp_expired_at = ? WHERE user_id = ?",
+            [otp, expired_at + "", userId]
+          );
+          await sails
+            .getDatastore(process.env.MYSQL_DATASTORE)
+            .sendNativeQuery(sql);
+
+          response = new HttpResponse(mailResponse, {
+            statusCode: 200,
+            error: false,
+          });
+        } else {
+          response = new HttpResponse(null, {
+            statusCode: 400,
+            error: true,
+            errorMsg: "Email sent failed!",
+          });
+        }
+      } else {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Invalid email",
+        });
+      }
+      return res.ok(response);
+      // return res.json({ message: 'Email sent successfully!', mailResponse });
+    } catch (error) {
+      sails.log.error("Error sending email:", error);
+      // throw error;
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  verifyOTP: async (req, res) => {
+    log("verifyOtp => " + req.body);
+    let { otp } = req.body;
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format(
+        "SELECT pass_otp, otp_expired_at FROM user_account WHERE user_id = ?",
+        [userId]
+      );
+      const data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      const value = data["rows"].length > 0 ? data["rows"][0] : undefined;
+      if (value && value["pass_otp"] == otp) {
+        let expired_at = +value["otp_expired_at"];
+        if (expired_at > new Date().getTime()) {
+          let sqlUpdate = sqlString.format(
+            "UPDATE user_account SET pass_otp = NULL, otp_expired_at = NULL WHERE user_id = ?",
+            [userId]
+          );
+          await sails
+            .getDatastore(process.env.MYSQL_DATASTORE)
+            .sendNativeQuery(sqlUpdate);
+          response = new HttpResponse(
+            {
+              msg: "OTP verification successful",
+            },
+            {
+              statusCode: 200,
+              error: false,
+            }
+          );
+        } else {
+          response = new HttpResponse(null, {
+            statusCode: 400,
+            error: true,
+            errorMsg: "OTP is expired!",
+          });
+        }
+      } else {
+        response = new HttpResponse(null, {
+          statusCode: 403,
+          error: true,
+          errorMsg: "Invalid OTP!",
+        });
+      }
+      return res.ok(response);
+    } catch (error) {
+      sails.log.error("Error verify otp:", error);
+      // throw error;
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  sendEmailTrap: async (req, res) => {
+    log("SendMailTrap test => " + JSON.stringify(req.body));
+    try {
+      try {
+        const mailOptions = {
+          from: "kiennt.k54@gmail.com",
+          to: "mrneo1991@gmail.com",
+          subject: "Your OTP Code",
+          text: `Your OTP code is: 1234`,
+          html: `<p>Your OTP code is: <b>1234</b></p>`,
+        };
+
+        var mailResponse = await transporter.sendMail(mailOptions);
+        log("OTP email sent successfully.");
+      } catch (error) {
+        log("Error sending OTP email:" + error);
+      }
+      return res.json({ message: "Email sent successfully!", mailResponse });
+    } catch (error) {
+      sails.log.error("Error sending email:", error);
+      throw error;
+    }
+  },
   login: async (req, res) => {
     log("Login => " + JSON.stringify(req.body));
     let userId = CryptoJS.MD5(req.body.email).toString();
@@ -569,14 +706,45 @@ module.exports = {
       return res.serverError(response);
     }
   },
-  upgradeSocket: async (req, res) => {
+  sendRequestSocket: async (req, res) => {
     try {
-      await upgradeVersion();
-      let response = new HttpResponse(
-        { msg: "Upgrade Successfull" },
-        { statusCode: 200, error: false }
-      );
-      return res.ok(response);
+      log("sendRequestSocket => " + JSON.stringify(req.body));
+      if (req.body.cmdType == SOCKET_REQUEST.upgrade) {
+        await upgradeVersion(req.body);
+        let response = new HttpResponse(
+          { msg: "Upgrade Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      } else if (req.body.cmdType == SOCKET_REQUEST.light) {
+        await controlLight(req.body);
+        let response = new HttpResponse(
+          { msg: "Ordinary Lamp Control Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      } else if (req.body.cmdType == SOCKET_REQUEST.deviceLocation) {
+        await modLocation(req.body);
+        let response = new HttpResponse(
+          { msg: "Modify the Device Location Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      } else if (req.body.cmdType == SOCKET_REQUEST.deviceName) {
+        await modName(req.body);
+        let response = new HttpResponse(
+          { msg: "Modify the Device Name Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      } else if (req.body.cmdType == SOCKET_REQUEST.changePassword) {
+        await changePassword(req.body);
+        let response = new HttpResponse(
+          { msg: "Change the login password Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      }
     } catch (error) {
       log("Upgrade Socket error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });

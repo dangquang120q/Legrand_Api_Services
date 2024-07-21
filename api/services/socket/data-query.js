@@ -24,7 +24,7 @@ module.exports = {
         return responseErr;
       }
       response.data = {
-        "deviceVersion": dataVersion["rows"][0]["lts_device_version"]
+        "deviceVersion": (dataVersion["rows"][0]["lts_device_version"]).toString()
       }
   
       response.packetNo = request.packetNo;
@@ -43,6 +43,8 @@ module.exports = {
   deviceList: async (request,lts_mac) => {
     try{
       const { data } = request;
+      let index = data.index || 0;
+      let number = data.number || 0;
       let sqlVersion = sqlString.format(
         "Select lts_device_version from lts_device_control where lts_mac = ?", [data.gatewayDn]
       );
@@ -50,26 +52,38 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlVersion);
       let sql = sqlString.format(
-        "Select * from lts_device_control where lts_mac = ?", [data.gatewayDn]
+        "Select * from lts_device_detail where lts_mac = ? order by id limit ? offset ?", [data.gatewayDn,data.number,data.index]
       );
+      if (number == 0) {
+        sql = sqlString.format(
+          "Select * from lts_device_detail where lts_mac = ?", [data.gatewayDn]
+        );
+      }
       let dataListDevice = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       const response = {
         result: 0,
       };
+      let listDevice = [];
+      for (let index = 0; index < dataListDevice["rows"].length; index++) {
+        const element = dataListDevice["rows"][index];
+        let obj = {
+          "gatewayDn": element["lts_mac"],
+          "nickname": element["name"],
+          "location": element["location"],
+          "productKey": element["productKey"] || "",
+          "parentDn": element["parentDn"],
+          "deviceId": element["deviceId"]
+        }
+        listDevice.push(obj);
+      }
       let deviceVersion = dataVersion["rows"][0]["lts_device_version"];
       // let leftNumber = deviceVersion - data.
       response.data = {
         "leftNumber": 0,
         "deviceVersion": deviceVersion,
-        "has": [{
-          "nickName ": "",
-          "location": "",
-          "productKey": "",
-          "deviceDn": "",
-          "deviceId": ""
-        }]
+        "has": listDevice
       }
         
       response.packetNo = request.packetNo;
@@ -161,14 +175,14 @@ module.exports = {
       const dataWeatherPollution = await resPollution.json();
 
       let listWeather = [];
-      for (let index = 0; index < 32; index++) {
+      for (let index = 0; index < dataWeatherPollution["list"].length / 3; index++) {
         const element = dataWeather["list"][index];
         let pollution = dataWeatherPollution["list"][index * 3];
         console.log(JSON.stringify(pollution));
         let weather = {
           "date": element["dt_txt"],
           "temp": KtoC(element["main"]["temp"]),
-          "temperatureScope": KtoC(element["main"]["feels_like"]),
+          "temperatureScope": KtoC(element["main"]["temp_min"]) + "/" + KtoC(element["main"]["temp_max"]) + "°C",
           "weather": element["weather"]["main"],
           "windDirect": degreesToDirection(element["wind"]["deg"]),
           "pm25": pollution["components"]["pm2_5"],

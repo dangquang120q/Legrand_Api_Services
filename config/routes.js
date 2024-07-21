@@ -26,6 +26,8 @@ module.exports.routes = {
   "POST /user/updateProfile": "UsersController.updateProfile",
   "POST /user/changePassword": "UsersController.changePassword",
   "POST /user/shareAccount": "UsersController.shareAccount",
+  "POST /user/sendMail": "UsersController.sendEmail",
+  "POST /user/verifyOtp": "UsersController.verifyOTP",
   "GET /user/information": "UsersController.getUserInfo",
   "DELETE /user/deleteAccount": "UsersController.deleteAccount",
 
@@ -39,7 +41,7 @@ module.exports.routes = {
 
   "GET /user/getNetamoApi": "UsersController.getNetamoToken",
   "GET /user/getNetamoInfo": "UsersController.getNetamoInfo",
-  "POST /user/upgradeSocket": "UsersController.upgradeSocket",
+  "POST /user/sendRequestSocket": "UsersController.sendRequestSocket",
   "POST /user/getRoomDetail": "UsersController.getRoomDetail",
   "POST /user/removeMappingHome": "UsersController.removeMappingHome",
 

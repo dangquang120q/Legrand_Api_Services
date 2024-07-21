@@ -774,4 +774,41 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  deleteAccount: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      log("deleteAccount => " + JSON.stringify(userId));
+      let sqlUpdate = sqlString.format("call sp_delete_account(?)", [userId]);
+      const data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlUpdate);
+      const ref = data["rows"][0][0]["ref"];
+      if (ref == 1) {
+        response = new HttpResponse(
+          {
+            msg: "Delete account successful!",
+          },
+          {
+            statusCode: 200,
+            error: false,
+          }
+        );
+        return res.ok(response);
+      } else {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Delete account failed!",
+        });
+        return res.send(response);
+      }
+    } catch (error) {
+      log("Logout error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
 };

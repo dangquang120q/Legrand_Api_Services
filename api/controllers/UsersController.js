@@ -496,7 +496,7 @@ module.exports = {
           access_token,
         });
         let rooms = [];
-        let doorLock = false;
+        let doorLock = null;
         for (let id = 0; id < element["rooms"]?.length; id++) {
           const room = element["rooms"][id];
           if (room.name.toLowerCase() != "door lock") {
@@ -514,7 +514,7 @@ module.exports = {
             const doorStatus = homeStatus.body?.home?.modules?.find(
               (item) => item.id == room.module_ids[0]
             );
-            doorLock = doorStatus?.on || false;
+            doorLock = doorStatus || null;
           }
         }
         // Scenario

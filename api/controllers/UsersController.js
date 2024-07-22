@@ -514,6 +514,7 @@ module.exports = {
             const doorStatus = homeStatus.body?.home?.modules?.find(
               (item) => item.id == room.module_ids[0]
             );
+
             doorLock = doorStatus || null;
           }
         }
@@ -545,7 +546,7 @@ module.exports = {
             valve: "off",
             alarm: "off",
           },
-          doorLock: !doorLock,
+          doorLock: doorLock,
           rooms,
         };
         listhomes.push(home_data);

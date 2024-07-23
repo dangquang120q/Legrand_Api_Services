@@ -873,10 +873,11 @@ module.exports = {
             .filter((item) => DEVICE_CODES.rollerShutter.includes(item.type))
             .map((item) => ({
               ...item,
-              controlType:
-                item["target_position:step"] >= 100 || item["type"] == "NLIV"
-                  ? 0
-                  : 1,
+              // controlType:
+              //   item["target_position:step"] >= 100 || item["type"] == "NLIV"
+              //     ? 0
+              //     : 1,
+              controlType: item["type"] == "NLLV" ? 1 : 0,
             })),
           airConditioner: airConditioner
             ? {

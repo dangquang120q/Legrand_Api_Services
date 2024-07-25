@@ -159,4 +159,42 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  changeFanSpeed: async (req, res) => {
+    let access_token = req.headers["access-token"];
+    let { net_home_id, bridge, device_id, mode, speed, end_time } = req.body;
+    try {
+      let value = {
+        fan_setpoint_from: "module",
+        fan_mode: mode || "manual",
+        fan_speed: speed,
+      };
+      if (end_time) {
+        value.fan_end_time = end_time;
+      }
+      const data = await setState({
+        action: SET_STATE_ACTION.changeFanSpeed,
+        value: value,
+        home_id: net_home_id,
+        access_token,
+        bridge,
+        device_id,
+      });
+      log("changeFanSpeed data: " + JSON.stringify(data));
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
+      response = new HttpResponse(
+        {
+          msg: "Change fan speed successfull",
+        },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {}
+  },
 };

@@ -54,6 +54,8 @@ module.exports.routes = {
   "POST /device/openCurtain": "DeviceController.openCurtain",
   "POST /device/controlAirConditioner":
     "DeviceController.controlAirConditioner",
+  "POST /device/changeFanSpeed": "DeviceController.changeFanSpeed",
+
 
   "POST /report/temperature": "ReportController.temperatureReport",
   "POST /report/electricity": "ReportController.electricityReport",

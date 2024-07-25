@@ -224,6 +224,12 @@ module.exports = {
             ],
           },
         };
+      case SET_STATE_ACTION.changeFanSpeed:
+        body.home.modules.push({
+          id: module_id,
+          bridge: bridge,
+          ...value,
+        });
       default:
         break;
     }

@@ -1076,7 +1076,7 @@ module.exports = {
           ...device,
         };
       });
-      let lights = roomDevices.filter(
+      let lights = devices.filter(
         (item) =>
           DEVICE_CODES.lights.includes(item.type) &&
           item.variant != "NLTS:remote_motion_sensor"

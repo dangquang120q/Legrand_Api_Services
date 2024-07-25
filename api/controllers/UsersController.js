@@ -866,8 +866,10 @@ module.exports = {
         humidity: room["humidity"] || null,
         reachable: room["reachable"] || false,
         devices: {
-          lights: roomDevices.filter((item) =>
-            DEVICE_CODES.lights.includes(item.type)
+          lights: roomDevices.filter(
+            (item) =>
+              DEVICE_CODES.lights.includes(item.type) &&
+              item.variant != "NLTS:remote_motion_sensor"
           ),
 
           curtains: roomDevices
@@ -1017,7 +1019,76 @@ module.exports = {
         return res.send(response);
       }
     } catch (error) {
-      log("Logout error => " + error.toString());
+      log("deleteAccount error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  getHomeDevices: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let access_token = req.headers["access-token"];
+    let home_id = req.body.net_home_id || "";
+    log("getHomeDevices => " + home_id);
+
+    let response;
+    try {
+      const homeData = await getHomeData({
+        access_token,
+        home_id,
+      });
+      if (homeData.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + homeData.error.code,
+          error: true,
+          errorMsg: homeData.error.message,
+        });
+        return res.send(response);
+      }
+      let homeStatus = await getHomeStatus({
+        access_token,
+        home_id,
+      });
+      if (homeStatus.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + homeData.error.code,
+          error: true,
+          errorMsg: homeStatus.error.message,
+        });
+        return res.send(response);
+      }
+      let errors = homeStatus.body.errors;
+      homeStatus = homeStatus.body.home;
+      let devices =
+        homeData?.homes[0]?.modules.map((item) => ({
+          ...item,
+          reachable: errors?.find(
+            (error) => item["id"] == error.id || item["bridge"] == error.id
+          )
+            ? false
+            : true,
+        })) || [];
+      devices = devices.map((item) => {
+        const device = homeStatus?.modules?.find(
+          (dItem) => dItem.id == item.id
+        );
+        return {
+          ...item,
+          ...device,
+        };
+      });
+      let lights = roomDevices.filter(
+        (item) =>
+          DEVICE_CODES.lights.includes(item.type) &&
+          item.variant != "NLTS:remote_motion_sensor"
+      );
+      response = new HttpResponse(lights, {
+        statusCode: 200,
+        error: false,
+        errorMsg: null,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("getHomeDevices error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

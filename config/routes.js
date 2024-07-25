@@ -45,6 +45,7 @@ module.exports.routes = {
   "POST /user/sendRequestSocket": "UsersController.sendRequestSocket",
   "POST /user/getRoomDetail": "UsersController.getRoomDetail",
   "POST /user/removeMappingHome": "UsersController.removeMappingHome",
+  "POST /user/getHomeDevices": "UsersController.getHomeDevices",
 
   "POST /device/turnOnLight": "DeviceController.turnOnLight",
   "POST /device/controlDoorlock": "DeviceController.turnOnLight",

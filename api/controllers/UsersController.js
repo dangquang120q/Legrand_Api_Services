@@ -587,10 +587,10 @@ module.exports = {
           return {
             ...scenario,
             isEmpty:
-              scenario.modules.length == 0 ||
+              scenario.modules.length != 0 &&
               scenario.modules.find((module) => Object.keys(module).length > 1)
-                ? true
-                : false,
+                ? false
+                : true,
           };
         });
 

@@ -69,7 +69,11 @@ module.exports = {
   },
   addFCMDeviceToken: async (req, res) => {
     log("addFCMDeviceToken test => " + JSON.stringify(req.body));
-    let { userId, deviceToken} = req.body;
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    let decodedToken = jwtoken.decode(jwtToken);
+    let userId = decodedToken["userId"];
+    let { deviceToken} = req.body;
     try {
       let insertSql = sqlString.format("insert into firebase_token(user_id, device_token) values (?, ?)", 
         [userId, deviceToken]);
@@ -97,7 +101,12 @@ module.exports = {
   },
   updateFCMDeviceToken: async (req, res) => {
     log("updateFCMDeviceToken test => " + JSON.stringify(req.body));
-    let { userId, oldDeviceToken, newDeviceToken } = req.body;
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    let decodedToken = jwtoken.decode(jwtToken);
+    let userId = decodedToken["userId"];
+    let { deviceToken } = req.body;
+    let { oldDeviceToken, newDeviceToken } = req.body;
     try {
       let selectDeviceToken = sqlString.format("select user_id from firebase_token where user_id=? and device_token = ?", 
       [userId, oldDeviceToken]);
@@ -148,10 +157,28 @@ module.exports = {
   },
   deleteFCMDeviceToken: async (req, res) => {
     log("deleteFCMDeviceToken test => " + JSON.stringify(req.body));
-    let { userId, deviceToken } = req.body;
+    let response;
+    let decodedToken = jwtoken.decode(jwtToken);
+    let userId = decodedToken["userId"];
+    let { deviceToken } = req.body;
     try {
       if(deviceToken == "abcxyz") {
         // Delete all
+        let deleteSql = sqlString.format("delete firebase_token where user_id=?",
+          [userId]);
+        await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(deleteSql);
+        response = new HttpResponse(
+          {
+            command: "delete token successfully",
+            userId: userId,
+            deviceToken: deviceToken
+          },
+          {
+            statusCode: 200,
+            error: false,
+          });
       } else {
         // Delete one
         let selectDeviceToken = sqlString.format("select user_id from firebase_token where user_id=? and device_token = ?",

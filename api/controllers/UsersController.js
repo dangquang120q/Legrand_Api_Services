@@ -82,9 +82,7 @@ module.exports = {
         .sendNativeQuery(insertSql);
       response = new HttpResponse(
         {
-          msg: "insert token successfully",
-          userId: userId,
-          deviceToken: deviceToken
+          msg: "insert token successfully"
         },
         {
           statusCode: 200,
@@ -122,9 +120,7 @@ module.exports = {
           .sendNativeQuery(insertSql);
         response = new HttpResponse(
           {
-            msg: "update token successfully",
-            userId: userId,
-            deviceToken: deviceToken
+            msg: "update token successfully"
           },
           {
             statusCode: 200,
@@ -138,9 +134,7 @@ module.exports = {
           .sendNativeQuery(updateSql);
         response = new HttpResponse(
           {
-            msg: "update token successfully",
-            userId: userId,
-            deviceToken: deviceToken
+            msg: "update token successfully"
           },
           {
             statusCode: 200,
@@ -171,9 +165,7 @@ module.exports = {
           .sendNativeQuery(deleteSql);
         response = new HttpResponse(
           {
-            msg: "delete all token successfully",
-            userId: userId,
-            deviceToken: deviceToken
+            msg: "delete all token successfully"
           },
           {
             statusCode: 200,
@@ -190,9 +182,7 @@ module.exports = {
         if (tokenData["rows"].length == 0) {
           response = new HttpResponse(
             {
-              msg: "No device token",
-              userId: userId,
-              deviceToken: deviceToken
+              msg: "No device token"
             },
             {
               statusCode: 200,
@@ -206,9 +196,7 @@ module.exports = {
             .sendNativeQuery(deleteSql);
           response = new HttpResponse(
             {
-              msg: "delete token successfully",
-              userId: userId,
-              deviceToken: deviceToken
+              msg: "delete token successfully"
             },
             {
               statusCode: 200,

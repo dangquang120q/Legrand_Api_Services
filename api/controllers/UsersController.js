@@ -24,7 +24,11 @@ const {
   modName,
   changePassword,
 } = require("../services/net");
-const { DEVICE_CODES, SOCKET_REQUEST } = require("../services/const");
+const {
+  DEVICE_CODES,
+  SOCKET_REQUEST,
+  SCENARIO_TYPE,
+} = require("../services/const");
 const sendMailjet = require("../services/mailjet-util");
 const transporter = require("../services/mailtrap-utils");
 
@@ -476,6 +480,8 @@ module.exports = {
       let userId = decodedToken["userId"];
       let response_data = {};
       let listhomes = [];
+
+      // Call API /homesdata get list room
       const data = await getHomeData({
         access_token,
         home_id,
@@ -489,16 +495,24 @@ module.exports = {
         });
         return res.send(response);
       }
+
+      // Loop all homes
       for (let index = 0; index < data.homes?.length; index++) {
         const element = data.homes[index];
+
+        // call API /homestatus get home detail
         const homeStatus = await getHomeStatus({
           home_id: element["id"],
           access_token,
         });
         let rooms = [];
         let doorLock = null;
+
+        // Loop all rooms in home
         for (let id = 0; id < element["rooms"]?.length; id++) {
           const room = element["rooms"][id];
+
+          // Check if room is Doorlock and get room detail from /homestatus
           if (room.name.toLowerCase() != "door lock") {
             const temperature = homeStatus.body?.home?.rooms
               ? homeStatus.body?.home?.rooms.find((item) => item.id == room.id)
@@ -518,30 +532,62 @@ module.exports = {
             doorLock = doorStatus || null;
           }
         }
+
         // Scenario
-        const scenarios = await getScenario({
+
+        // Call api /getscenario
+        const scenarioData = await getScenario({
           home_id: element["id"],
           access_token,
         });
-        if (scenarios.error?.code) {
+        if (scenarioData.error?.code) {
           response = new HttpResponse(null, {
-            statusCode: "NET_" + scenarios.error.code,
+            statusCode: "NET_" + scenarioData.error.code,
             error: true,
-            errorMsg: scenarios.error.message,
+            errorMsg: scenarioData.error.message,
           });
           return res.send(response);
         }
+        const module_scenario = scenarioData.body?.home?.modules || [];
+        let scenarios =
+          scenarioData.body?.home?.scenarios.map((item) => ({
+            id: item.id,
+            name: item.type,
+            displayName: SCENARIO_TYPE[item.type] || item.type,
+            selected: "",
+            roomName: item.category,
+          })) || [];
+        // Transform the array into an object with keys as ids
+        const scenarioObj = scenarios.reduce((acc, obj) => {
+          const { id, ...rest } = obj; // Destructure id and rest of properties
+          acc[id] = {
+            id: id,
+            ...rest,
+            modules: [],
+          }; // Add the rest of properties to the result object with id as the key
+          return acc;
+        }, {});
 
+        // Loop all modules in api /getscenario
+        module_scenario.forEach((item) => {
+          if (item.id && item.scenarios) {
+            item.scenarios.forEach((scenario) => {
+              let { id: scenario_id, ...status } = scenario;
+              scenarioObj[scenario.id]["modules"].push({
+                id: item.id,
+                ...status,
+              });
+            });
+          }
+        });
+        scenarios = Object.keys(scenarioObj).map((key) => ({
+          ...scenarioObj[key],
+        }));
+        // Response data
         let home_data = {
           id: element["id"],
           name: element["name"],
-          scenarios:
-            scenarios.body?.home?.scenarios.map((item) => ({
-              id: item.id,
-              name: item.type,
-              selected: "",
-              roomName: item.category,
-            })) || [],
+          scenarios: scenarios,
           waterLeakage: {
             valve: "off",
             alarm: "off",

@@ -129,6 +129,7 @@ module.exports = {
     if (end_time) {
       value["cooling_setpoint_end_time"] = +end_time;
     }
+    log('controlAirConditioner => ' + JSON.stringify(value))
     try {
       const data = await setState({
         action: SET_STATE_ACTION.chageTemperatureSetpoint,
@@ -195,6 +196,10 @@ module.exports = {
         { statusCode: 200, error: false }
       );
       return res.ok(response);
-    } catch (error) {}
+    } catch (error) {
+      log("Change fan speed error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
   },
 };

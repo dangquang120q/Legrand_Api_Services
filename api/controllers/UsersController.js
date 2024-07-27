@@ -580,9 +580,20 @@ module.exports = {
             });
           }
         });
-        scenarios = Object.keys(scenarioObj).map((key) => ({
-          ...scenarioObj[key],
-        }));
+
+        // Finale scenarios
+        scenarios = Object.keys(scenarioObj).map((key) => {
+          let scenario = scenarioObj[key];
+          return {
+            ...scenario,
+            isEmpty:
+              scenario.modules.length == 0 ||
+              scenario.modules.find((module) => Object.keys(module).length > 1)
+                ? true
+                : false,
+          };
+        });
+
         // Response data
         let home_data = {
           id: element["id"],

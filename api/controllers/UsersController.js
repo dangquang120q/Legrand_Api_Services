@@ -103,7 +103,6 @@ module.exports = {
     let response;
     let decodedToken = jwtoken.decode(jwtToken);
     let userId = decodedToken["userId"];
-    let { deviceToken } = req.body;
     let { oldDeviceToken, newDeviceToken } = req.body;
     try {
       let selectDeviceToken = sqlString.format("select user_id from firebase_token where user_id=? and device_token = ?", 

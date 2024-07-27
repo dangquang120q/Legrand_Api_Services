@@ -129,7 +129,7 @@ module.exports = {
     if (end_time) {
       value["cooling_setpoint_end_time"] = +end_time;
     }
-    log('controlAirConditioner => ' + JSON.stringify(value))
+    log("controlAirConditioner => " + JSON.stringify(value));
     try {
       const data = await setState({
         action: SET_STATE_ACTION.chageTemperatureSetpoint,
@@ -178,7 +178,7 @@ module.exports = {
         home_id: net_home_id,
         access_token,
         bridge,
-        device_id,
+        module_id: device_id,
       });
       log("changeFanSpeed data: " + JSON.stringify(data));
       if (data.error?.code) {

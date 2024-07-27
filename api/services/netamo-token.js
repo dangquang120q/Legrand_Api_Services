@@ -232,6 +232,7 @@ module.exports = {
           bridge: bridge,
           ...value,
         });
+        break;
       default:
         break;
     }

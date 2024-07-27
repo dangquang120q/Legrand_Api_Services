@@ -29,6 +29,175 @@ const sendMailjet = require("../services/mailjet-util");
 const transporter = require("../services/mailtrap-utils");
 
 module.exports = {
+  testFCMNoti: async(req, res) => {
+    try {
+      log("testFCMNoti test => " + JSON.stringify(req.body));
+      let {userId } = req.body;
+      let sql = sqlString.format(
+        "SELECT device_token FROM firebas_token WHERE user_id = ?",
+        [userId]
+      );
+      const data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      
+      // Chuyển đổi kết quả truy vấn thành mảng các token
+      const registrationTokens = data.rows.map(device => device.device_token);
+
+      const message = {
+        title: 'Thông báo',
+        body: 'Nội dung thông báo'
+      };
+
+      // Chia thành các batch nhỏ để tránh quá tải
+      const batchSize = 500;
+      for (let i = 0; i < registrationTokens.length; i += batchSize) {
+        const batchTokens = registrationTokens.slice(i, i + batchSize);
+
+        // Thêm công việc vào hàng đợi
+        notificationQueue.add({
+          registrationTokens: batchTokens,
+          message: message
+        });
+      }
+
+      return res.ok('Notification jobs added to the queue.');
+    } catch(error) {
+      console.error('Error querying device tokens:', error);
+      return res.serverError('Failed to add notification jobs to the queue.');
+    }
+  },
+  addFCMDeviceToken: async (req, res) => {
+    log("addFCMDeviceToken test => " + JSON.stringify(req.body));
+    let { userId, deviceToken} = req.body;
+    try {
+      let insertSql = sqlString.format("insert into firebase_token(user_id, device_token) values (?, ?)", 
+        [userId, deviceToken]);
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(insertSql);
+      response = new HttpResponse(
+        {
+          message: "insert token successfully",
+          userId: userId,
+          deviceToken: deviceToken
+        },
+        {
+          statusCode: 200,
+          error: false,
+        }
+      );
+      return res.ok(response);
+    } catch (error) {
+      sails.log.error("Error add firebase device token:", error);
+      // throw error;
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  updateFCMDeviceToken: async (req, res) => {
+    log("updateFCMDeviceToken test => " + JSON.stringify(req.body));
+    let { userId, oldDeviceToken, newDeviceToken } = req.body;
+    try {
+      let selectDeviceToken = sqlString.format("select user_id from firebase_token where user_id=? and device_token = ?", 
+      [userId, oldDeviceToken]);
+      let tokenData = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(selectDeviceToken);
+      
+      if (tokenData["rows"].length == 0) {
+        let insertSql = sqlString.format("insert into firebase_token(user_id, device_token) values (?, ?)",
+          [userId, newDeviceToken]);
+        await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(insertSql);
+        response = new HttpResponse(
+          {
+            message: "update token successfully",
+            userId: userId,
+            deviceToken: deviceToken
+          },
+          {
+            statusCode: 200,
+            error: false,
+          });
+      } else {
+        let updateSql = sqlString.format("update firebase_token set device_token = ? where user_id=? and device_token = ?",
+          [newDeviceToken, userId, oldDeviceToken]);
+        await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(updateSql);
+        response = new HttpResponse(
+          {
+            message: "update token successfully",
+            userId: userId,
+            deviceToken: deviceToken
+          },
+          {
+            statusCode: 200,
+            error: false,
+          });
+      }
+      return res.ok(response);
+    } catch (error) {
+      sails.log.error("Error update firebase device token:", error);
+      // throw error;
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  deleteFCMDeviceToken: async (req, res) => {
+    log("deleteFCMDeviceToken test => " + JSON.stringify(req.body));
+    let { userId, deviceToken } = req.body;
+    try {
+      if(deviceToken == "abcxyz") {
+        // Delete all
+      } else {
+        // Delete one
+        let selectDeviceToken = sqlString.format("select user_id from firebase_token where user_id=? and device_token = ?",
+          [userId, deviceToken]);
+        let tokenData = await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(selectDeviceToken);
+
+        if (tokenData["rows"].length == 0) {
+          response = new HttpResponse(
+            {
+              message: "No device token",
+              userId: userId,
+              deviceToken: deviceToken
+            },
+            {
+              statusCode: 200,
+              error: false,
+            });
+        } else {
+          let deleteSql = sqlString.format("delete firebase_token where user_id=? and device_token = ?",
+            [userId, deviceToken]);
+          await sails
+            .getDatastore(process.env.MYSQL_DATASTORE)
+            .sendNativeQuery(deleteSql);
+          response = new HttpResponse(
+            {
+              command: "delete token successfully",
+              userId: userId,
+              deviceToken: deviceToken
+            },
+            {
+              statusCode: 200,
+              error: false,
+            });
+        }
+      }
+      
+      return res.ok(response);
+    } catch (error) {
+      sails.log.error("Error delete firebase device token:", error);
+      // throw error;
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
   sendEmail: async (req, res) => {
     log("SendMail test => " + JSON.stringify(req.body));
     let { email, text } = req.body;

@@ -31,17 +31,17 @@ var rc;
 
 require("dotenv").config();
 const admin = require('firebase-admin');
-const serviceAccount = require('./config/legrand-dev-api-firebase-adminsdk-r0fjc-901a1347a2.json');//'./config/legrand-dev-api-firebase-adminsdk-r0fjc-901a1347a2.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-admin.auth().listUsers(1)
-  .then(listUsersResult => {
-    console.log('Firebase Admin SDK khởi tạo thành công');
-  })
-  .catch(error => {
-    console.log('Lỗi khởi tạo Firebase Admin SDK:', error);
-  });
+// const serviceAccount = require('./config/legrand-dev-api-firebase-adminsdk-r0fjc-901a1347a2.json');//'./config/legrand-dev-api-firebase-adminsdk-r0fjc-901a1347a2.json');
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount)
+// });
+// admin.auth().listUsers(1)
+//   .then(listUsersResult => {
+//     console.log('Firebase Admin SDK khởi tạo thành công');
+//   })
+//   .catch(error => {
+//     console.log('Lỗi khởi tạo Firebase Admin SDK:', error);
+//   });
 
 try {
   sails = require("sails");

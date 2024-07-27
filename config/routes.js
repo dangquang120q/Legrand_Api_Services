@@ -31,6 +31,11 @@ module.exports.routes = {
   "POST /user/verifyOtp": "UsersController.verifyOTP",
   "GET /user/information": "UsersController.getUserInfo",
   "DELETE /user/deleteAccount": "UsersController.deleteAccount",
+  
+  "POST /user/addFCMToken": "UsersController.addFCMDeviceToken",
+  "POST /user/updateFCMToken": "UsersController.updateFCMDeviceToken",
+  "POST /user/deleteFCMToken": "UsersController.deleteFCMDeviceToken",
+  "POST /user/testFCMNoti": "UsersController.testFCMNoti",
 
   "POST /user/createRoom": "UsersController.createRoom",
   "POST /user/getListRoom": "UsersController.getListRoom",

@@ -184,6 +184,7 @@ module.exports = {
   setState: async (params) => {
     const { action, value, home_id, module_id, bridge, access_token, room_id } =
       params;
+    log("setState params: " + JSON.stringify(params));
     let body = {
       home: {
         id: home_id,

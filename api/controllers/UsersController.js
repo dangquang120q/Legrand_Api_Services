@@ -82,7 +82,7 @@ module.exports = {
         .sendNativeQuery(insertSql);
       response = new HttpResponse(
         {
-          message: "insert token successfully",
+          msg: "insert token successfully",
           userId: userId,
           deviceToken: deviceToken
         },
@@ -122,7 +122,7 @@ module.exports = {
           .sendNativeQuery(insertSql);
         response = new HttpResponse(
           {
-            message: "update token successfully",
+            msg: "update token successfully",
             userId: userId,
             deviceToken: deviceToken
           },
@@ -138,7 +138,7 @@ module.exports = {
           .sendNativeQuery(updateSql);
         response = new HttpResponse(
           {
-            message: "update token successfully",
+            msg: "update token successfully",
             userId: userId,
             deviceToken: deviceToken
           },
@@ -171,7 +171,7 @@ module.exports = {
           .sendNativeQuery(deleteSql);
         response = new HttpResponse(
           {
-            command: "delete token successfully",
+            msg: "delete all token successfully",
             userId: userId,
             deviceToken: deviceToken
           },
@@ -190,7 +190,7 @@ module.exports = {
         if (tokenData["rows"].length == 0) {
           response = new HttpResponse(
             {
-              message: "No device token",
+              msg: "No device token",
               userId: userId,
               deviceToken: deviceToken
             },
@@ -206,7 +206,7 @@ module.exports = {
             .sendNativeQuery(deleteSql);
           response = new HttpResponse(
             {
-              command: "delete token successfully",
+              msg: "delete token successfully",
               userId: userId,
               deviceToken: deviceToken
             },

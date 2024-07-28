@@ -66,6 +66,9 @@
     <button class="button-3" role="button" onclick="controlLamp()">
       Control Lamp
     </button>
+    <button class="button-3" role="button" onclick="configurationDeviceNetworkMode()">
+      Configuration Device network mode
+    </button>
     <button class="button-3" role="button" onclick="modDevLocation()">
       Modify Device Location
     </button>
@@ -115,6 +118,27 @@
         } catch (error) {
           console.log(error);
           alert("Ordinary lamp control Failed!");
+        }
+      }
+      async function configurationDeviceNetworkMode() {
+        try {
+          const res = await fetch("/user/sendRequestSocket", {
+            method: "POST",
+            body:JSON.stringify({
+              "data": {
+                "gatewayDn": "9E675FFEFF47B660",
+                "status": "0"
+              },
+              "packetNo": "1234",
+              "cmdType": "deviceMode"
+            })
+          });
+          const data = await res.json();
+          console.log(data);
+          alert("Device network configuration mode Successfull!");
+        } catch (error) {
+          console.log(error);
+          alert("Device network configuration mode Failed!");
         }
       }
       async function modDevLocation() {

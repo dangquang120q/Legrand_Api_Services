@@ -23,6 +23,7 @@ const {
   modLocation,
   modName,
   changePassword,
+  deviceMode
 } = require("../services/net");
 const { DEVICE_CODES, SOCKET_REQUEST } = require("../services/const");
 const sendMailjet = require("../services/mailjet-util");
@@ -945,6 +946,13 @@ module.exports = {
         await controlLight(req.body);
         let response = new HttpResponse(
           { msg: "Ordinary Lamp Control Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      } else if (req.body.cmdType == SOCKET_REQUEST.deviceMode) {
+        await deviceMode(req.body);
+        let response = new HttpResponse(
+          { msg: "Device network configuration mode Successfull" },
           { statusCode: 200, error: false }
         );
         return res.ok(response);

@@ -42,6 +42,7 @@ module.exports = {
       response.data = {
         timestamp: Date.now().toString(),
         timezone: "Asia/Shanghai",
+        secretKey: "123456789"
       };
       return response;
     }

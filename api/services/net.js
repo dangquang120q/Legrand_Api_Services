@@ -5,7 +5,7 @@ const { login } = require("./socket/login");
 const { heartbeat } = require("./socket/heartbeat");
 const { checkPing } = require("./socket/checkPing");
 const { checkVersion } = require("./socket/checkVersion");
-const { addDevice, delDevice,switchDevice, battery, alarm } = require("./socket/data-report");
+const { addDevice, delDevice,switchDevice, battery, alarm, reportDeviceMode } = require("./socket/data-report");
 const { doChangePassword, doLampControl,doModLocation, doModName } = require("./socket/data-modify");
 
 const {
@@ -120,6 +120,9 @@ server.on("secureConnection", function (socket) {
           case SOCKET_REQUEST.alarm:
             response = await alarm(data,list_account[socket.remoteAddress]);
             break;
+          case SOCKET_REQUEST.reportDeviceMode:
+            response = await reportDeviceMode(data,list_account[socket.remoteAddress]);
+            break;
           case SOCKET_REQUEST.deviceListVersion:
             response = await deviceListVersion(data,list_account[socket.remoteAddress]);
             break;
@@ -162,6 +165,10 @@ server.on("secureConnection", function (socket) {
             break;
           case SOCKET_REQUEST.changePasswordAck:
             await changePasswordLTS(data,list_account[socket.remoteAddress]);
+            Ack = 1;
+            break;
+          case SOCKET_REQUEST.deviceModeAck:
+            await changeDeviceMode(data,list_account[socket.remoteAddress]);
             Ack = 1;
             break;
           default:
@@ -303,6 +310,30 @@ const controlLight = async (request) => {
     console.log(err);
   }
 }
+const deviceMode = async (request) => {
+  try {
+    Object.values(list_account_test).forEach(async (account) => {
+      // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+      let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+      if (socket) {
+        console.log(account.dn);
+        console.log(request.data["gatewayDn"]);
+        if (account.dn == request.data["gatewayDn"]) {
+          let {req,result} = await doLampControl(request);
+          let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+          let end = dataUtils.fromCharCodeData(16);
+          if (result == 0) {
+            socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+          }
+        }
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
 const modLocation = async (request) => {
   try {
     Object.values(list_account_test).forEach(async (account) => {
@@ -394,4 +425,4 @@ server.listen(9601);
 // setTimeout(function () {
 //   server.close();
 // }, 5000000);
-module.exports = { upgradeVersion,changePassword,modLocation,modName,controlLight };
+module.exports = { upgradeVersion,changePassword,modLocation,modName,controlLight, deviceMode };

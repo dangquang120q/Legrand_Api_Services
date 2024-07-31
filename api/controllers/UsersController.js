@@ -28,6 +28,7 @@ const {
 const { DEVICE_CODES, SOCKET_REQUEST } = require("../services/const");
 const sendMailjet = require("../services/mailjet-util");
 const transporter = require("../services/mailtrap-utils");
+const notificationQueue = require("../services/firebase-queue");
 
 module.exports = {
   testFCMNoti: async(req, res) => {

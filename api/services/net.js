@@ -6,7 +6,7 @@ const { heartbeat } = require("./socket/heartbeat");
 const { checkPing } = require("./socket/checkPing");
 const { checkVersion } = require("./socket/checkVersion");
 const { addDevice, delDevice,switchDevice, battery, alarm, reportDeviceMode } = require("./socket/data-report");
-const { doChangePassword, doLampControl,doModLocation, doModName } = require("./socket/data-modify");
+const { doChangePassword, doLampControl,doModLocation, doModName, doDeviceMode } = require("./socket/data-modify");
 
 const {
   deviceList,
@@ -319,7 +319,7 @@ const deviceMode = async (request) => {
         console.log(account.dn);
         console.log(request.data["gatewayDn"]);
         if (account.dn == request.data["gatewayDn"]) {
-          let {req,result} = await doLampControl(request);
+          let {req,result} = await doDeviceMode(request);
           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));

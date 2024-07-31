@@ -127,11 +127,18 @@ module.exports = {
 
   reportDeviceMode: async function (request, lts_mac) {
     try {
+      const { data } = request;
       const response = {
         result: 0,
       };
       console.log("request == " + request);
       console.log("lts_mac == " + lts_mac);
+      let sql = sqlString.format(
+        "update lts_device_control set status = ? where lts_mac = ?", [data.status,data.gatewayDn]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
       let result = 0;
       response.packetNo = request.packetNo;
       response.result = result;

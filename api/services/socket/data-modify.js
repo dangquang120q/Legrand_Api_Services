@@ -22,7 +22,27 @@ module.exports = {
         return {req,result};
     }
   },
-
+  doDeviceMode: async function (request) {
+    try {
+      const { data } = request;
+      let result = 0;
+      const req = {};
+      let sql = sqlString.format(
+        "update lts_device_control set status = ? where lts_mac = ?", [data.status,data.gatewayDn]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      req.packetNo = request.packetNo;
+      req.cmdType = request.cmdType;
+      req.data = data;
+      return {req,result};
+    } catch {
+        const req = {};
+        let result = -1;
+        return {req,result};
+    }
+  },
   doModLocation: async function (request) {
     try {
         const { data } = request;

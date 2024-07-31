@@ -35,7 +35,7 @@ module.exports = {
       log("testFCMNoti test => " + JSON.stringify(req.body));
       let {userId } = req.body;
       let sql = sqlString.format(
-        "SELECT device_token FROM firebas_token WHERE user_id = ?",
+        "SELECT device_token FROM firebase_token WHERE user_id = ?",
         [userId]
       );
       const data = await sails

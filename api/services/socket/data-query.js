@@ -78,7 +78,7 @@ module.exports = {
         }
         listDevice.push(obj);
       }
-      let deviceVersion = dataVersion["rows"][0]["lts_device_version"];
+      let deviceVersion = dataVersion["rows"][0]["lts_device_version"].toString();
       // let leftNumber = deviceVersion - data.
       response.data = {
         "leftNumber": 0,

@@ -1,3 +1,5 @@
+const CryptoJS = require("crypto-js");
+
 module.exports = {
   formatObject: function (obj) {
     // Filter out entries where the value is not undefined
@@ -17,5 +19,18 @@ module.exports = {
     const filteredObj = Object.fromEntries(filteredEntries);
 
     return filteredObj;
+  },
+  decryptAES: function (cipherText, secret) {
+    // IV is a base64 string
+
+    var key = CryptoJS.enc.Utf8.parse(secret);
+    var cipherBytes = CryptoJS.enc.Base64.parse(cipherText);
+
+    var decrypted = CryptoJS.AES.decrypt({ ciphertext: cipherBytes }, key, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    return decrypted.toString(CryptoJS.enc.Utf8);
   },
 };

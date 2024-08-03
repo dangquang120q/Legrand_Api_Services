@@ -11,6 +11,7 @@ const { setState } = require("../services/netamo-token");
 const { HttpResponse } = require("../services/http-response");
 const jwtoken = require("../services/jwtoken");
 const CryptoJS = require("crypto-js");
+const { decryptAES } = require("../services/utils");
 
 module.exports = {
   turnOnLight: async (req, res) => {
@@ -214,22 +215,12 @@ module.exports = {
       let userId = decodedToken["userId"];
 
       let key = process.env.AES_SCREEN_KEY;
-
-      // Fix: Use the Utf8 encoder
-      encrypt_text = CryptoJS.enc.Utf8.parse(encrypt_text);
-      // Fix: Use the Utf8 encoder (or apply in combination with the hex encoder a 32 hex digit key for AES-128)
-      key = CryptoJS.enc.Utf8.parse(key);
-      // Fix: Pass a CipherParams object (or the Base64 encoded ciphertext)
-      let decrypted = CryptoJS.AES.decrypt(
-        { ciphertext: CryptoJS.enc.Hex.parse(encrypt_text) },
-        key,
-        { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding }
-      );
+      let decode_text = decryptAES(encrypt_text, key);
       // Fix: Utf8 decode the decrypted data
-      log("addScreen data decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+      log("addScreen data decrypted: " + decode_text);
 
       // LEGRAND_SC#DN#gatewayType#deviceNum
-      let data = decrypted.toString(CryptoJS.enc.Utf8).split("#");
+      let data = decode_text.split("#");
       if (data[0] == "LEGRAND_SC" && data.length == 4) {
         let sql = sqlString(
           "INSERT INTO lts_device_control(lts_mac,owned_id) VALUES (?,?)",

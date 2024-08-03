@@ -9,6 +9,7 @@ const { log } = require("../services/log");
 const { SET_STATE_ACTION } = require("../services/const");
 const { setState } = require("../services/netamo-token");
 const { HttpResponse } = require("../services/http-response");
+const jwtoken = require("../services/jwtoken");
 
 module.exports = {
   turnOnLight: async (req, res) => {
@@ -198,6 +199,63 @@ module.exports = {
       return res.ok(response);
     } catch (error) {
       log("Change fan speed error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  addScreen: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let encrypt_text = req.body.encrypt_text;
+    let response;
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      log("addScreen => " + JSON.stringify(userId));
+
+      let key = process.env.AES_SCREEN_KEY;
+
+      // Fix: Use the Utf8 encoder
+      encrypt_text = CryptoJS.enc.Utf8.parse(encrypt_text);
+      // Fix: Use the Utf8 encoder (or apply in combination with the hex encoder a 32 hex digit key for AES-128)
+      key = CryptoJS.enc.Utf8.parse(key);
+      // Fix: Pass a CipherParams object (or the Base64 encoded ciphertext)
+      let decrypted = CryptoJS.AES.decrypt(
+        { ciphertext: CryptoJS.enc.Hex.parse(encrypt_text) },
+        key,
+        { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.ZeroPadding }
+      );
+      // Fix: Utf8 decode the decrypted data
+      log("addScreen data decrypted: " + decrypted.toString(CryptoJS.enc.Utf8));
+
+      // LEGRAND_SC#DN#gatewayType#deviceNum
+      let data = decrypted.toString(CryptoJS.enc.Utf8).split("#");
+      if (data[0] == "LEGRAND_SC" && data.length == 4) {
+        let sql = sqlString(
+          "INSERT INTO lts_device_control(lts_mac,owned_id) VALUES (?,?)",
+          [data[1], userId]
+        );
+        await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(sql);
+        response = new HttpResponse(
+          {
+            msg: "Add screen success!",
+          },
+          {
+            statusCode: 200,
+            error: false,
+          }
+        );
+      } else {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Invalid data!",
+        });
+        return res.ok(response);
+      }
+    } catch (error) {
+      log("addScreen error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

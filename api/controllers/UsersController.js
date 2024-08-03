@@ -298,14 +298,22 @@ module.exports = {
     log("updateProfile => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let full_name = req.body.full_name;
+    let avatar = req.body.avatar;
     let response;
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
       let sqlUpdate = sqlString.format(
-        "update user_account set full_name = ? where user_id = ?",
-        [full_name, userId]
+        "update user_account set full_name = ?, avatar = ? where user_id = ?",
+        [full_name, avatar, userId]
       );
+      if (!avatar) {
+        sqlUpdate = sqlString.format(
+          "update user_account set full_name = ? where user_id = ?",
+          [full_name, userId]
+        );
+      }
+
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlUpdate);

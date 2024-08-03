@@ -207,10 +207,10 @@ module.exports = {
     let jwtToken = req.headers["auth-token"];
     let encrypt_text = req.body.encrypt_text;
     let response;
+    log("addScreen => " + JSON.stringify(jwtToken));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
-      log("addScreen => " + JSON.stringify(userId));
 
       let key = process.env.AES_SCREEN_KEY;
 

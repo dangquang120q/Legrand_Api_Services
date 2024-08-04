@@ -207,7 +207,7 @@ module.exports = {
   },
   addScreen: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
-    let encrypt_text = req.body.encrypt_text;
+    let encrypt_text = req.body.qrcode;
     let response;
     log("addScreen => " + JSON.stringify(jwtToken));
     try {

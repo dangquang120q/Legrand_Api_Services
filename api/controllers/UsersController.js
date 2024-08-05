@@ -307,6 +307,20 @@ module.exports = {
         "update user_account set full_name = ?, avatar = ? where user_id = ?",
         [full_name, avatar, userId]
       );
+      if (!full_name && !avatar) {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Invalid data.",
+        });
+        return res.ok(response);
+      }
+      if (!full_name) {
+        sqlUpdate = sqlString.format(
+          "update user_account set avatar = ? where user_id = ?",
+          [avatar, userId]
+        );
+      }
       if (!avatar) {
         sqlUpdate = sqlString.format(
           "update user_account set full_name = ? where user_id = ?",
@@ -1031,6 +1045,7 @@ module.exports = {
             full_name: userInfo["full_name"],
             created_at: userInfo["created_at"],
             updated_at: userInfo["updated_at"],
+            avatar: userInfo["avatar"],
           },
           {
             statusCode: 200,

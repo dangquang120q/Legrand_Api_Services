@@ -1,4 +1,5 @@
 const CryptoJS = require("crypto-js");
+const { log } = require("./log");
 
 module.exports = {
   formatObject: function (obj) {
@@ -23,6 +24,7 @@ module.exports = {
   decryptAES: function (cipherText, secret) {
     // IV is a base64 string
     try {
+      log("decryptAES: ", cipherText);
       var key = CryptoJS.enc.Utf8.parse(secret);
       // var cipherBytes = CryptoJS.enc.Base64.parse(cipherText);
 

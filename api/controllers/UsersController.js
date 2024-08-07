@@ -1182,7 +1182,7 @@ module.exports = {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
       let sql = sqlString.format(
-        "SELECT * FROM lts_device_control WHERE owned_id = ? and dept_id = home_id",
+        "SELECT * FROM lts_device_control WHERE owned_id = ? and dept_id = ?",
         [userId, home_id]
       );
       let data = await sails

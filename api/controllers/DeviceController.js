@@ -12,6 +12,7 @@ const { HttpResponse } = require("../services/http-response");
 const jwtoken = require("../services/jwtoken");
 const CryptoJS = require("crypto-js");
 const { decryptAES } = require("../services/utils");
+const sqlString = require("sqlstring");
 
 module.exports = {
   turnOnLight: async (req, res) => {
@@ -222,7 +223,7 @@ module.exports = {
       // LEGRAND_SC#DN#gatewayType#deviceNum
       let data = decode_text.split("#");
       if (data[0] == "LEGRAND_SC" && data.length == 4) {
-        let sql = sqlString(
+        let sql = sqlString.format(
           "INSERT INTO lts_device_control(lts_mac,lts_device_name,owned_id) VALUES (?,?,?)",
           [data[1], data[1], userId]
         );

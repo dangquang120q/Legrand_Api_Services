@@ -223,8 +223,8 @@ module.exports = {
       let data = decode_text.split("#");
       if (data[0] == "LEGRAND_SC" && data.length == 4) {
         let sql = sqlString(
-          "INSERT INTO lts_device_control(lts_mac,owned_id) VALUES (?,?)",
-          [data[1], userId]
+          "INSERT INTO lts_device_control(lts_mac,lts_device_name,owned_id) VALUES (?,?,?)",
+          [data[1], data[1], userId]
         );
         await sails
           .getDatastore(process.env.MYSQL_DATASTORE)

@@ -1173,4 +1173,28 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  getListSensor: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    log("getListSensor => " + JSON.stringify(jwtToken));
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format(
+        "SELECT * FROM lts_device_control WHERE owned_id = ?",
+        [userId]
+      );
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      response = new HttpResponse(data["rows"], {
+        statusCode: 200,
+        error: false,
+      });
+    } catch (error) {
+      log("getListSensor error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
 };

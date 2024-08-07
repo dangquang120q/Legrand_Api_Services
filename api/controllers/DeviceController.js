@@ -209,7 +209,7 @@ module.exports = {
   addScreen: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
     let encrypt_text = req.body.qrcode;
-    let home_id = req.body.home_id;
+    let home_id = req.body.home_id || 0;
     let response;
     log("addScreen => " + JSON.stringify(jwtToken));
     try {
@@ -245,10 +245,12 @@ module.exports = {
             }
           );
         } else {
+          let errorMsg =
+            ref == "-1" ? "Home does not exit" : "Sensor already exits!";
           response = new HttpResponse(null, {
             statusCode: 400,
             error: true,
-            errorMsg: "Sensor already exits!",
+            errorMsg: errorMsg,
           });
         }
         return res.ok(response);

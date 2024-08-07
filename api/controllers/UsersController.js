@@ -1183,7 +1183,7 @@ module.exports = {
       let userId = decodedToken["userId"];
       let sql = sqlString.format(
         "SELECT * FROM lts_device_control WHERE owned_id = ? and dept_id = home_id",
-        [userId]
+        [userId, home_id]
       );
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)

@@ -209,6 +209,7 @@ module.exports = {
   addScreen: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
     let encrypt_text = req.body.qrcode;
+    let home_id = req.body.home_id;
     let response;
     log("addScreen => " + JSON.stringify(jwtToken));
     try {
@@ -223,22 +224,34 @@ module.exports = {
       // LEGRAND_SC#DN#gatewayType#deviceNum
       let data = decode_text.split("#");
       if (data[0] == "LEGRAND_SC" && data.length == 4) {
-        let sql = sqlString.format(
-          "INSERT INTO lts_device_control(lts_mac,lts_device_name,owned_id) VALUES (?,?,?)",
-          [data[1], data[1], userId]
-        );
-        await sails
+        let sql = sqlString.format("call sp_add_screen(?,?,?)", [
+          userId,
+          data[1],
+          home_id,
+        ]);
+        let resData = await sails
           .getDatastore(process.env.MYSQL_DATASTORE)
           .sendNativeQuery(sql);
-        response = new HttpResponse(
-          {
-            msg: "Add screen success!",
-          },
-          {
-            statusCode: 200,
-            error: false,
-          }
-        );
+        let ref = resData["rows"][0][0]["ref"];
+        // let listSensor = resData['rows'][0]
+        if (ref == 1) {
+          response = new HttpResponse(
+            {
+              msg: "Add screen success!",
+            },
+            {
+              statusCode: 200,
+              error: false,
+            }
+          );
+        } else {
+          response = new HttpResponse(null, {
+            statusCode: 400,
+            error: true,
+            errorMsg: "Sensor already exits!",
+          });
+        }
+        return res.ok(response);
       } else {
         response = new HttpResponse(null, {
           statusCode: 400,

@@ -37,7 +37,8 @@ module.exports = {
       req.cmdType = request.cmdType;
       req.data = data;
       return {req,result};
-    } catch {
+    } catch(error) {
+        console.log(error);
         const req = {};
         let result = -1;
         return {req,result};
@@ -56,7 +57,7 @@ module.exports = {
             .getDatastore(process.env.MYSQL_DATASTORE)
             .sendNativeQuery(sql);
         let sqlGet = sqlString.format(
-          "select lts_device_version from lts_device_control where lts_mac = ?", [lts_mac]
+          "select lts_device_version from lts_device_control where lts_mac = ?", [data.gatewayDn]
         );
         let dataVersion = await sails
           .getDatastore(process.env.MYSQL_DATASTORE)
@@ -66,7 +67,8 @@ module.exports = {
         req.data = data;
         req.data.deviceVersion = dataVersion["rows"][0]["lts_device_version"];
         return {req,result};
-    } catch {
+    } catch(error) {
+        console.log(error);
         const req = {};
         let result = -1;
         return {req,result};
@@ -85,7 +87,7 @@ module.exports = {
             .getDatastore(process.env.MYSQL_DATASTORE)
             .sendNativeQuery(sql);
         let sqlGet = sqlString.format(
-          "select lts_device_version from lts_device_control where lts_mac = ?", [lts_mac]
+          "select lts_device_version from lts_device_control where lts_mac = ?", [data.gatewayDn]
         );
         let dataVersion = await sails
           .getDatastore(process.env.MYSQL_DATASTORE)
@@ -95,7 +97,8 @@ module.exports = {
         req.data = data;
         req.data.deviceVersion = dataVersion["rows"][0]["lts_device_version"];
         return {req,result};
-    } catch {
+    } catch(error) {
+        console.log(error);
         const req = {};
         let result = -1;
         return {req,result};

@@ -1173,7 +1173,7 @@ module.exports = {
       return res.serverError(response);
     }
   },
-  getListSensor: async (req, res) => {
+  getListScreen: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
     let response;
     let home_id = req.body.home_id;

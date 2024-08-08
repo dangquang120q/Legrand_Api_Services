@@ -21,19 +21,23 @@ module.exports = {
 
     return filteredObj;
   },
-  decryptAES: function (cipherText, secret) {
+  decryptAES: function (cipherText, key) {
     // IV is a base64 string
     try {
       log("decryptAES: ", cipherText);
-      var key = CryptoJS.enc.Utf8.parse(secret);
-      // var cipherBytes = CryptoJS.enc.Base64.parse(cipherText);
+      // Tạo một đối tượng decipher
+      const decipher = crypto.createDecipheriv(
+        "aes-128-ecb",
+        Buffer.from(key, "hex"),
+        null
+      );
+      decipher.setAutoPadding(true);
 
-      var decrypted = CryptoJS.AES.decrypt(cipherText, key, {
-        mode: CryptoJS.mode.ECB,
-        padding: CryptoJS.pad.ZeroPadding,
-      });
+      // Giải mã dữ liệu
+      let decrypted = decipher.update(cipherText, "base64", "utf8");
+      decrypted += decipher.final("utf8");
 
-      return decrypted.toString(CryptoJS.enc.Utf8);
+      return decrypted;
     } catch (error) {
       return "";
     }

@@ -1,5 +1,6 @@
 const CryptoJS = require("crypto-js");
 const { log } = require("./log");
+const crypto = require("crypto");
 
 module.exports = {
   formatObject: function (obj) {

@@ -1,7 +1,8 @@
 const crypto = require("crypto");
 
 // Dữ liệu cần mã hóa
-const data = "LEGRAND_SC#BA671EFEFFB96F8C#1#0";
+// const data = "LEGRAND_SC#BA671EFEFFB96F8C#1#0";
+const data = "LEGRAND_SC#BA7C5B4E3F2D9C8E#1#0";
 // Khóa AES-128-ECB
 const key = "E26DC731BF67F664D28E90E008B083A6";
 

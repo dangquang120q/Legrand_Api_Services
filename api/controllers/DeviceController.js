@@ -233,11 +233,12 @@ module.exports = {
           .getDatastore(process.env.MYSQL_DATASTORE)
           .sendNativeQuery(sql);
         let ref = resData["rows"][0][0]["ref"];
-        // let listSensor = resData['rows'][0]
+        let newSensor = resData["rows"][1][0];
         if (ref == 1) {
           response = new HttpResponse(
             {
               msg: "Add screen success!",
+              data: newSensor,
             },
             {
               statusCode: 200,

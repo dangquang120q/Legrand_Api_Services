@@ -1188,6 +1188,33 @@ module.exports = {
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
+      log("list screen: " + JSON.stringify(data["rows"]));
+      response = new HttpResponse(data["rows"], {
+        statusCode: 200,
+        error: false,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("getListSensor error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  getListSensor: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    let lts_mac = req.body.lts_mac;
+    log("getListSensor => " + JSON.stringify(jwtToken));
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format(
+        "select * from lts_device_detail where lts_mac = ? and (productKey = ? or productKey = ?)",
+        [lts_mac, process.env.WATER_SENSOR_KEY, process.env.WATER_SENSOR_KEY_1]
+      );
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
       log("list sensor: " + JSON.stringify(data["rows"]));
       response = new HttpResponse(data["rows"], {
         statusCode: 200,

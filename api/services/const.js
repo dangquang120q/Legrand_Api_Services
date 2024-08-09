@@ -49,7 +49,6 @@ module.exports = {
     lights: [
       "Z3L",
       "NLD",
-      "NLTS",
       "NLFE",
       "NLIS",
       "NLM",

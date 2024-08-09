@@ -184,6 +184,7 @@ module.exports = {
   setState: async (params) => {
     const { action, value, home_id, module_id, bridge, access_token, room_id } =
       params;
+    log("setState params: " + JSON.stringify(params));
     let body = {
       home: {
         id: home_id,
@@ -224,6 +225,14 @@ module.exports = {
             ],
           },
         };
+        break;
+      case SET_STATE_ACTION.changeFanSpeed:
+        body.home.modules.push({
+          id: module_id,
+          bridge: bridge,
+          ...value,
+        });
+        break;
       default:
         break;
     }

@@ -8,39 +8,39 @@ const { checkVersion } = require("./socket/checkVersion");
 const { addDevice, delDevice,switchDevice, battery, alarm, reportDeviceMode } = require("./socket/data-report");
 const { doChangePassword, doLampControl,doModLocation, doModName, doDeviceMode } = require("./socket/data-modify");
 
-const {
-  deviceList,
-  deviceListVersion,
-  cityList,
-  ntp,
-  weather,
-} = require("./socket/data-query");
-const { firmWareInfo, LTSversion,updateLight,modifyLocation,modifyName,changePasswordLTS } = require("./socket/update-lts");
-const { SOCKET_REQUEST } = require("./const");
-const dataUtils = require('./socket/data-utils');
+// const {
+//   deviceList,
+//   deviceListVersion,
+//   cityList,
+//   ntp,
+//   weather,
+// } = require("./socket/data-query");
+// const { firmWareInfo, LTSversion,updateLight,modifyLocation,modifyName,changePasswordLTS } = require("./socket/update-lts");
+// const { SOCKET_REQUEST } = require("./const");
+// const dataUtils = require('./socket/data-utils');
 
-const options = {
-  key: fs.readFileSync('privkey.pem'),
-  cert: fs.readFileSync('fullchain.pem'),
-  // Các tùy chọn bổ sung như passphrase, ca, crl, etc. (nếu cần)
-};
-// creates the server
-var server = tls.createServer(options);
+// const options = {
+//   key: fs.readFileSync('privkey.pem'),
+//   cert: fs.readFileSync('fullchain.pem'),
+//   // Các tùy chọn bổ sung như passphrase, ca, crl, etc. (nếu cần)
+// };
+// // creates the server
+// var server = tls.createServer(options);
 
-//emitted when server closes ...not emitted until all connections closes.
-server.on("close", function () {
-  console.log("Server closed !");
-});
-var list_account = {};
-var list_account_test = {};
-// emitted when new client connects
-server.on("secureConnection", function (socket) {
-  //this property shows the number of characters currently buffered to be written. (Number of characters is approximately equal to the number of bytes to be written, but the buffer may contain strings, and the strings are lazily encoded, so the exact number of bytes is not known.)
-  //Users who experience large or growing bufferSize should attempt to "throttle" the data flows in their program with pause() and resume().
+// //emitted when server closes ...not emitted until all connections closes.
+// server.on("close", function () {
+//   console.log("Server closed !");
+// });
+// var list_account = {};
+// var list_account_test = {};
+// // emitted when new client connects
+// server.on("secureConnection", function (socket) {
+//   //this property shows the number of characters currently buffered to be written. (Number of characters is approximately equal to the number of bytes to be written, but the buffer may contain strings, and the strings are lazily encoded, so the exact number of bytes is not known.)
+//   //Users who experience large or growing bufferSize should attempt to "throttle" the data flows in their program with pause() and resume().
 
-  console.log("Buffer size : " + socket.bufferSize);
+//   console.log("Buffer size : " + socket.bufferSize);
 
-  console.log("---------server details -----------------");
+//   console.log("---------server details -----------------");
 
   var address = server.address();
   var port = address.port;
@@ -254,7 +254,7 @@ server.on("secureConnection", function (socket) {
   //     console.log("Socket destroyed:" + isdestroyed);
   //     socket.destroy();
   //   }, 1200000);
-});
+// });
 
 // emits when any error occurs -> calls closed event immediately after this.
 server.on("error", function (error) {
@@ -412,15 +412,328 @@ server.listen(9601);
 //   console.log("Server is listening at port" + port);
 //   console.log("Server ip :" + ipaddr);
 //   console.log("Server is IP4/IP6 : " + family);
+
+//   var lport = socket.localPort;
+//   var laddr = socket.localAddress;
+//   console.log("Server is listening at LOCAL port" + lport);
+//   console.log("Server LOCAL ip :" + laddr);
+
+//   console.log("------------remote client info --------------");
+
+//   var rport = socket.remotePort;
+//   var raddr = socket.remoteAddress;
+//   var rfamily = socket.remoteFamily;
+
+//   console.log("REMOTE Socket is listening at port" + rport);
+//   console.log("REMOTE Socket ip :" + raddr);
+//   console.log("REMOTE Socket is IP4/IP6 : " + rfamily);
+
+//   console.log("--------------------------------------------");
+//   //var no_of_connections =  server.getConnections(); // sychronous version
+//   server.getConnections(function (error, count) {
+//     console.log("Number of concurrent connections to the server : " + count);
+//   });
+
+//   socket.setEncoding("latin1");
+
+
+
+//   socket.on("data", async function (request) {
+//     log("Data sent to server : " + request);
+//     var { header, body, end } = dataUtils.extractData(request);
+//     try{
+//       var data = JSON.parse(body);
+//       let Ack = 0;
+//       const { cmdType, packetNo } = data;
+//       let response = {
+//         cmdType: "",
+//         packetNo: "",
+//       };
+//       if (cmdType) {
+//         switch (cmdType) {
+//           case SOCKET_REQUEST.login:
+//             response = await login(data);
+//             list_account[socket.remoteAddress] = data.data["dn"];
+//             list_account_test[socket.remoteAddress] = {
+//               dn: data.data["dn"],
+//               socket: socket
+//             };
+//             setTimeout(async () => {
+//               let response = await checkPing(list_account[socket.remoteAddress]);
+//               if (response.result == -1) {
+//                 socket.end("Timed out!");
+//               }
+//             }, 130000);
+//             break;
+//           case SOCKET_REQUEST.heartbeat:
+//             response = await heartbeat(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.addDevice:
+//             response = await addDevice(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.delDevice:
+//             response = await delDevice(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.switch:
+//             response = await switchDevice(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.battery:
+//             response = await battery(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.alarm:
+//             response = await alarm(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.deviceListVersion:
+//             response = await deviceListVersion(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.deviceList:
+//             response = await deviceList(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.cityList:
+//             response = await cityList(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.weather:
+//             response = await weather(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.ntp:
+//             response = await ntp(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.LTSVersion:
+//             response = await LTSversion(data,list_account[socket.remoteAddress]);
+//             setTimeout(async () => {
+//               let { req, result } = await checkVersion(list_account[socket.remoteAddress]);
+//               console.log(JSON.stringify(req));
+//               if (result == 0) {
+//                 socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+//               }
+//             }, 1000);
+//             break;
+//           case SOCKET_REQUEST.firmwareInfo:
+//             response = await firmWareInfo(data,list_account[socket.remoteAddress]);
+//             break;
+//           case SOCKET_REQUEST.lightAck:
+//             await updateLight(data,list_account[socket.remoteAddress]);
+//             Ack = 1;
+//             break;
+//           case SOCKET_REQUEST.deviceLocationAck:
+//             await modLocation(data,list_account[socket.remoteAddress]);
+//             Ack = 1;
+//             break;
+//           case SOCKET_REQUEST.deviceNameAck:
+//             await modName(data,list_account[socket.remoteAddress]);
+//             Ack = 1;
+//             break;
+//           case SOCKET_REQUEST.changePasswordAck:
+//             await changePasswordLTS(data,list_account[socket.remoteAddress]);
+//             Ack = 1;
+//             break;
+//           default:
+//             break;
+//         }
+//         response.cmdType = cmdType + "Ack";
+//         // if (cmdType == SOCKET_REQUEST.LTSVersion) {
+//         //   response.cmdType = "deviceVersionAck";
+//         // }
+
+//         // if (cmdType == SOCKET_REQUEST.deviceListVersion) {
+//         //   response.cmdType = "devListVerAck";
+//         // }
+//       }
+//       //echo data
+//       for (i = 0; i < header.length; i++) {
+//         var hex = header.charCodeAt(i).toString(16);
+//         console.log("header char code at response: " + i + " -- " + hex);
+//       }
+//       console.log("header " + header.toString(16));
+//       console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));
+//       if (cmdType != SOCKET_REQUEST.upgradeAck && Ack != 1) {
+//         var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end), 'latin1');
+//         if (is_kernel_buffer_full) {
+//           console.log(
+//             "Data was flushed successfully from kernel buffer i.e written successfully!"
+//           );
+//         } else {
+//           console.log(
+//             "Data was flushed unsuccessfully from kernel buffer i.e written unsuccessfully!"
+//           );
+//           socket.pause();
+//         }
+//       }
+//       setTimeout(async () => {
+//         let response = await checkPing(list_account[socket.remoteAddress]);
+//         if (response.result == -1) {
+//           socket.end("Timed out!");
+//         }
+//       }, 130000);
+    
+//     }
+//     catch (error) {
+//       log('error' + error);
+//   }
+//   });
+
+//   socket.on("drain", function () {
+//     console.log(
+//       "write buffer is empty now .. u can resume the writable stream"
+//     );
+//     socket.resume();
+//   });
+
+//   socket.on("error", function (error) {
+//     console.log("Error : " + error);
+//   });
+
+//   socket.on("timeout", function () {
+//     console.log("Socket timed out !");
+//     socket.end("Timed out!");
+//     // can call socket.destroy() here too.
+//   });
+
+//   socket.on("end", function (data) {
+//     console.log("Socket ended from other end!");
+//     console.log("End data : " + data);
+//   });
+
+//   socket.on("close", function (error) {
+//     var bread = socket.bytesRead;
+//     var bwrite = socket.bytesWritten;
+//     console.log("Bytes read : " + bread);
+//     console.log("Bytes written : " + bwrite);
+//     console.log("Socket closed!");
+//     if (error) {
+//       console.log("Socket was closed coz of transmission error");
+//     }
+//   });
+
+//   //   setTimeout(function () {
+//   //     var isdestroyed = socket.destroyed;
+//   //     console.log("Socket destroyed:" + isdestroyed);
+//   //     socket.destroy();
+//   //   }, 1200000);
 // });
 
-// var islistening = server.listening;
+// // emits when any error occurs -> calls closed event immediately after this.
+// server.on("error", function (error) {
+//   console.log("Error: " + error);
+// });
 
-// if (islistening) {
-//   console.log("Server is listening");
-// } else {
-//   console.log("Server is not listening");
+// //emits when server is bound with server.listen
+// server.on("listening", function () {
+//   console.log("Socket is listening!");
+// });
+
+// const upgradeVersion = async (request) => {
+//   try {
+//     Object.values(list_account_test).forEach(async (account) => {
+//       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+//       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+//       if (socket) {
+//         let {req,result} = await checkVersion(account.dn);
+//         let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+//           .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+//           .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+//         let end = dataUtils.fromCharCodeData(16);
+//         if (result == 0) {
+//           socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+//         }
+//       }
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
 // }
+// const controlLight = async (request) => {
+//   try {
+//     Object.values(list_account_test).forEach(async (account) => {
+//       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+//       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+//       if (socket) {
+//         console.log(account.dn);
+//         console.log(request.data["gatewayDn"]);
+//         if (account.dn == request.data["gatewayDn"]) {
+//           let {req,result} = await doLampControl(request);
+//           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+//             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+//             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+//           let end = dataUtils.fromCharCodeData(16);
+//           if (result == 0) {
+//             socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+//           }
+//         }
+//       }
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// const modLocation = async (request) => {
+//   try {
+//     Object.values(list_account_test).forEach(async (account) => {
+//       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+//       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+//       if (socket) {
+//         if (account.dn == request.data["gatewayDn"]) {
+//           let {req,result} = await doModLocation(request);
+//           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+//             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+//             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+//           let end = dataUtils.fromCharCodeData(16);
+//           if (result == 0) {
+//             socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+//           }        
+//         }
+//       }
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// const modName = async (request) => {
+//   try {
+//     Object.values(list_account_test).forEach(async (account) => {
+//       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+//       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+//       if (socket) {
+//         if (account.dn == request.data["gatewayDn"]) {
+//           let {req,result} = await doModName(request);
+//           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+//             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+//             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+//           let end = dataUtils.fromCharCodeData(16);
+//           if (result == 0) {
+//             socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+//           }        
+//         }
+//       }
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// const changePassword = async (request) => {
+//   try {
+//     Object.values(list_account_test).forEach(async (account) => {
+//       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+//       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+//       if (socket) {
+//         if (account.dn == request.data["gatewayDn"]) {
+//           let {req,result} = await doChangePassword(request);
+//           let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
+//             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
+//             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+//           let end = dataUtils.fromCharCodeData(16);
+//           if (result == 0) {
+//             socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+//           }        
+//         }
+//       }
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// //static port allocation
+// server.listen(9601);
 
 // setTimeout(function () {
 //   server.close();

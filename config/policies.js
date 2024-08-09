@@ -36,12 +36,17 @@ module.exports.policies = {
     shareAccount: "checkJwtoken",
     getUserInfo: "checkJwtoken",
     deleteAccount: "checkJwtoken",
+    getHomeDevices: "checkJwtoken",
+    getListScreen: "checkJwtoken",
+    getListSensor: "checkJwtoken",
   },
   DeviceController: {
     turnOnLight: "checkJwtoken",
     changeLightBrightness: "checkJwtoken",
     openCurtain: "checkJwtoken",
     controlAirConditioner: "checkJwtoken",
+    changeFanSpeed: "checkJwtoken",
+    addScreen: "checkJwtoken",
   },
   ReportController: {
     temperatureReport: "checkJwtoken",

@@ -9,6 +9,10 @@ const { log } = require("../services/log");
 const { SET_STATE_ACTION } = require("../services/const");
 const { setState } = require("../services/netamo-token");
 const { HttpResponse } = require("../services/http-response");
+const jwtoken = require("../services/jwtoken");
+const CryptoJS = require("crypto-js");
+const { decryptAES } = require("../services/utils");
+const sqlString = require("sqlstring");
 
 module.exports = {
   turnOnLight: async (req, res) => {
@@ -129,6 +133,7 @@ module.exports = {
     if (end_time) {
       value["cooling_setpoint_end_time"] = +end_time;
     }
+    log("controlAirConditioner => " + JSON.stringify(value));
     try {
       const data = await setState({
         action: SET_STATE_ACTION.chageTemperatureSetpoint,
@@ -155,6 +160,111 @@ module.exports = {
       return res.ok(response);
     } catch (error) {
       log("Change air conditioner set point error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  changeFanSpeed: async (req, res) => {
+    let access_token = req.headers["access-token"];
+    let { net_home_id, bridge, device_id, mode, speed, end_time } = req.body;
+    try {
+      let value = {
+        fan_setpoint_from: "module",
+        fan_mode: mode || "manual",
+        fan_speed: speed,
+      };
+      if (end_time) {
+        value.fan_end_time = end_time;
+      }
+      const data = await setState({
+        action: SET_STATE_ACTION.changeFanSpeed,
+        value: value,
+        home_id: net_home_id,
+        access_token,
+        bridge,
+        module_id: device_id,
+      });
+      log("changeFanSpeed data: " + JSON.stringify(data));
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
+      response = new HttpResponse(
+        {
+          msg: "Change fan speed successfull",
+        },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("Change fan speed error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  addScreen: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let encrypt_text = req.body.qrcode;
+    let home_id = req.body.home_id || 0;
+    let response;
+    log("addScreen => " + JSON.stringify(jwtToken));
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+
+      let key = process.env.AES_SCREEN_KEY;
+      let decode_text = decryptAES(encrypt_text, key);
+      // Fix: Utf8 decode the decrypted data
+      log("addScreen data decrypted: " + decode_text);
+
+      // LEGRAND_SC#DN#gatewayType#deviceNum
+      let data = decode_text.split("#");
+      if (data[0] == "LEGRAND_SC" && data.length == 4) {
+        let sql = sqlString.format("call sp_add_screen(?,?,?)", [
+          userId,
+          data[1],
+          home_id,
+        ]);
+        let resData = await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(sql);
+        let ref = resData["rows"][0][0]["ref"];
+        let newSensor = resData["rows"][1][0];
+        if (ref == 1) {
+          response = new HttpResponse(
+            {
+              msg: "Add screen success!",
+              data: newSensor,
+            },
+            {
+              statusCode: 200,
+              error: false,
+            }
+          );
+        } else {
+          let errorMsg =
+            ref == "-1" ? "Home does not exit" : "Sensor already exits!";
+          response = new HttpResponse(null, {
+            statusCode: 400,
+            error: true,
+            errorMsg: errorMsg,
+          });
+        }
+        return res.ok(response);
+      } else {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Invalid data!",
+        });
+        return res.ok(response);
+      }
+    } catch (error) {
+      log("addScreen error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

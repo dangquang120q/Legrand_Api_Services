@@ -50,6 +50,9 @@ module.exports.routes = {
   "POST /user/sendRequestSocket": "UsersController.sendRequestSocket",
   "POST /user/getRoomDetail": "UsersController.getRoomDetail",
   "POST /user/removeMappingHome": "UsersController.removeMappingHome",
+  "POST /user/getHomeDevices": "UsersController.getHomeDevices",
+  "POST /user/getListScreen": "UsersController.getListScreen",
+  "POST /user/getListSensor": "UsersController.getListSensor",
 
   "POST /device/turnOnLight": "DeviceController.turnOnLight",
   "POST /device/controlDoorlock": "DeviceController.turnOnLight",
@@ -58,6 +61,8 @@ module.exports.routes = {
   "POST /device/openCurtain": "DeviceController.openCurtain",
   "POST /device/controlAirConditioner":
     "DeviceController.controlAirConditioner",
+  "POST /device/changeFanSpeed": "DeviceController.changeFanSpeed",
+  "POST /device/addScreen": "DeviceController.addScreen",
 
   "POST /report/temperature": "ReportController.temperatureReport",
   "POST /report/electricity": "ReportController.electricityReport",

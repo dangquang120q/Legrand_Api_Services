@@ -25,7 +25,11 @@ const {
   changePassword,
   deviceMode,
 } = require("../services/net");
-const { DEVICE_CODES, SOCKET_REQUEST } = require("../services/const");
+const {
+  DEVICE_CODES,
+  SOCKET_REQUEST,
+  SCENARIO_TYPE,
+} = require("../services/const");
 const sendMailjet = require("../services/mailjet-util");
 const transporter = require("../services/mailtrap-utils");
 const notificationQueue = require("../services/firebase-queue");
@@ -702,6 +706,8 @@ module.exports = {
       let userId = decodedToken["userId"];
       let response_data = {};
       let listhomes = [];
+
+      // Call API /homesdata get list room
       const data = await getHomeData({
         access_token,
         home_id,
@@ -715,16 +721,24 @@ module.exports = {
         });
         return res.send(response);
       }
+
+      // Loop all homes
       for (let index = 0; index < data.homes?.length; index++) {
         const element = data.homes[index];
+
+        // call API /homestatus get home detail
         const homeStatus = await getHomeStatus({
           home_id: element["id"],
           access_token,
         });
         let rooms = [];
         let doorLock = null;
+
+        // Loop all rooms in home
         for (let id = 0; id < element["rooms"]?.length; id++) {
           const room = element["rooms"][id];
+
+          // Check if room is Doorlock and get room detail from /homestatus
           if (room.name.toLowerCase() != "door lock") {
             const temperature = homeStatus.body?.home?.rooms
               ? homeStatus.body?.home?.rooms.find((item) => item.id == room.id)
@@ -744,30 +758,73 @@ module.exports = {
             doorLock = doorStatus || null;
           }
         }
+
         // Scenario
-        const scenarios = await getScenario({
+
+        // Call api /getscenario
+        const scenarioData = await getScenario({
           home_id: element["id"],
           access_token,
         });
-        if (scenarios.error?.code) {
+        if (scenarioData.error?.code) {
           response = new HttpResponse(null, {
-            statusCode: "NET_" + scenarios.error.code,
+            statusCode: "NET_" + scenarioData.error.code,
             error: true,
-            errorMsg: scenarios.error.message,
+            errorMsg: scenarioData.error.message,
           });
           return res.send(response);
         }
+        const module_scenario = scenarioData.body?.home?.modules || [];
+        let scenarios =
+          scenarioData.body?.home?.scenarios.map((item) => ({
+            id: item.id,
+            name: item.type,
+            displayName: SCENARIO_TYPE[item.type] || item.type,
+            selected: "",
+            roomName: item.category,
+          })) || [];
+        // Transform the array into an object with keys as ids
+        const scenarioObj = scenarios.reduce((acc, obj) => {
+          const { id, ...rest } = obj; // Destructure id and rest of properties
+          acc[id] = {
+            id: id,
+            ...rest,
+            modules: [],
+          }; // Add the rest of properties to the result object with id as the key
+          return acc;
+        }, {});
 
+        // Loop all modules in api /getscenario
+        module_scenario.forEach((item) => {
+          if (item.id && item.scenarios) {
+            item.scenarios.forEach((scenario) => {
+              let { id: scenario_id, ...status } = scenario;
+              scenarioObj[scenario.id]["modules"].push({
+                id: item.id,
+                ...status,
+              });
+            });
+          }
+        });
+
+        // Finale scenarios
+        scenarios = Object.keys(scenarioObj).map((key) => {
+          let scenario = scenarioObj[key];
+          return {
+            ...scenario,
+            isEmpty:
+              scenario.modules.length != 0 &&
+              scenario.modules.find((module) => Object.keys(module).length > 1)
+                ? false
+                : true,
+          };
+        });
+
+        // Response data
         let home_data = {
           id: element["id"],
           name: element["name"],
-          scenarios:
-            scenarios.body?.home?.scenarios.map((item) => ({
-              id: item.id,
-              name: item.type,
-              selected: "",
-              roomName: item.category,
-            })) || [],
+          scenarios: scenarios,
           waterLeakage: {
             valve: "off",
             alarm: "off",
@@ -1099,8 +1156,10 @@ module.exports = {
         humidity: room["humidity"] || null,
         reachable: room["reachable"] || false,
         devices: {
-          lights: roomDevices.filter((item) =>
-            DEVICE_CODES.lights.includes(item.type)
+          lights: roomDevices.filter(
+            (item) =>
+              DEVICE_CODES.lights.includes(item.type) &&
+              item.variant != "NLTS:remote_motion_sensor"
           ),
 
           curtains: roomDevices
@@ -1251,7 +1310,130 @@ module.exports = {
         return res.send(response);
       }
     } catch (error) {
-      log("Logout error => " + error.toString());
+      log("deleteAccount error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  getHomeDevices: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let access_token = req.headers["access-token"];
+    let home_id = req.body.net_home_id || "";
+    log("getHomeDevices => " + home_id);
+
+    let response;
+    try {
+      const homeData = await getHomeData({
+        access_token,
+        home_id,
+      });
+      if (homeData.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + homeData.error.code,
+          error: true,
+          errorMsg: homeData.error.message,
+        });
+        return res.send(response);
+      }
+      let homeStatus = await getHomeStatus({
+        access_token,
+        home_id,
+      });
+      if (homeStatus.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + homeData.error.code,
+          error: true,
+          errorMsg: homeStatus.error.message,
+        });
+        return res.send(response);
+      }
+      let errors = homeStatus.body.errors;
+      homeStatus = homeStatus.body.home;
+      let devices =
+        homeData?.homes[0]?.modules.map((item) => ({
+          ...item,
+          reachable: errors?.find(
+            (error) => item["id"] == error.id || item["bridge"] == error.id
+          )
+            ? false
+            : true,
+        })) || [];
+      devices = devices.map((item) => {
+        const device = homeStatus?.modules?.find(
+          (dItem) => dItem.id == item.id
+        );
+        return {
+          ...item,
+          ...device,
+        };
+      });
+      let lights = devices.filter(
+        (item) =>
+          DEVICE_CODES.lights.includes(item.type) &&
+          item.variant != "NLTS:remote_motion_sensor"
+      );
+      response = new HttpResponse(lights, {
+        statusCode: 200,
+        error: false,
+        errorMsg: null,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("getHomeDevices error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  getListScreen: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    let home_id = req.body.home_id;
+    log("getListSensor => " + JSON.stringify(jwtToken));
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format(
+        "SELECT * FROM lts_device_control WHERE owned_id = ? and dept_id = ?",
+        [userId, home_id]
+      );
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      log("list screen: " + JSON.stringify(data["rows"]));
+      response = new HttpResponse(data["rows"], {
+        statusCode: 200,
+        error: false,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("getListSensor error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  getListSensor: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    let lts_mac = req.body.lts_mac;
+    log("getListSensor => " + JSON.stringify(jwtToken));
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format(
+        "select * from lts_device_detail where lts_mac = ? and (productKey = ? or productKey = ?)",
+        [lts_mac, process.env.WATER_SENSOR_KEY, process.env.WATER_SENSOR_KEY_1]
+      );
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      log("list sensor: " + JSON.stringify(data["rows"]));
+      response = new HttpResponse(data["rows"], {
+        statusCode: 200,
+        error: false,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("getListSensor error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

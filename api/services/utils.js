@@ -1,3 +1,7 @@
+const CryptoJS = require("crypto-js");
+const { log } = require("./log");
+const crypto = require("crypto");
+
 module.exports = {
   formatObject: function (obj) {
     // Filter out entries where the value is not undefined
@@ -17,5 +21,26 @@ module.exports = {
     const filteredObj = Object.fromEntries(filteredEntries);
 
     return filteredObj;
+  },
+  decryptAES: function (cipherText, key) {
+    // IV is a base64 string
+    try {
+      log("decryptAES: ", cipherText);
+      // Tạo một đối tượng decipher
+      const decipher = crypto.createDecipheriv(
+        "aes-128-ecb",
+        Buffer.from(key, "hex"),
+        null
+      );
+      decipher.setAutoPadding(true);
+
+      // Giải mã dữ liệu
+      let decrypted = decipher.update(cipherText, "base64", "utf8");
+      decrypted += decipher.final("utf8");
+
+      return decrypted;
+    } catch (error) {
+      return "";
+    }
   },
 };

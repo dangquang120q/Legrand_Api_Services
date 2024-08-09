@@ -8,37 +8,37 @@ const { checkVersion } = require("./socket/checkVersion");
 const { addDevice, delDevice,switchDevice, battery, alarm, reportDeviceMode } = require("./socket/data-report");
 const { doChangePassword, doLampControl,doModLocation, doModName, doDeviceMode } = require("./socket/data-modify");
 
-// const {
-//   deviceList,
-//   deviceListVersion,
-//   cityList,
-//   ntp,
-//   weather,
-// } = require("./socket/data-query");
-// const { firmWareInfo, LTSversion,updateLight,modifyLocation,modifyName,changePasswordLTS } = require("./socket/update-lts");
-// const { SOCKET_REQUEST } = require("./const");
-// const dataUtils = require('./socket/data-utils');
+const {
+  deviceList,
+  deviceListVersion,
+  cityList,
+  ntp,
+  weather,
+} = require("./socket/data-query");
+const { firmWareInfo, LTSversion,updateLight,modifyLocation,modifyName,changePasswordLTS } = require("./socket/update-lts");
+const { SOCKET_REQUEST } = require("./const");
+const dataUtils = require('./socket/data-utils');
 
-// const options = {
-//   key: fs.readFileSync('privkey.pem'),
-//   cert: fs.readFileSync('fullchain.pem'),
-//   // Các tùy chọn bổ sung như passphrase, ca, crl, etc. (nếu cần)
-// };
-// // creates the server
-// var server = tls.createServer(options);
+const options = {
+  key: fs.readFileSync('privkey.pem'),
+  cert: fs.readFileSync('fullchain.pem'),
+  // Các tùy chọn bổ sung như passphrase, ca, crl, etc. (nếu cần)
+};
+// creates the server
+var server = tls.createServer(options);
 
-// //emitted when server closes ...not emitted until all connections closes.
-// server.on("close", function () {
-//   console.log("Server closed !");
-// });
-// var list_account = {};
-// var list_account_test = {};
-// // emitted when new client connects
-// server.on("secureConnection", function (socket) {
-//   //this property shows the number of characters currently buffered to be written. (Number of characters is approximately equal to the number of bytes to be written, but the buffer may contain strings, and the strings are lazily encoded, so the exact number of bytes is not known.)
-//   //Users who experience large or growing bufferSize should attempt to "throttle" the data flows in their program with pause() and resume().
+//emitted when server closes ...not emitted until all connections closes.
+server.on("close", function () {
+  console.log("Server closed !");
+});
+var list_account = {};
+var list_account_test = {};
+// emitted when new client connects
+server.on("secureConnection", function (socket) {
+  //this property shows the number of characters currently buffered to be written. (Number of characters is approximately equal to the number of bytes to be written, but the buffer may contain strings, and the strings are lazily encoded, so the exact number of bytes is not known.)
+  //Users who experience large or growing bufferSize should attempt to "throttle" the data flows in their program with pause() and resume().
 
-//   console.log("Buffer size : " + socket.bufferSize);
+  console.log("Buffer size : " + socket.bufferSize);
 
 //   console.log("---------server details -----------------");
 
@@ -254,7 +254,7 @@ const { doChangePassword, doLampControl,doModLocation, doModName, doDeviceMode }
   //     console.log("Socket destroyed:" + isdestroyed);
   //     socket.destroy();
   //   }, 1200000);
-// });
+});
 
 // emits when any error occurs -> calls closed event immediately after this.
 server.on("error", function (error) {

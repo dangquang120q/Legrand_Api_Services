@@ -217,6 +217,7 @@ module.exports = {
       let userId = decodedToken["userId"];
 
       let key = process.env.AES_SCREEN_KEY;
+      log("addScreen => encrypt_text => " + encrypt_text);
       let decode_text = decryptAES(encrypt_text, key);
       // Fix: Utf8 decode the decrypted data
       log("addScreen data decrypted: " + decode_text);

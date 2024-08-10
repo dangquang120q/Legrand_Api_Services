@@ -40,9 +40,7 @@ module.exports = {
       // Decrypt the text
       let keyHex = CryptoJS.enc.Hex.parse(key);
       let decrypted = CryptoJS.AES.decrypt(
-        {
-          ciphertext: cipherText
-        },
+        cipherText,
         keyHex,
         {
           mode: CryptoJS.mode.ECB,

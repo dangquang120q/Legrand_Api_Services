@@ -1388,7 +1388,7 @@ module.exports = {
     let jwtToken = req.headers["auth-token"];
     let response;
     let home_id = req.body.home_id;
-    log("getListSensor => " + JSON.stringify(jwtToken));
+    log("getListSensor => " + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
@@ -1415,7 +1415,7 @@ module.exports = {
     let jwtToken = req.headers["auth-token"];
     let response;
     let lts_mac = req.body.lts_mac;
-    log("getListSensor => " + JSON.stringify(jwtToken));
+    log("getListSensor => " + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];

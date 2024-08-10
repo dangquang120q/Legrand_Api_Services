@@ -22,7 +22,8 @@ module.exports = {
 
     return filteredObj;
   },
-  decryptAES: function (cipherText, key) {
+  decryptAES: async function (cipherText) {
+    let key = process.env.AES_SCREEN_KEY;
     log("decryptAES: ", cipherText);
     log("decryptAES key: ", key);
     // IV is a base64 string

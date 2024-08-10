@@ -24,11 +24,11 @@ module.exports = {
   },
   decryptAES: async function (cipherText) {
     let key = process.env.AES_SCREEN_KEY;
-    log("decryptAES: ", cipherText);
-    log("decryptAES key: ", key);
+    // log("decryptAES: ", cipherText);
+    // log("decryptAES key: ", key);
     // IV is a base64 string
     try {
-      log("decryptAES: ", cipherText);
+      // log("decryptAES: ", cipherText);
       // Tạo một đối tượng decipher
       // const decipher = crypto.createDecipheriv(
       //   "aes-128-ecb",

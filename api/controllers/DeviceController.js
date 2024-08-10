@@ -255,6 +255,7 @@ module.exports = {
             errorMsg: errorMsg,
           });
         }
+        log("response => " + JSON.stringify(response));
         return res.ok(response);
       } else {
         response = new HttpResponse(null, {

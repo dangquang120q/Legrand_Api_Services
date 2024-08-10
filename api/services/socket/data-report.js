@@ -131,14 +131,14 @@ module.exports = {
       console.log("request == " + request);
       console.log("lts_mac == " + lts_mac);
       let sql = sqlString.format(
-        "update lts_device_detail set alampStatus = ? where lts_mac = ? and deviceId = ?", [data.alarmType,data.gatewayDn,data.deviceId]
+        "update lts_device_detail set alarmStatus = ? where lts_mac = ? and deviceId = ?", [data.alarmType,data.gatewayDn,data.deviceId]
       );
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       let insertSql = sqlString.format(
         "insert into sensor_alarm_history(deviceId, updated_by) values (?, ?)",
-        [data.gatewayDn, data.alarmType]
+        [data.gatewayDn, "screen"]
       );
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)

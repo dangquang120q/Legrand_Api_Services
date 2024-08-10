@@ -38,11 +38,12 @@ module.exports = {
       // let decrypted = decipher.update(cipherText, "base64", "utf8");
       // decrypted += decipher.final("utf8");
       // Decrypt the text
+      let keyHex = CryptoJS.enc.Hex.parse(key);
       let decrypted = CryptoJS.AES.decrypt(
         {
-          ciphertext: CryptoJS.enc.Base64.parse(cipherText)
+          ciphertext: cipherText
         },
-        key,
+        keyHex,
         {
           mode: CryptoJS.mode.ECB,
           padding: CryptoJS.pad.Pkcs7,

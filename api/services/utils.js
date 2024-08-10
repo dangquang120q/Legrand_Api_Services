@@ -27,18 +27,34 @@ module.exports = {
     try {
       log("decryptAES: ", cipherText);
       // Tạo một đối tượng decipher
-      const decipher = crypto.createDecipheriv(
-        "aes-128-ecb",
-        Buffer.from(key, "hex"),
-        null
+      // const decipher = crypto.createDecipheriv(
+      //   "aes-128-ecb",
+      //   Buffer.from(key, "hex"),
+      //   null
+      // );
+      // decipher.setAutoPadding(true);
+
+      // // Giải mã dữ liệu
+      // let decrypted = decipher.update(cipherText, "base64", "utf8");
+      // decrypted += decipher.final("utf8");
+      // Decrypt the text
+      let decrypted = CryptoJS.AES.decrypt(
+        {
+          ciphertext: CryptoJS.enc.Base64.parse(cipherText)
+        },
+        key,
+        {
+          mode: CryptoJS.mode.ECB,
+          padding: CryptoJS.pad.Pkcs7,
+        }
       );
-      decipher.setAutoPadding(true);
 
-      // Giải mã dữ liệu
-      let decrypted = decipher.update(cipherText, "base64", "utf8");
-      decrypted += decipher.final("utf8");
+      // Convert the decrypted data back to a string
+      let decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
 
-      return decrypted;
+      console.log("Decrypted Text:", decryptedText);
+
+      return decryptedText;
     } catch (error) {
       return "";
     }

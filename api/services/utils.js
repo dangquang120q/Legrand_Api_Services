@@ -23,6 +23,8 @@ module.exports = {
     return filteredObj;
   },
   decryptAES: function (cipherText, key) {
+    log("decryptAES: ", cipherText);
+    log("decryptAES key: ", key);
     // IV is a base64 string
     try {
       log("decryptAES: ", cipherText);

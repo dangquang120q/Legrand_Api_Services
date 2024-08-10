@@ -1388,7 +1388,7 @@ module.exports = {
     let jwtToken = req.headers["auth-token"];
     let response;
     let home_id = req.body.home_id;
-    log("getListSensor => " + JSON.stringify(req.body));
+    log("getListScreen => " + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
@@ -1406,7 +1406,7 @@ module.exports = {
       });
       return res.ok(response);
     } catch (error) {
-      log("getListSensor error => " + error.toString());
+      log("getListScreen error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }
@@ -1414,14 +1414,15 @@ module.exports = {
   getListSensor: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
     let response;
-    let lts_mac = req.body.lts_mac;
+    let home_id = req.body.home_id;
     log("getListSensor => " + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
       let sql = sqlString.format(
-        "select * from lts_device_detail where lts_mac = ? and (productKey = ? or productKey = ?)",
-        [lts_mac, process.env.WATER_SENSOR_KEY, process.env.WATER_SENSOR_KEY_1]
+        "select * from lts_device_detail where lts_mac in "
+        + "(select lts_mac from lts_device_control where dept_id = ? and owner_id = ?) and (productKey = ? or productKey = ?)",
+        [home_id, userId, process.env.WATER_SENSOR_KEY, process.env.WATER_SENSOR_KEY_1]
       );
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)

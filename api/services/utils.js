@@ -22,24 +22,40 @@ module.exports = {
 
     return filteredObj;
   },
-  decryptAES: function (cipherText, key) {
+  decryptAES: async function (cipherText) {
+    let key = process.env.AES_SCREEN_KEY;
+    // log("decryptAES: ", cipherText);
+    // log("decryptAES key: ", key);
     // IV is a base64 string
     try {
-      log("decryptAES: ", cipherText);
+      // log("decryptAES: ", cipherText);
       // Tạo một đối tượng decipher
-      const decipher = crypto.createDecipheriv(
-        "aes-128-ecb",
-        Buffer.from(key, "hex"),
-        null
-      );
-      decipher.setAutoPadding(true);
+      // const decipher = crypto.createDecipheriv(
+      //   "aes-128-ecb",
+      //   Buffer.from(key, "hex"),
+      //   null
+      // );
+      // decipher.setAutoPadding(true);
 
-      // Giải mã dữ liệu
-      let decrypted = decipher.update(cipherText, "base64", "utf8");
-      decrypted += decipher.final("utf8");
+      // // Giải mã dữ liệu
+      // let decrypted = decipher.update(cipherText, "base64", "utf8");
+      // decrypted += decipher.final("utf8");
+      // Decrypt the text
+      // let text = CryptoJS.enc.Base64.parse(cipherText);
+      let keyHex = CryptoJS.enc.Hex.parse(key);
+      let decrypted = CryptoJS.AES.decrypt(cipherText, keyHex, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7,
+      });
 
-      return decrypted;
+      // Convert the decrypted data back to a string
+      let decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+
+      console.log("Decrypted Text:", decryptedText);
+
+      return decryptedText;
     } catch (error) {
+      console.log("error => " + error);
       return "";
     }
   },

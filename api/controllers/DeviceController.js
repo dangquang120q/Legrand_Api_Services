@@ -211,13 +211,14 @@ module.exports = {
     let encrypt_text = req.body.qrcode;
     let home_id = req.body.home_id || 0;
     let response;
-    log("addScreen => " + JSON.stringify(jwtToken));
+    log("addScreen => " + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
 
       let key = process.env.AES_SCREEN_KEY;
-      let decode_text = decryptAES(encrypt_text, key);
+      log("addScreen => encrypt_text => " + encrypt_text);
+      let decode_text = await decryptAES(encrypt_text);
       // Fix: Utf8 decode the decrypted data
       log("addScreen data decrypted: " + decode_text);
 
@@ -254,6 +255,7 @@ module.exports = {
             errorMsg: errorMsg,
           });
         }
+        log("response => " + JSON.stringify(response));
         return res.ok(response);
       } else {
         response = new HttpResponse(null, {
@@ -265,6 +267,35 @@ module.exports = {
       }
     } catch (error) {
       log("addScreen error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  turnOffAlarm: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let { deviceId } = req.body;
+    let response;
+    log("turnOffAlarm => " + JSON.stringify(req.body));
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format("call sp_turn_off_alarm(?)", [deviceId]);
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+
+      response = new HttpResponse(
+        {
+          msg: "Turn off alarm successful!",
+          data: data["rows"][0],
+        },
+        {
+          statusCode: 200,
+          error: false,
+        }
+      );
+    } catch (error) {
+      log("turnOffAlarm error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

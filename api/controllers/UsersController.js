@@ -1215,8 +1215,12 @@ module.exports = {
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
-      log("list sensor: " + JSON.stringify(data["rows"]));
-      response = new HttpResponse(data["rows"], {
+      let res_data = data["rows"].map((item) => ({
+        ...item,
+        lampStatus: item.lampStatus == 1 ? "ON" : "OFF",
+      }));
+      log("list sensor: " + res_data);
+      response = new HttpResponse(res_data, {
         statusCode: 200,
         error: false,
       });

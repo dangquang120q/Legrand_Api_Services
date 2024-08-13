@@ -7,7 +7,7 @@ const CryptoJS = require("crypto-js");
 const data = "LEGRAND_SC#BA7C5B4E3F2D9C8E#1#0";
 // Khóa AES-128-ECB
 const key = "E26DC731BF67F664D28E90E008B083A6";
-const cipherText = "JUq4+BeB52f0PgOij3DTcKCjWPN0MX1gTCTI9L3SKnE=";
+const cipherText = "0ddWMQXtZXpARAEJrrl1hjuTbk1Tj7/MlwVhXEC7/Qo=";
 
 // Tạo một đối tượng cipher
 // const cipher = crypto.createCipheriv(

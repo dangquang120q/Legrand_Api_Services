@@ -37,10 +37,11 @@ module.exports = {
         "deviceVersion": (dataVersion["rows"][0]["lts_device_version"]).toString()
       }
       return response;
-    } catch {
+    } catch (e) {
       const response = {
         result: -1,
       };
+      console.log("error == " + e);
       response.packetNo = request.packetNo;
       return response;
     }

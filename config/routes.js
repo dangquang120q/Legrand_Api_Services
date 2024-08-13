@@ -31,7 +31,7 @@ module.exports.routes = {
   "POST /user/verifyOtp": "UsersController.verifyOTP",
   "GET /user/information": "UsersController.getUserInfo",
   "DELETE /user/deleteAccount": "UsersController.deleteAccount",
-  
+
   "POST /user/addFCMToken": "UsersController.addFCMDeviceToken",
   "POST /user/updateFCMToken": "UsersController.updateFCMDeviceToken",
   "POST /user/deleteFCMToken": "UsersController.deleteFCMDeviceToken",
@@ -63,6 +63,7 @@ module.exports.routes = {
     "DeviceController.controlAirConditioner",
   "POST /device/changeFanSpeed": "DeviceController.changeFanSpeed",
   "POST /device/addScreen": "DeviceController.addScreen",
+  "POST /device/turnOffAlarm": "DeviceController.turnOffAlarm",
 
   "POST /report/temperature": "ReportController.temperatureReport",
   "POST /report/electricity": "ReportController.electricityReport",

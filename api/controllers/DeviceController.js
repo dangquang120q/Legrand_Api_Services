@@ -271,4 +271,50 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  turnOffAlarm: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let { lts_mac } = req.body;
+    let response;
+    log("turnOffAlarm => " + JSON.stringify(req.body));
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format(
+        "UPDATE lts_device_detail SET alarmStatus = -1 where lts_mac = ?",
+        [lts_mac]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      sql = sqlString.format(
+        "SELECT * FROM lts_device_detail WHERE lts_mac = ?",
+        [lts_mac]
+      );
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      if (data["rows"].find((item) => item.lts_mac != -1)) {
+        response = new HttpResponse(null, {
+          statusCode: 400,
+          error: true,
+          errorMsg: "Turn off alarm unsuccessful!",
+        });
+        return res.ok(response);
+      }
+      response = new HttpResponse(
+        {
+          msg: "Turn off alarm successful!",
+          data: data["rows"],
+        },
+        {
+          statusCode: 200,
+          error: false,
+        }
+      );
+    } catch (error) {
+      log("turnOffAlarm error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
 };

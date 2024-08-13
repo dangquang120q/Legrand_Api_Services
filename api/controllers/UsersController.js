@@ -1420,9 +1420,14 @@ module.exports = {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
       let sql = sqlString.format(
-        "select * from lts_device_detail where lts_mac in "
-        + "(select lts_mac from lts_device_control where dept_id = ? and owner_id = ?) and (productKey = ? or productKey = ?)",
-        [home_id, userId, process.env.WATER_SENSOR_KEY, process.env.WATER_SENSOR_KEY_1]
+        "select * from lts_device_detail where lts_mac in " +
+          "(select lts_mac from lts_device_control where dept_id = ? and owned_id = ?) and (productKey = ? or productKey = ?)",
+        [
+          home_id,
+          userId,
+          process.env.WATER_SENSOR_KEY,
+          process.env.WATER_SENSOR_KEY_1,
+        ]
       );
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)

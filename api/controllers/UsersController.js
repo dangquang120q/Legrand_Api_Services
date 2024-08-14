@@ -1475,10 +1475,10 @@ module.exports = {
       }));
       res_data = {
         alarm: res_data.find((item) =>
-          item.name.toLowerCase().includes("alarm")
+          item.deviceId.toLowerCase().includes("powerswitch_2")
         ),
-        valve: res_data.find(
-          (item) => !item.name.toLowerCase().includes("alarm")
+        valve: res_data.find((item) =>
+          item.deviceId.toLowerCase().includes("powerswitch_1")
         ),
       };
 

@@ -32,7 +32,7 @@ const {
 } = require("../services/const");
 const sendMailjet = require("../services/mailjet-util");
 const transporter = require("../services/mailtrap-utils");
-const notificationQueue = require("../services/firebase-queue");
+// const notificationQueue = require("../services/firebase-queue");
 
 module.exports = {
   testFCMNoti: async (req, res) => {
@@ -61,10 +61,10 @@ module.exports = {
         const batchTokens = registrationTokens.slice(i, i + batchSize);
 
         // Thêm công việc vào hàng đợi
-        notificationQueue.add({
-          registrationTokens: batchTokens,
-          message: message,
-        });
+        // notificationQueue.add({
+        //   registrationTokens: batchTokens,
+        //   message: message,
+        // });
       }
 
       return res.ok("Notification jobs added to the queue.");

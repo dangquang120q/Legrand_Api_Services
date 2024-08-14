@@ -29,7 +29,14 @@ module.exports = {
     // IV is a base64 string
     try {
       // log("decryptAES: ", cipherText);
+      // log("decryptAES: ", cipherText);
       // Tạo một đối tượng decipher
+      // const decipher = crypto.createDecipheriv(
+      //   "aes-128-ecb",
+      //   Buffer.from(key, "hex"),
+      //   null
+      // );
+      // decipher.setAutoPadding(true);
       // const decipher = crypto.createDecipheriv(
       //   "aes-128-ecb",
       //   Buffer.from(key, "hex"),

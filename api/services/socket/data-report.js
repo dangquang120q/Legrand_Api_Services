@@ -25,13 +25,23 @@ module.exports = {
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
+      let sqlGet = sqlString.format(
+        "select lts_device_version from lts_device_control where lts_mac = ?", [lts_mac]
+      );
+      let dataVersion = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlGet);
       response.packetNo = request.packetNo;
       response.result = result;
+      response.data = {
+        "deviceVersion": (dataVersion["rows"][0]["lts_device_version"]).toString()
+      }
       return response;
-    } catch {
+    } catch (e) {
       const response = {
         result: -1,
       };
+      console.log("error == " + e);
       response.packetNo = request.packetNo;
       return response;
     }
@@ -52,9 +62,17 @@ module.exports = {
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
-
+      let sqlGet = sqlString.format(
+        "select lts_device_version from lts_device_control where lts_mac = ?", [lts_mac]
+      );
+      let dataVersion = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlGet);
       response.packetNo = request.packetNo;
       response.result = result;
+      response.data = {
+        "deviceVersion": (dataVersion["rows"][0]["lts_device_version"]).toString()
+      }
       return response;
     } catch {
       const response = {
@@ -107,11 +125,52 @@ module.exports = {
 
   alarm: async function (request, lts_mac) {
     try {
+      const { data } = request;
       const response = {
         result: 0,
       };
       console.log("request == " + request);
       console.log("lts_mac == " + lts_mac);
+      let sql = sqlString.format(
+        "update lts_device_detail set alarmStatus = ? where lts_mac = ? and deviceId = ?", [data.alarmType,data.gatewayDn,data.deviceId]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      let insertSql = sqlString.format(
+        "insert into sensor_alarm_history(deviceId, updated_by) values (?, ?)",
+        [data.gatewayDn, "screen"]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(insertSql);
+      let result = 0;
+      response.packetNo = request.packetNo;
+      response.result = result;
+      return response;
+    } catch {
+      const response = {
+        result: -1,
+      };
+      response.packetNo = request.packetNo;
+      return response;
+    }
+  },
+
+  reportDeviceMode: async function (request, lts_mac) {
+    try {
+      const { data } = request;
+      const response = {
+        result: 0,
+      };
+      console.log("request == " + request);
+      console.log("lts_mac == " + lts_mac);
+      let sql = sqlString.format(
+        "update lts_device_control set status = ? where lts_mac = ?", [data.status,data.gatewayDn]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
       let result = 0;
       response.packetNo = request.packetNo;
       response.result = result;

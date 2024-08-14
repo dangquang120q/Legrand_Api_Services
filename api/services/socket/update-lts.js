@@ -140,4 +140,19 @@ module.exports = {
       response.packetNo = request.packetNo;
     }
   },
+  changeDeviceMode: async function (request) {
+    try {
+      const request = {
+        result: 0,
+      };
+      request.packetNo = request.packetNo;
+    } 
+    catch(error) {
+      console.log('error' + error);
+      const response = {
+        result: -1,
+      };
+      response.packetNo = request.packetNo;
+    }
+  },
 };

@@ -22,7 +22,28 @@ module.exports = {
         return {req,result};
     }
   },
-
+  doDeviceMode: async function (request) {
+    try {
+      const { data } = request;
+      let result = 0;
+      const req = {};
+      let sql = sqlString.format(
+        "update lts_device_control set status = ? where lts_mac = ?", [data.status,data.gatewayDn]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      req.packetNo = request.packetNo;
+      req.cmdType = request.cmdType;
+      req.data = data;
+      return {req,result};
+    } catch(error) {
+        console.log(error);
+        const req = {};
+        let result = -1;
+        return {req,result};
+    }
+  },
   doModLocation: async function (request) {
     try {
         const { data } = request;
@@ -35,12 +56,19 @@ module.exports = {
         await sails
             .getDatastore(process.env.MYSQL_DATASTORE)
             .sendNativeQuery(sql);
-
+        let sqlGet = sqlString.format(
+          "select lts_device_version from lts_device_control where lts_mac = ?", [data.gatewayDn]
+        );
+        let dataVersion = await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+              .sendNativeQuery(sqlGet);
         req.packetNo = request.packetNo;
         req.cmdType = request.cmdType;      
         req.data = data;
+        req.data.deviceVersion = dataVersion["rows"][0]["lts_device_version"];
         return {req,result};
-    } catch {
+    } catch(error) {
+        console.log(error);
         const req = {};
         let result = -1;
         return {req,result};
@@ -58,11 +86,19 @@ module.exports = {
         await sails
             .getDatastore(process.env.MYSQL_DATASTORE)
             .sendNativeQuery(sql);
+        let sqlGet = sqlString.format(
+          "select lts_device_version from lts_device_control where lts_mac = ?", [data.gatewayDn]
+        );
+        let dataVersion = await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+              .sendNativeQuery(sqlGet);
         req.packetNo = request.packetNo;
         req.cmdType = request.cmdType;
         req.data = data;
+        req.data.deviceVersion = dataVersion["rows"][0]["lts_device_version"];
         return {req,result};
-    } catch {
+    } catch(error) {
+        console.log(error);
         const req = {};
         let result = -1;
         return {req,result};

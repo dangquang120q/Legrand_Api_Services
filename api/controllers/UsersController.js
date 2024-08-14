@@ -23,6 +23,7 @@ const {
   modLocation,
   modName,
   changePassword,
+  deviceMode,
 } = require("../services/net");
 const {
   DEVICE_CODES,
@@ -31,8 +32,211 @@ const {
 } = require("../services/const");
 const sendMailjet = require("../services/mailjet-util");
 const transporter = require("../services/mailtrap-utils");
+const notificationQueue = require("../services/firebase-queue");
 
 module.exports = {
+  testFCMNoti: async (req, res) => {
+    try {
+      log("testFCMNoti test => " + JSON.stringify(req.body));
+      let { userId } = req.body;
+      let sql = sqlString.format(
+        "SELECT device_token FROM firebase_token WHERE user_id = ?",
+        [userId]
+      );
+      const data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+
+      // Chuyển đổi kết quả truy vấn thành mảng các token
+      const registrationTokens = data.rows.map((device) => device.device_token);
+
+      const message = {
+        title: "Thông báo",
+        body: "Nội dung thông báo",
+      };
+
+      // Chia thành các batch nhỏ để tránh quá tải
+      const batchSize = 500;
+      for (let i = 0; i < registrationTokens.length; i += batchSize) {
+        const batchTokens = registrationTokens.slice(i, i + batchSize);
+
+        // Thêm công việc vào hàng đợi
+        notificationQueue.add({
+          registrationTokens: batchTokens,
+          message: message,
+        });
+      }
+
+      return res.ok("Notification jobs added to the queue.");
+    } catch (error) {
+      console.error("Error querying device tokens:", error);
+      return res.serverError("Failed to add notification jobs to the queue.");
+    }
+  },
+  addFCMDeviceToken: async (req, res) => {
+    log("addFCMDeviceToken test => " + JSON.stringify(req.body));
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    let decodedToken = jwtoken.decode(jwtToken);
+    let userId = decodedToken["userId"];
+    let { deviceToken } = req.body;
+    try {
+      let insertSql = sqlString.format(
+        "insert into firebase_token(user_id, device_token) values (?, ?)",
+        [userId, deviceToken]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(insertSql);
+      response = new HttpResponse(
+        {
+          msg: "insert token successfully",
+        },
+        {
+          statusCode: 200,
+          error: false,
+        }
+      );
+      return res.ok(response);
+    } catch (error) {
+      sails.log.error("Error add firebase device token:", error);
+      // throw error;
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  updateFCMDeviceToken: async (req, res) => {
+    log("updateFCMDeviceToken test => " + JSON.stringify(req.body));
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    let decodedToken = jwtoken.decode(jwtToken);
+    let userId = decodedToken["userId"];
+    let { oldDeviceToken, newDeviceToken } = req.body;
+    try {
+      let selectDeviceToken = sqlString.format(
+        "select user_id from firebase_token where user_id=? and device_token = ?",
+        [userId, oldDeviceToken]
+      );
+      let tokenData = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(selectDeviceToken);
+
+      if (tokenData["rows"].length == 0) {
+        let insertSql = sqlString.format(
+          "insert into firebase_token(user_id, device_token) values (?, ?)",
+          [userId, newDeviceToken]
+        );
+        await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(insertSql);
+        response = new HttpResponse(
+          {
+            msg: "update token successfully",
+          },
+          {
+            statusCode: 200,
+            error: false,
+          }
+        );
+      } else {
+        let updateSql = sqlString.format(
+          "update firebase_token set device_token = ? where user_id=? and device_token = ?",
+          [newDeviceToken, userId, oldDeviceToken]
+        );
+        await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(updateSql);
+        response = new HttpResponse(
+          {
+            msg: "update token successfully",
+          },
+          {
+            statusCode: 200,
+            error: false,
+          }
+        );
+      }
+      return res.ok(response);
+    } catch (error) {
+      sails.log.error("Error update firebase device token:", error);
+      // throw error;
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  deleteFCMDeviceToken: async (req, res) => {
+    log("deleteFCMDeviceToken test => " + JSON.stringify(req.body));
+    let response;
+    let decodedToken = jwtoken.decode(jwtToken);
+    let userId = decodedToken["userId"];
+    let { deviceToken } = req.body;
+    try {
+      if (deviceToken == "abcxyz") {
+        // Delete all
+        let deleteSql = sqlString.format(
+          "delete firebase_token where user_id=?",
+          [userId]
+        );
+        await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(deleteSql);
+        response = new HttpResponse(
+          {
+            msg: "delete all token successfully",
+          },
+          {
+            statusCode: 200,
+            error: false,
+          }
+        );
+      } else {
+        // Delete one
+        let selectDeviceToken = sqlString.format(
+          "select user_id from firebase_token where user_id=? and device_token = ?",
+          [userId, deviceToken]
+        );
+        let tokenData = await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(selectDeviceToken);
+
+        if (tokenData["rows"].length == 0) {
+          response = new HttpResponse(
+            {
+              msg: "No device token",
+            },
+            {
+              statusCode: 200,
+              error: false,
+            }
+          );
+        } else {
+          let deleteSql = sqlString.format(
+            "delete firebase_token where user_id=? and device_token = ?",
+            [userId, deviceToken]
+          );
+          await sails
+            .getDatastore(process.env.MYSQL_DATASTORE)
+            .sendNativeQuery(deleteSql);
+          response = new HttpResponse(
+            {
+              msg: "delete token successfully",
+            },
+            {
+              statusCode: 200,
+              error: false,
+            }
+          );
+        }
+      }
+
+      return res.ok(response);
+    } catch (error) {
+      sails.log.error("Error delete firebase device token:", error);
+      // throw error;
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
   sendEmail: async (req, res) => {
     log("SendMail test => " + JSON.stringify(req.body));
     let { email, text } = req.body;
@@ -844,6 +1048,13 @@ module.exports = {
           { statusCode: 200, error: false }
         );
         return res.ok(response);
+      } else if (req.body.cmdType == SOCKET_REQUEST.deviceMode) {
+        await deviceMode(req.body);
+        let response = new HttpResponse(
+          { msg: "Device network configuration mode Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
       } else if (req.body.cmdType == SOCKET_REQUEST.deviceLocation) {
         await modLocation(req.body);
         let response = new HttpResponse(
@@ -955,11 +1166,11 @@ module.exports = {
             .filter((item) => DEVICE_CODES.rollerShutter.includes(item.type))
             .map((item) => ({
               ...item,
-              // controlType:
-              //   item["target_position:step"] >= 100 || item["type"] == "NLIV"
-              //     ? 0
-              //     : 1,
-              controlType: item["type"] == "NLLV" ? 1 : 0,
+              controlType:
+                item["target_position:step"] >= 100 || item["type"] == "NLIV"
+                  ? 0
+                  : 1,
+              // controlType: item["type"] == "NLLV" ? 1 : 0,
             })),
           airConditioner: airConditioner
             ? {
@@ -1177,7 +1388,7 @@ module.exports = {
     let jwtToken = req.headers["auth-token"];
     let response;
     let home_id = req.body.home_id;
-    log("getListSensor => " + JSON.stringify(jwtToken));
+    log("getListScreen => " + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
@@ -1195,7 +1406,7 @@ module.exports = {
       });
       return res.ok(response);
     } catch (error) {
-      log("getListSensor error => " + error.toString());
+      log("getListScreen error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }
@@ -1203,14 +1414,20 @@ module.exports = {
   getListSensor: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
     let response;
-    let lts_mac = req.body.lts_mac;
-    log("getListSensor => " + JSON.stringify(jwtToken));
+    let home_id = req.body.home_id;
+    log("getListSensor => " + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
       let sql = sqlString.format(
-        "select * from lts_device_detail where lts_mac = ? and (productKey = ? or productKey = ?)",
-        [lts_mac, process.env.WATER_SENSOR_KEY, process.env.WATER_SENSOR_KEY_1]
+        "select * from lts_device_detail where lts_mac in " +
+          "(select lts_mac from lts_device_control where dept_id = ? and owned_id = ? and (productKey = ? or productKey = ?))",
+        [
+          home_id,
+          userId,
+          process.env.WATER_SENSOR_KEY,
+          process.env.WATER_SENSOR_KEY_1,
+        ]
       );
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)

@@ -212,6 +212,7 @@ module.exports = {
     let home_id = req.body.home_id || 0;
     let response;
     log("addScreen => " + JSON.stringify(req.body));
+    log("addScreen => " + JSON.stringify(req.body));
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];

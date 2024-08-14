@@ -1436,7 +1436,7 @@ module.exports = {
         ...item,
         lampStatus: item.lampStatus == 1 ? "ON" : "OFF",
       }));
-      log("list sensor: " + res_data);
+      log("response: " + JSON.stringify(res_data));
       response = new HttpResponse(res_data, {
         statusCode: 200,
         error: false,
@@ -1444,6 +1444,52 @@ module.exports = {
       return res.ok(response);
     } catch (error) {
       log("getListSensor error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  getAlarmValve: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let response;
+    let home_id = req.body.home_id;
+    log("getListSensor => " + JSON.stringify(req.body));
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format(
+        "select * from lts_device_detail where lts_mac in " +
+          "(select lts_mac from lts_device_control where dept_id = ? and owned_id = ? and (productKey = ? or productKey = ?))",
+        [
+          home_id,
+          userId,
+          process.env.SMART_SCREEN_KEY,
+          process.env.SMART_SCREEN_KEY_1,
+        ]
+      );
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      let res_data = data["rows"].map((item) => ({
+        ...item,
+        lampStatus: item.lampStatus == 1 ? "ON" : "OFF",
+      }));
+      res_data = {
+        alarm: res_data.find((item) =>
+          item.name.toLowerCase().includes("alarm")
+        ),
+        valve: res_data.find(
+          (item) => !item.name.toLowerCase().includes("alarm")
+        ),
+      };
+
+      log("response => " + JSON.stringify(res_data));
+      response = new HttpResponse(res_data, {
+        statusCode: 200,
+        error: false,
+      });
+      return res.ok(response);
+    } catch (error) {
+      log("getAlarmValve error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

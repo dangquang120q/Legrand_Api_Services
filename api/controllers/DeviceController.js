@@ -217,7 +217,6 @@ module.exports = {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
 
-      let key = process.env.AES_SCREEN_KEY;
       log("addScreen => encrypt_text => " + encrypt_text);
       let decode_text = await decryptAES(encrypt_text);
       // Fix: Utf8 decode the decrypted data

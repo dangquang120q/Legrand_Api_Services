@@ -53,6 +53,7 @@ module.exports.routes = {
   "POST /user/getHomeDevices": "UsersController.getHomeDevices",
   "POST /user/getListScreen": "UsersController.getListScreen",
   "POST /user/getListSensor": "UsersController.getListSensor",
+  "POST /user/getAlarmValve": "UsersController.getAlarmValve",
 
   "POST /device/turnOnLight": "DeviceController.turnOnLight",
   "POST /device/controlDoorlock": "DeviceController.turnOnLight",

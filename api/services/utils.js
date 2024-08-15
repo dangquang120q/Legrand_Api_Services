@@ -29,7 +29,14 @@ module.exports = {
     // IV is a base64 string
     try {
       // log("decryptAES: ", cipherText);
+      // log("decryptAES: ", cipherText);
       // Tạo một đối tượng decipher
+      // const decipher = crypto.createDecipheriv(
+      //   "aes-128-ecb",
+      //   Buffer.from(key, "hex"),
+      //   null
+      // );
+      // decipher.setAutoPadding(true);
       // const decipher = crypto.createDecipheriv(
       //   "aes-128-ecb",
       //   Buffer.from(key, "hex"),
@@ -43,14 +50,10 @@ module.exports = {
       // Decrypt the text
       // let text = CryptoJS.enc.Base64.parse(cipherText);
       let keyHex = CryptoJS.enc.Hex.parse(key);
-      let decrypted = CryptoJS.AES.decrypt(
-        cipherText,
-        keyHex,
-        {
-          mode: CryptoJS.mode.ECB,
-          padding: CryptoJS.pad.Pkcs7,
-        }
-      );
+      let decrypted = CryptoJS.AES.decrypt(cipherText, keyHex, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7,
+      });
 
       // Convert the decrypted data back to a string
       let decryptedText = decrypted.toString(CryptoJS.enc.Utf8);

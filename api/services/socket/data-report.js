@@ -1,5 +1,5 @@
 const sqlString = require("sqlstring");
-
+const { getFirebaseToken } = require("./firebase-token");
 module.exports = {
   addDevice: async function (request, lts_mac) {
     try {

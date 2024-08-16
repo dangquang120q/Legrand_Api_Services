@@ -748,17 +748,7 @@ module.exports = {
 
             // Get room light, air-conditioner status
             let roomDevices =
-              element.modules
-                ?.filter((item) => item.room_id == room.id)
-                .map((item) => ({
-                  ...item,
-                  reachable: errors?.find(
-                    (error) =>
-                      item["id"] == error.id || item["bridge"] == error.id
-                  )
-                    ? false
-                    : true,
-                })) || [];
+              element.modules?.filter((item) => item.room_id == room.id) || [];
             roomDevices = roomDevices.map((item) => {
               const device = homeStatus.body?.home?.modules?.find(
                 (dItem) => dItem.id == item.id

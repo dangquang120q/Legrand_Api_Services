@@ -749,7 +749,7 @@ module.exports = {
             // Get room light, air-conditioner status
             let roomDevices =
               element.modules
-                ?.filter((item) => item.room_id == room_id)
+                ?.filter((item) => item.room_id == room.id)
                 .map((item) => ({
                   ...item,
                   reachable: errors?.find(

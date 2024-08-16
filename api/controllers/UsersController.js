@@ -773,7 +773,7 @@ module.exports = {
                 ? temperature.therm_measured_temperature
                 : null,
               lightStatus: lights ? "ON" : "OFF",
-              airConditionerStatus: airConditioner
+              airConditionerStatus: !airConditioner
                 ? null
                 : room["cooling_setpoint_mode"] == "max"
                 ? "ON"

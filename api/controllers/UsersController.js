@@ -765,7 +765,7 @@ module.exports = {
             const airConditioner = roomDevices.find((item) =>
               DEVICE_CODES.airConditioner.includes(item.type)
             );
-            log("airConditioner: " + JSON.stringify(airConditioner));
+            log("airConditioner => " + room["cooling_setpoint_mode"]);
             // Push room to array
             rooms.push({
               ...room,

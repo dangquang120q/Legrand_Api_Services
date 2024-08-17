@@ -65,6 +65,7 @@ module.exports.routes = {
   "POST /device/changeFanSpeed": "DeviceController.changeFanSpeed",
   "POST /device/addScreen": "DeviceController.addScreen",
   "POST /device/turnOffAlarm": "DeviceController.turnOffAlarm",
+  "POST /device/controlValveAlarm": "DeviceController.controlValveAlarm",
 
   "POST /report/temperature": "ReportController.temperatureReport",
   "POST /report/electricity": "ReportController.electricityReport",

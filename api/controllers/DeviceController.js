@@ -294,8 +294,42 @@ module.exports = {
           error: false,
         }
       );
+      return res.ok(response);
     } catch (error) {
       log("turnOffAlarm error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  controlValveAlarm: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let { deviceId, lts_mac, lampStatus } = req.body;
+    let response;
+    log("controlValveAlarm => " + JSON.stringify(req.body));
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      lampStatus = lampStatus == "ON" ? 1 : 0;
+      let sql = sqlString.format(
+        "UPDATE lts_device_detail SET lampStatus = ? WHERE lts_mac = ? AND deviceId = ?",
+        [lampStatus, lts_mac, deviceId]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      response = new HttpResponse(
+        {
+          msg: `Turn ${lampStatus == 1 ? "on" : "off"} valve/alarm successful!`,
+          data: data["rows"][0],
+        },
+        {
+          statusCode: 200,
+          error: false,
+        }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("controlValveAlarm error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

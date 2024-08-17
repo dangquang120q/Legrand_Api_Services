@@ -320,7 +320,6 @@ module.exports = {
       response = new HttpResponse(
         {
           msg: `Turn ${lampStatus == 1 ? "on" : "off"} valve/alarm successful!`,
-          data: data["rows"][0],
         },
         {
           statusCode: 200,
@@ -330,6 +329,37 @@ module.exports = {
       return res.ok(response);
     } catch (error) {
       log("controlValveAlarm error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  changeLocation: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let { deviceId, lts_mac, location } = req.body;
+    let response;
+    log("changeLocation => " + JSON.stringify(req.body));
+    try {
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"];
+      let sql = sqlString.format(
+        "UPDATE lts_device_detail SET location = ? WHERE lts_mac = ? AND deviceId = ?",
+        [location, lts_mac, deviceId]
+      );
+      await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      response = new HttpResponse(
+        {
+          msg: `Change location successful!`,
+        },
+        {
+          statusCode: 200,
+          error: false,
+        }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("changeLocation error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

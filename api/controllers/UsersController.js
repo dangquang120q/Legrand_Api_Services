@@ -772,12 +772,12 @@ module.exports = {
               temperature: temperature
                 ? temperature.therm_measured_temperature
                 : null,
-              lightStatus: lights ? "ON" : "OFF",
-              airConditionerStatus: !airConditioner
+              isLightOn: lights ? true : false,
+              isBoost: !airConditioner
                 ? null
                 : temperature["cooling_setpoint_mode"] == "max"
-                ? "ON"
-                : "OFF",
+                ? true
+                : false,
             });
           } else {
             const doorStatus = homeStatus.body?.home?.modules?.find(

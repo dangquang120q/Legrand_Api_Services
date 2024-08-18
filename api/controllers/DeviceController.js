@@ -338,9 +338,9 @@ module.exports = {
           bridge: item.bridge,
         };
         if (item.type == "NLF") {
-          module.brightness = status ? 100 : 0;
+          module.brightness = status == 1 ? 100 : 0;
         } else {
-          module.on = status ? true : false;
+          module.on = status == 1 ? true : false;
         }
         return module;
       });
@@ -362,6 +362,10 @@ module.exports = {
       response = new HttpResponse(
         {
           msg: "Change room lightOn successful",
+          errors: data.body?.errors?.map((item) => ({
+            ...item,
+            msg: SET_STATE_ACTION[item.code],
+          })),
         },
         { statusCode: 200, error: false }
       );

@@ -6,7 +6,7 @@
  */
 
 const { log } = require("../services/log");
-const { SET_STATE_ACTION } = require("../services/const");
+const { SET_STATE_ACTION, DEVICE_CODES } = require("../services/const");
 const {
   setState,
   getHomeStatus,

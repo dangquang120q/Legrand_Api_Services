@@ -6,9 +6,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the "master" branch
   push:
-    branches: [ "develop" ]
+    branches: [ "release" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "release" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.LEGRAND_PASS }}
           port: ${{ secrets.LEGRAND_PORT }}
           script: |
-            cd /home/legrand_api_develop/Legrand_Api_Services/ # we move into our app's folder
+            cd /home/legrand_api_release/Legrand_Api_Services/ # we move into our app's folder
             git pull # we pull any changes from git
             npm prune # we remove any unused dependencies
             npm install # we install any missing dependencies

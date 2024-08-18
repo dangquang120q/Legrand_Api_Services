@@ -50,6 +50,7 @@ module.exports.policies = {
     addScreen: "checkJwtoken",
     turnOffAlarm: "checkJwtoken",
     changeRoomLightOn: "checkJwtoken",
+    switchHomeSchedule: "checkJwtoken",
   },
   ReportController: {
     temperatureReport: "checkJwtoken",

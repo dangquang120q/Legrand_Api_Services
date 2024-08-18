@@ -15,6 +15,7 @@ const {
   setState,
   getHomeStatus,
   getHomeData,
+  switchHomeSchedule: switchNetatmoSchedule,
 } = require("../services/netamo-token");
 const { HttpResponse } = require("../services/http-response");
 const jwtoken = require("../services/jwtoken");
@@ -376,6 +377,41 @@ module.exports = {
       return res.ok(response);
     } catch (error) {
       log("changeRoomLightOn error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  switchHomeSchedule: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let access_token = req.headers["access-token"];
+    let { net_home_id, schedule_id } = req.body;
+
+    let response;
+    log("switchHomeSchedule => " + JSON.stringify(req.body));
+    try {
+      const data = await switchNetatmoSchedule({
+        home_id: net_home_id,
+        schedule_id,
+        access_token,
+      });
+      log("switchHomeSchedule data: " + JSON.stringify(data));
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
+      response = new HttpResponse(
+        {
+          msg: "Switch home schedule successful",
+        },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("switchHomeSchedule error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

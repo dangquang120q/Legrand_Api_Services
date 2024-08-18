@@ -259,7 +259,7 @@ module.exports = {
       const data = await res.json();
       return data;
     } catch (error) {
-      log("Turn on light error: " + JSON.stringify(error));
+      log("setstate error: " + JSON.stringify(error));
       return {
         error: error,
       };
@@ -381,6 +381,31 @@ module.exports = {
           code: 500,
           message: "Server error!",
         },
+      };
+    }
+  },
+  switchHomeSchedule: async (params) => {
+    log("switchHomeSchedule => " + JSON.stringify(params));
+    try {
+      const { home_id, schedule_id, access_token } = params;
+      const res = await fetch(API_URL + "/api/setstate", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+        body: JSON.stringify({
+          home_id,
+          schedule_id,
+        }),
+      });
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      log("switchHomeSchedule error: " + JSON.stringify(error));
+      return {
+        error: error,
       };
     }
   },

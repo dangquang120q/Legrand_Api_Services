@@ -347,6 +347,7 @@ module.exports = {
       const data = await setState({
         action: "modify multi devices",
         modules,
+        access_token,
       });
       log("changeRoomLightOn data: " + JSON.stringify(data));
       if (data.error?.code) {

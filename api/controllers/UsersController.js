@@ -731,6 +731,7 @@ module.exports = {
           home_id: element["id"],
           access_token,
         });
+
         let rooms = [];
         let doorLock = null;
 
@@ -740,15 +741,43 @@ module.exports = {
 
           // Check if room is Doorlock and get room detail from /homestatus
           if (room.name.toLowerCase() != "door lock") {
+            // Get room temperature
             const temperature = homeStatus.body?.home?.rooms
               ? homeStatus.body?.home?.rooms.find((item) => item.id == room.id)
               : null;
 
+            // Get room light, air-conditioner status
+            let roomDevices =
+              element.modules?.filter((item) => item.room_id == room.id) || [];
+            roomDevices = roomDevices.map((item) => {
+              const device = homeStatus.body?.home?.modules?.find(
+                (dItem) => dItem.id == item.id
+              );
+              return {
+                ...item,
+                ...device,
+              };
+            });
+            let lights = roomDevices.find(
+              (item) =>
+                DEVICE_CODES.lights.includes(item.type) && item.on == true
+            );
+            const airConditioner = roomDevices.find((item) =>
+              DEVICE_CODES.airConditioner.includes(item.type)
+            );
+            log("airConditioner => " + temperature["cooling_setpoint_mode"]);
+            // Push room to array
             rooms.push({
               ...room,
               temperature: temperature
                 ? temperature.therm_measured_temperature
                 : null,
+              isLightOn: lights ? true : false,
+              isBoost: !airConditioner
+                ? null
+                : temperature["cooling_setpoint_mode"] == "max"
+                ? true
+                : false,
             });
           } else {
             const doorStatus = homeStatus.body?.home?.modules?.find(
@@ -807,7 +836,7 @@ module.exports = {
           }
         });
 
-        // Finale scenarios
+        // Final scenarios
         scenarios = Object.keys(scenarioObj).map((key) => {
           let scenario = scenarioObj[key];
           return {

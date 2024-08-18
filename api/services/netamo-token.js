@@ -182,8 +182,16 @@ module.exports = {
     }
   },
   setState: async (params) => {
-    const { action, value, home_id, module_id, bridge, access_token, room_id } =
-      params;
+    const {
+      action,
+      value,
+      home_id,
+      module_id,
+      bridge,
+      access_token,
+      room_id,
+      modules,
+    } = params;
     log("setState params: " + JSON.stringify(params));
     let body = {
       home: {
@@ -234,6 +242,7 @@ module.exports = {
         });
         break;
       default:
+        body.home.modules = modules;
         break;
     }
     log("setstate request body: " + JSON.stringify(body));
@@ -250,7 +259,7 @@ module.exports = {
       const data = await res.json();
       return data;
     } catch (error) {
-      log("Turn on light error: " + JSON.stringify(error));
+      log("setstate error: " + JSON.stringify(error));
       return {
         error: error,
       };
@@ -372,6 +381,31 @@ module.exports = {
           code: 500,
           message: "Server error!",
         },
+      };
+    }
+  },
+  switchHomeSchedule: async (params) => {
+    log("switchHomeSchedule => " + JSON.stringify(params));
+    try {
+      const { home_id, schedule_id, access_token } = params;
+      const res = await fetch(API_URL + `/api/switchhomeschedule`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+        body: JSON.stringify({
+          home_id,
+          schedule_id,
+        }),
+      });
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      log("switchHomeSchedule error: " + JSON.stringify(error));
+      return {
+        error: error,
       };
     }
   },

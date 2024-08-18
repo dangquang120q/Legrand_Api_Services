@@ -6,8 +6,17 @@
  */
 
 const { log } = require("../services/log");
-const { SET_STATE_ACTION } = require("../services/const");
-const { setState } = require("../services/netamo-token");
+const {
+  SET_STATE_ACTION,
+  DEVICE_CODES,
+  SET_STATE_ERRORS,
+} = require("../services/const");
+const {
+  setState,
+  getHomeStatus,
+  getHomeData,
+  switchHomeSchedule: switchNetatmoSchedule,
+} = require("../services/netamo-token");
 const { HttpResponse } = require("../services/http-response");
 const jwtoken = require("../services/jwtoken");
 const CryptoJS = require("crypto-js");
@@ -294,8 +303,115 @@ module.exports = {
           error: false,
         }
       );
+      return res.ok(response);
     } catch (error) {
       log("turnOffAlarm error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  changeRoomLightOn: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let access_token = req.headers["access-token"];
+    let { net_home_id, room_id, status } = req.body;
+
+    let response;
+    log("changeRoomLightOn => " + JSON.stringify(req.body));
+    try {
+      let homeData = await getHomeData({ access_token, home_id: net_home_id });
+      if (homeData.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + homeData.error.code,
+          error: true,
+          errorMsg: homeData.error.message,
+        });
+        return res.send(response);
+      }
+
+      let roomDevices =
+        homeData?.homes[0]?.modules
+          ?.filter((item) => item.room_id == room_id)
+          .map((item) => ({
+            ...item,
+          })) || [];
+      let lights = roomDevices.filter((item) =>
+        DEVICE_CODES.lights.includes(item.type)
+      );
+      let modules = lights.map((item) => {
+        let module = {
+          id: item.id,
+          bridge: item.bridge,
+        };
+        if (item.type == "NLF") {
+          module.brightness = status == 1 ? 100 : 0;
+        } else {
+          module.on = status == 1 ? true : false;
+        }
+        return module;
+      });
+      const data = await setState({
+        action: "modify multi devices",
+        modules,
+        access_token,
+        home_id: net_home_id,
+      });
+      log("changeRoomLightOn data: " + JSON.stringify(data));
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
+      response = new HttpResponse(
+        {
+          msg: "Change room lightOn successful",
+          errors: data.body?.errors?.map((item) => ({
+            ...item,
+            msg: SET_STATE_ERRORS[item.code],
+          })),
+        },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("changeRoomLightOn error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  switchHomeSchedule: async (req, res) => {
+    let jwtToken = req.headers["auth-token"];
+    let access_token = req.headers["access-token"];
+    let { net_home_id, schedule_id } = req.body;
+
+    let response;
+    log("switchHomeSchedule => " + JSON.stringify(req.body));
+    try {
+      const data = await switchNetatmoSchedule({
+        home_id: net_home_id,
+        schedule_id,
+        access_token,
+      });
+      log("switchHomeSchedule data: " + JSON.stringify(data));
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
+      response = new HttpResponse(
+        {
+          msg: "Switch home schedule successful",
+        },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("switchHomeSchedule error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

@@ -109,4 +109,12 @@ module.exports = {
     bedtime: "Bed Time",
     other: "Other",
   },
+  SET_STATE_ERRORS: {
+    1: "Unknown error",
+    2: "Internal error",
+    3: "Parser error",
+    4: "Command unknown node module error",
+    5: "Command invalid params",
+    6: "Unreachable",
+  },
 };

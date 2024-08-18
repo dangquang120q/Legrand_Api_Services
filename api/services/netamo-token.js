@@ -388,7 +388,7 @@ module.exports = {
     log("switchHomeSchedule => " + JSON.stringify(params));
     try {
       const { home_id, schedule_id, access_token } = params;
-      const res = await fetch(API_URL + "/api/setstate", {
+      const res = await fetch(API_URL + `/api/switchhomeschedule`, {
         method: "POST",
         headers: {
           Accept: "application/json",

@@ -6,7 +6,11 @@
  */
 
 const { log } = require("../services/log");
-const { SET_STATE_ACTION, DEVICE_CODES } = require("../services/const");
+const {
+  SET_STATE_ACTION,
+  DEVICE_CODES,
+  SET_STATE_ERRORS,
+} = require("../services/const");
 const {
   setState,
   getHomeStatus,
@@ -364,7 +368,7 @@ module.exports = {
           msg: "Change room lightOn successful",
           errors: data.body?.errors?.map((item) => ({
             ...item,
-            msg: SET_STATE_ACTION[item.code],
+            msg: SET_STATE_ERRORS[item.code],
           })),
         },
         { statusCode: 200, error: false }

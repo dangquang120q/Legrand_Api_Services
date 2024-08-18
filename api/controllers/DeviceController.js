@@ -338,9 +338,9 @@ module.exports = {
           bridge: item.bridge,
         };
         if (item.type == "NLF") {
-          item.brightness = status ? 100 : 0;
+          module.brightness = status ? 100 : 0;
         } else {
-          item.on = status ? true : false;
+          module.on = status ? true : false;
         }
         return module;
       });

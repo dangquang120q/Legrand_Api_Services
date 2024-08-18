@@ -7,7 +7,11 @@
 
 const { log } = require("../services/log");
 const { SET_STATE_ACTION } = require("../services/const");
-const { setState } = require("../services/netamo-token");
+const {
+  setState,
+  getHomeStatus,
+  getHomeData,
+} = require("../services/netamo-token");
 const { HttpResponse } = require("../services/http-response");
 const jwtoken = require("../services/jwtoken");
 const CryptoJS = require("crypto-js");
@@ -301,65 +305,67 @@ module.exports = {
       return res.serverError(response);
     }
   },
-  controlValveAlarm: async (req, res) => {
+  changeRoomLightOn: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
-    let { deviceId, lts_mac, lampStatus } = req.body;
+    let access_token = req.headers["access-token"];
+    let { net_home_id, room_id, status } = req.body;
+
     let response;
-    log("controlValveAlarm => " + JSON.stringify(req.body));
+    log("changeRoomLightOn => " + JSON.stringify(req.body));
     try {
-      let decodedToken = jwtoken.decode(jwtToken);
-      let userId = decodedToken["userId"];
-      lampStatus = lampStatus == "ON" ? 1 : 0;
-      let sql = sqlString.format(
-        "UPDATE lts_device_detail SET lampStatus = ? WHERE lts_mac = ? AND deviceId = ?",
-        [lampStatus, lts_mac, deviceId]
+      let homeData = await getHomeData({ access_token, home_id: net_home_id });
+      if (homeData.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + homeData.error.code,
+          error: true,
+          errorMsg: homeData.error.message,
+        });
+        return res.send(response);
+      }
+
+      let roomDevices =
+        homeData?.homes[0]?.modules
+          ?.filter((item) => item.room_id == room_id)
+          .map((item) => ({
+            ...item,
+          })) || [];
+      let lights = roomDevices.filter((item) =>
+        DEVICE_CODES.lights.includes(item.type)
       );
-      await sails
-        .getDatastore(process.env.MYSQL_DATASTORE)
-        .sendNativeQuery(sql);
+      let modules = lights.map((item) => {
+        let module = {
+          id: item.id,
+          bridge: item.bridge,
+        };
+        if (item.type == "NLF") {
+          item.brightness = status ? 100 : 0;
+        } else {
+          item.on = status ? true : false;
+        }
+        return module;
+      });
+      const data = await setState({
+        action: "modify multi devices",
+        modules,
+      });
+      log("changeRoomLightOn data: " + JSON.stringify(data));
+      if (data.error?.code) {
+        response = new HttpResponse(null, {
+          statusCode: "NET_" + data.error.code,
+          error: true,
+          errorMsg: data.error.message,
+        });
+        return res.send(response);
+      }
       response = new HttpResponse(
         {
-          msg: `Turn ${lampStatus == 1 ? "on" : "off"} valve/alarm successful!`,
+          msg: "Change room lightOn successful",
         },
-        {
-          statusCode: 200,
-          error: false,
-        }
+        { statusCode: 200, error: false }
       );
       return res.ok(response);
     } catch (error) {
-      log("controlValveAlarm error => " + error.toString());
-      response = new HttpResponse(error, { statusCode: 500, error: true });
-      return res.serverError(response);
-    }
-  },
-  changeLocation: async (req, res) => {
-    let jwtToken = req.headers["auth-token"];
-    let { deviceId, lts_mac, location } = req.body;
-    let response;
-    log("changeLocation => " + JSON.stringify(req.body));
-    try {
-      let decodedToken = jwtoken.decode(jwtToken);
-      let userId = decodedToken["userId"];
-      let sql = sqlString.format(
-        "UPDATE lts_device_detail SET location = ? WHERE lts_mac = ? AND deviceId = ?",
-        [location, lts_mac, deviceId]
-      );
-      await sails
-        .getDatastore(process.env.MYSQL_DATASTORE)
-        .sendNativeQuery(sql);
-      response = new HttpResponse(
-        {
-          msg: `Change location successful!`,
-        },
-        {
-          statusCode: 200,
-          error: false,
-        }
-      );
-      return res.ok(response);
-    } catch (error) {
-      log("changeLocation error => " + error.toString());
+      log("changeRoomLightOn error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

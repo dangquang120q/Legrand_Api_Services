@@ -348,6 +348,7 @@ module.exports = {
         action: "modify multi devices",
         modules,
         access_token,
+        home_id: net_home_id,
       });
       log("changeRoomLightOn data: " + JSON.stringify(data));
       if (data.error?.code) {

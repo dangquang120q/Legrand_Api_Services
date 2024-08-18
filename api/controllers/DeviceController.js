@@ -133,10 +133,12 @@ module.exports = {
   },
   controlAirConditioner: async (req, res) => {
     let access_token = req.headers["access-token"];
-    let { room_id, net_home_id, end_time, mode, temperature } = req.body;
+    let { room_id, net_home_id, end_time, mode, temperature, current_mode } =
+      req.body;
 
     let value = {
-      cooling_setpoint_mode: mode,
+      cooling_setpoint_mode:
+        current_mode == "off" && mode == "max" ? "manual" : mode,
       cooling_setpoint_temperature: +temperature,
     };
     if (end_time) {
@@ -159,6 +161,25 @@ module.exports = {
           errorMsg: data.error.message,
         });
         return res.send(response);
+      }
+      if (current_mode == "off" && mode == "max") {
+        value.cooling_setpoint_mode = "max";
+        const data = await setState({
+          action: SET_STATE_ACTION.chageTemperatureSetpoint,
+          value: value,
+          home_id: net_home_id,
+          room_id: room_id,
+          access_token,
+        });
+        log("controlAirConditioner max data: " + JSON.stringify(data));
+        if (data.error?.code) {
+          response = new HttpResponse(null, {
+            statusCode: "NET_" + data.error.code,
+            error: true,
+            errorMsg: data.error.message,
+          });
+          return res.send(response);
+        }
       }
       response = new HttpResponse(
         {

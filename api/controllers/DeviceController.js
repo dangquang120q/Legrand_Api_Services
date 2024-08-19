@@ -402,20 +402,24 @@ module.exports = {
       return res.serverError(response);
     }
   },
-  switchHomeSchedule: async (req, res) => {
+  launchScenario: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
     let access_token = req.headers["access-token"];
-    let { net_home_id, schedule_id } = req.body;
-
+    let { net_home_id, modules, scenario } = req.body;
+    modules = modules || [];
     let response;
-    log("switchHomeSchedule => " + JSON.stringify(req.body));
+    log("launchScenario => " + JSON.stringify(req.body));
     try {
-      const data = await switchNetatmoSchedule({
-        home_id: net_home_id,
-        schedule_id,
+      const data = await setState({
         access_token,
+        home_id: net_home_id,
+        action: SET_STATE_ACTION.launchScenario,
+        modules: modules.map((item) => ({
+          id: item.id,
+          scenario: scenario,
+        })),
       });
-      log("switchHomeSchedule data: " + JSON.stringify(data));
+      log("launchScenario data: " + JSON.stringify(data));
       if (data.error?.code) {
         response = new HttpResponse(null, {
           statusCode: "NET_" + data.error.code,
@@ -432,7 +436,7 @@ module.exports = {
       );
       return res.ok(response);
     } catch (error) {
-      log("switchHomeSchedule error => " + error.toString());
+      log("launchScenario error => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

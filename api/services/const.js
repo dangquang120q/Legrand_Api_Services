@@ -99,6 +99,7 @@ module.exports = {
     openCurtain: "Open the curtain",
     chageTemperatureSetpoint: "Apply a temperature set point to a room",
     changeFanSpeed: "Change fan speed",
+    launchScenario: "Launch a scenario",
   },
   ELECTRICITY_TYPE:
     "sum_energy_self_consumption,sum_energy_buy_from_grid,sum_energy_buy_from_grid$0,sum_energy_buy_from_grid$1,sum_energy_buy_from_grid$2,sum_energy_buy_from_grid$3,sum_energy_buy_from_grid$4,sum_energy_buy_from_grid$5,sum_energy_buy_from_grid$6,sum_energy_buy_from_grid$7,sum_energy_buy_from_grid$8,sum_energy_buy_from_grid$9,sum_energy_buy_from_grid$10,sum_energy_buy_from_grid$11,sum_energy_buy_from_grid_price$0,sum_energy_buy_from_grid_price$1,sum_energy_buy_from_grid_price$2,sum_energy_buy_from_grid_price$3,sum_energy_buy_from_grid_price$4,sum_energy_buy_from_grid_price$5,sum_energy_buy_from_grid_price$6,sum_energy_buy_from_grid_price$7,sum_energy_buy_from_grid_price$8,sum_energy_buy_from_grid_price$9,sum_energy_buy_from_grid_price$10,sum_energy_buy_from_grid_price$11,sum_energy_elec,sum_energy_price$0,sum_energy_price$1,sum_energy_price$2,sum_energy_elec$2,sum_energy_elec$0,sum_energy_elec$1",

@@ -32,7 +32,7 @@ module.exports.routes = {
   "GET /user/information": "UsersController.getUserInfo",
   "DELETE /user/deleteAccount": "UsersController.deleteAccount",
 
-  "POST /user/addFCMToken": "UsersController.addFCMDeviceToken",
+  "POST /user/addFCMToken": "UsersController.updateFCMDeviceToken",
   "POST /user/updateFCMToken": "UsersController.updateFCMDeviceToken",
   "POST /user/deleteFCMToken": "UsersController.deleteFCMDeviceToken",
   "POST /user/testFCMNoti": "UsersController.testFCMNoti",

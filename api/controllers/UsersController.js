@@ -762,9 +762,9 @@ module.exports = {
               (item) =>
                 DEVICE_CODES.lights.includes(item.type) && item.on == true
             );
-            const airConditioner = roomDevices.find((item) =>
-              DEVICE_CODES.airConditioner.includes(item.type)
-            );
+            // const airConditioner = roomDevices.find((item) =>
+            //   DEVICE_CODES.airConditioner.includes(item.type)
+            // );
             log("airConditioner => " + temperature?.cooling_setpoint_mode);
             // Push room to array
             rooms.push({
@@ -774,12 +774,11 @@ module.exports = {
                 ? temperature.therm_measured_temperature
                 : null,
               isLightOn: lights ? true : false,
-              isBoost:
-                temperature && airConditioner
-                  ? null
-                  : temperature?.cooling_setpoint_mode == "max"
-                  ? true
-                  : false,
+              isBoost: temperature
+                ? null
+                : temperature?.cooling_setpoint_mode == "max"
+                ? true
+                : false,
             });
           } else {
             const doorStatus = homeStatus.body?.home?.modules?.find(

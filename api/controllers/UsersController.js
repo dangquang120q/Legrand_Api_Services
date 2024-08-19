@@ -765,7 +765,7 @@ module.exports = {
             const airConditioner = roomDevices.find((item) =>
               DEVICE_CODES.airConditioner.includes(item.type)
             );
-            log("airConditioner => " + temperature["cooling_setpoint_mode"]);
+            log("airConditioner => " + temperature?.cooling_setpoint_mode);
             // Push room to array
             rooms.push({
               ...room,
@@ -774,11 +774,12 @@ module.exports = {
                 ? temperature.therm_measured_temperature
                 : null,
               isLightOn: lights ? true : false,
-              isBoost: !airConditioner
-                ? null
-                : temperature["cooling_setpoint_mode"] == "max"
-                ? true
-                : false,
+              isBoost:
+                temperature && airConditioner
+                  ? null
+                  : temperature?.cooling_setpoint_mode == "max"
+                  ? true
+                  : false,
             });
           } else {
             const doorStatus = homeStatus.body?.home?.modules?.find(

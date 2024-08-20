@@ -289,6 +289,7 @@ const upgradeVersion = async (request) => {
 const controlLight = async (request) => {
   try {
     Object.values(list_account_test).forEach(async (account) => {
+      
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {

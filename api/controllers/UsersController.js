@@ -774,7 +774,7 @@ module.exports = {
                 ? temperature.therm_measured_temperature
                 : null,
               isLightOn: lights ? true : false,
-              isBoost: temperature
+              isBoost: !temperature
                 ? null
                 : temperature?.cooling_setpoint_mode == "max"
                 ? true

@@ -402,7 +402,7 @@ const changePassword = async (request) => {
   }
 }
 //static port allocation
-server.listen(9601);
+// server.listen(9601);
 
 // for dyanmic port allocation
 // server.listen(function () {

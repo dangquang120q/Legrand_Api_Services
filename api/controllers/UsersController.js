@@ -868,7 +868,7 @@ module.exports = {
       if (get_user) {
         response_data.user = data.user;
       }
-
+      log("getListHomeNetatmo response => " + JSON.stringify(response_data));
       response = new HttpResponse(response_data, {
         statusCode: 200,
         error: false,

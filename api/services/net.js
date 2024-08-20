@@ -1,12 +1,25 @@
-const tls = require('tls');
-var fs = require('fs');
+const tls = require("tls");
+var fs = require("fs");
 const { log } = require("./log");
 const { login } = require("./socket/login");
 const { heartbeat } = require("./socket/heartbeat");
 const { checkPing } = require("./socket/checkPing");
 const { checkVersion } = require("./socket/checkVersion");
-const { addDevice, delDevice,switchDevice, battery, alarm, reportDeviceMode } = require("./socket/data-report");
-const { doChangePassword, doLampControl,doModLocation, doModName, doDeviceMode } = require("./socket/data-modify");
+const {
+  addDevice,
+  delDevice,
+  switchDevice,
+  battery,
+  alarm,
+  reportDeviceMode,
+} = require("./socket/data-report");
+const {
+  doChangePassword,
+  doLampControl,
+  doModLocation,
+  doModName,
+  doDeviceMode,
+} = require("./socket/data-modify");
 
 const {
   deviceList,
@@ -15,13 +28,20 @@ const {
   ntp,
   weather,
 } = require("./socket/data-query");
-const { firmWareInfo, LTSversion,updateLight,modifyLocation,modifyName,changePasswordLTS } = require("./socket/update-lts");
+const {
+  firmWareInfo,
+  LTSversion,
+  updateLight,
+  modifyLocation,
+  modifyName,
+  changePasswordLTS,
+} = require("./socket/update-lts");
 const { SOCKET_REQUEST } = require("./const");
-const dataUtils = require('./socket/data-utils');
+const dataUtils = require("./socket/data-utils");
 
 const options = {
-  key: fs.readFileSync('privkey.pem'),
-  cert: fs.readFileSync('fullchain.pem'),
+  key: fs.readFileSync("privkey.pem"),
+  cert: fs.readFileSync("fullchain.pem"),
   // Các tùy chọn bổ sung như passphrase, ca, crl, etc. (nếu cần)
 };
 // creates the server
@@ -40,7 +60,7 @@ server.on("secureConnection", function (socket) {
 
   console.log("Buffer size : " + socket.bufferSize);
 
-//   console.log("---------server details -----------------");
+  //   console.log("---------server details -----------------");
 
   var address = server.address();
   var port = address.port;
@@ -73,12 +93,10 @@ server.on("secureConnection", function (socket) {
 
   socket.setEncoding("latin1");
 
-
-
   socket.on("data", async function (request) {
     log("Data sent to server : " + request);
     var { header, body, end } = dataUtils.extractData(request);
-    try{
+    try {
       var data = JSON.parse(body);
       let Ack = 0;
       const { cmdType, packetNo } = data;
@@ -93,82 +111,116 @@ server.on("secureConnection", function (socket) {
             list_account[socket.remoteAddress] = data.data["dn"];
             list_account_test[socket.remoteAddress] = {
               dn: data.data["dn"],
-              socket: socket
+              socket: socket,
             };
             setTimeout(async () => {
-              let response = await checkPing(list_account[socket.remoteAddress]);
+              let response = await checkPing(
+                list_account[socket.remoteAddress]
+              );
               if (response.result == -1) {
                 socket.end("Timed out!");
               }
             }, 130000);
             break;
           case SOCKET_REQUEST.heartbeat:
-            response = await heartbeat(data,list_account[socket.remoteAddress]);
+            response = await heartbeat(
+              data,
+              list_account[socket.remoteAddress]
+            );
             break;
           case SOCKET_REQUEST.addDevice:
-            response = await addDevice(data,list_account[socket.remoteAddress]);
+            response = await addDevice(
+              data,
+              list_account[socket.remoteAddress]
+            );
             break;
           case SOCKET_REQUEST.delDevice:
-            response = await delDevice(data,list_account[socket.remoteAddress]);
+            response = await delDevice(
+              data,
+              list_account[socket.remoteAddress]
+            );
             break;
           case SOCKET_REQUEST.switch:
-            response = await switchDevice(data,list_account[socket.remoteAddress]);
+            response = await switchDevice(
+              data,
+              list_account[socket.remoteAddress]
+            );
             break;
           case SOCKET_REQUEST.battery:
-            response = await battery(data,list_account[socket.remoteAddress]);
+            response = await battery(data, list_account[socket.remoteAddress]);
             break;
           case SOCKET_REQUEST.alarm:
-            response = await alarm(data,list_account[socket.remoteAddress]);
+            response = await alarm(data, list_account[socket.remoteAddress]);
             break;
           case SOCKET_REQUEST.reportDeviceMode:
-            response = await reportDeviceMode(data,list_account[socket.remoteAddress]);
+            response = await reportDeviceMode(
+              data,
+              list_account[socket.remoteAddress]
+            );
             break;
           case SOCKET_REQUEST.deviceListVersion:
-            response = await deviceListVersion(data,list_account[socket.remoteAddress]);
+            response = await deviceListVersion(
+              data,
+              list_account[socket.remoteAddress]
+            );
             break;
           case SOCKET_REQUEST.deviceList:
-            response = await deviceList(data,list_account[socket.remoteAddress]);
+            response = await deviceList(
+              data,
+              list_account[socket.remoteAddress]
+            );
             break;
           case SOCKET_REQUEST.cityList:
-            response = await cityList(data,list_account[socket.remoteAddress]);
+            response = await cityList(data, list_account[socket.remoteAddress]);
             break;
           case SOCKET_REQUEST.weather:
-            response = await weather(data,list_account[socket.remoteAddress]);
+            response = await weather(data, list_account[socket.remoteAddress]);
             break;
           case SOCKET_REQUEST.ntp:
-            response = await ntp(data,list_account[socket.remoteAddress]);
+            response = await ntp(data, list_account[socket.remoteAddress]);
             break;
           case SOCKET_REQUEST.LTSVersion:
-            response = await LTSversion(data,list_account[socket.remoteAddress]);
+            response = await LTSversion(
+              data,
+              list_account[socket.remoteAddress]
+            );
             setTimeout(async () => {
-              let { req, result } = await checkVersion(list_account[socket.remoteAddress]);
+              let { req, result } = await checkVersion(
+                list_account[socket.remoteAddress]
+              );
               console.log(JSON.stringify(req));
               if (result == 0) {
-                socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+                socket.write(
+                  header.concat(JSON.stringify(req)).concat(end),
+                  "latin1"
+                );
               }
             }, 1000);
             break;
           case SOCKET_REQUEST.firmwareInfo:
-            response = await firmWareInfo(data,list_account[socket.remoteAddress]);
+            response = await firmWareInfo(
+              data,
+              list_account[socket.remoteAddress]
+            );
             break;
           case SOCKET_REQUEST.lightAck:
-            await updateLight(data,list_account[socket.remoteAddress]);
+            await updateLight(data, list_account[socket.remoteAddress]);
             Ack = 1;
             break;
           case SOCKET_REQUEST.deviceLocationAck:
-            await modLocation(data,list_account[socket.remoteAddress]);
+            await modLocation(data, list_account[socket.remoteAddress]);
             Ack = 1;
             break;
           case SOCKET_REQUEST.deviceNameAck:
-            await modName(data,list_account[socket.remoteAddress]);
+            await modName(data, list_account[socket.remoteAddress]);
             Ack = 1;
             break;
           case SOCKET_REQUEST.changePasswordAck:
-            await changePasswordLTS(data,list_account[socket.remoteAddress]);
+            await changePasswordLTS(data, list_account[socket.remoteAddress]);
             Ack = 1;
             break;
           case SOCKET_REQUEST.deviceModeAck:
-            await changeDeviceMode(data,list_account[socket.remoteAddress]);
+            await changeDeviceMode(data, list_account[socket.remoteAddress]);
             Ack = 1;
             break;
           default:
@@ -189,9 +241,14 @@ server.on("secureConnection", function (socket) {
         console.log("header char code at response: " + i + " -- " + hex);
       }
       console.log("header " + header.toString(16));
-      console.log("response-- " + header.concat(JSON.stringify(response)).concat(end));
+      console.log(
+        "response-- " + header.concat(JSON.stringify(response)).concat(end)
+      );
       if (cmdType != SOCKET_REQUEST.upgradeAck && Ack != 1) {
-        var is_kernel_buffer_full = socket.write(header.concat(JSON.stringify(response)).concat(end), 'latin1');
+        var is_kernel_buffer_full = socket.write(
+          header.concat(JSON.stringify(response)).concat(end),
+          "latin1"
+        );
         if (is_kernel_buffer_full) {
           console.log(
             "Data was flushed successfully from kernel buffer i.e written successfully!"
@@ -209,11 +266,9 @@ server.on("secureConnection", function (socket) {
           socket.end("Timed out!");
         }
       }, 130000);
-    
+    } catch (error) {
+      log("error" + error);
     }
-    catch (error) {
-      log('error' + error);
-  }
   });
 
   socket.on("drain", function () {
@@ -272,20 +327,27 @@ const upgradeVersion = async (request) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
-        let {req,result} = await checkVersion(account.dn);
-        let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
-          .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
-          .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+        let { req, result } = await checkVersion(account.dn);
+        let header = dataUtils
+          .fromCharCodeData(68)
+          .concat(dataUtils.fromCharCodeData(33))
+          .concat(dataUtils.fromCharCodeData(0))
+          .concat(dataUtils.fromCharCodeData(7))
+          .concat(dataUtils.fromCharCodeData(0))
+          .concat(dataUtils.fromCharCodeData(0));
         let end = dataUtils.fromCharCodeData(16);
         if (result == 0) {
-          socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+          socket.write(
+            header.concat(JSON.stringify(req)).concat(end),
+            "latin1"
+          );
         }
       }
     });
   } catch (err) {
     console.log(err);
   }
-}
+};
 const controlLight = async (request) => {
   try {
     Object.values(list_account_test).forEach(async (account) => {
@@ -295,14 +357,21 @@ const controlLight = async (request) => {
       if (socket) {
         console.log(request.data["gatewayDn"]);
         if (account.dn == request.data["gatewayDn"]) {
-          let {req,result} = await doLampControl(request);
-          let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
-            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
-            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+          let { req, result } = await doLampControl(request);
+          let header = dataUtils
+            .fromCharCodeData(68)
+            .concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(0));
           let end = dataUtils.fromCharCodeData(16);
           if (result == 0) {
             console.log(JSON.stringify(req));
-            socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+            socket.write(
+              header.concat(JSON.stringify(req)).concat(end),
+              "latin1"
+            );
           }
         }
       }
@@ -310,7 +379,7 @@ const controlLight = async (request) => {
   } catch (err) {
     console.log(err);
   }
-}
+};
 const deviceMode = async (request) => {
   try {
     Object.values(list_account_test).forEach(async (account) => {
@@ -320,13 +389,20 @@ const deviceMode = async (request) => {
         console.log(account.dn);
         console.log(request.data["gatewayDn"]);
         if (account.dn == request.data["gatewayDn"]) {
-          let {req,result} = await doDeviceMode(request);
-          let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
-            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
-            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+          let { req, result } = await doDeviceMode(request);
+          let header = dataUtils
+            .fromCharCodeData(68)
+            .concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(0));
           let end = dataUtils.fromCharCodeData(16);
           if (result == 0) {
-            socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
+            socket.write(
+              header.concat(JSON.stringify(req)).concat(end),
+              "latin1"
+            );
           }
         }
       }
@@ -334,7 +410,7 @@ const deviceMode = async (request) => {
   } catch (err) {
     console.log(err);
   }
-}
+};
 const modLocation = async (request) => {
   try {
     Object.values(list_account_test).forEach(async (account) => {
@@ -342,21 +418,28 @@ const modLocation = async (request) => {
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
         if (account.dn == request.data["gatewayDn"]) {
-          let {req,result} = await doModLocation(request);
-          let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
-            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
-            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+          let { req, result } = await doModLocation(request);
+          let header = dataUtils
+            .fromCharCodeData(68)
+            .concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(0));
           let end = dataUtils.fromCharCodeData(16);
           if (result == 0) {
-            socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
-          }        
+            socket.write(
+              header.concat(JSON.stringify(req)).concat(end),
+              "latin1"
+            );
+          }
         }
       }
     });
   } catch (err) {
     console.log(err);
   }
-}
+};
 const modName = async (request) => {
   try {
     Object.values(list_account_test).forEach(async (account) => {
@@ -364,21 +447,28 @@ const modName = async (request) => {
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
         if (account.dn == request.data["gatewayDn"]) {
-          let {req,result} = await doModName(request);
-          let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
-            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
-            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+          let { req, result } = await doModName(request);
+          let header = dataUtils
+            .fromCharCodeData(68)
+            .concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(0));
           let end = dataUtils.fromCharCodeData(16);
           if (result == 0) {
-            socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
-          }        
+            socket.write(
+              header.concat(JSON.stringify(req)).concat(end),
+              "latin1"
+            );
+          }
         }
       }
     });
   } catch (err) {
     console.log(err);
   }
-}
+};
 const changePassword = async (request) => {
   try {
     Object.values(list_account_test).forEach(async (account) => {
@@ -386,23 +476,30 @@ const changePassword = async (request) => {
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
         if (account.dn == request.data["gatewayDn"]) {
-          let {req,result} = await doChangePassword(request);
-          let header = dataUtils.fromCharCodeData(68).concat(dataUtils.fromCharCodeData(33))
-            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(7))
-            .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
+          let { req, result } = await doChangePassword(request);
+          let header = dataUtils
+            .fromCharCodeData(68)
+            .concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(0));
           let end = dataUtils.fromCharCodeData(16);
           if (result == 0) {
-            socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
-          }        
+            socket.write(
+              header.concat(JSON.stringify(req)).concat(end),
+              "latin1"
+            );
+          }
         }
       }
     });
   } catch (err) {
     console.log(err);
   }
-}
+};
 //static port allocation
-// server.listen(9601);
+server.listen(9601);
 
 // for dyanmic port allocation
 // server.listen(function () {
@@ -436,8 +533,6 @@ const changePassword = async (request) => {
 //   });
 
 //   socket.setEncoding("latin1");
-
-
 
 //   socket.on("data", async function (request) {
 //     log("Data sent to server : " + request);
@@ -566,7 +661,7 @@ const changePassword = async (request) => {
 //           socket.end("Timed out!");
 //         }
 //       }, 130000);
-    
+
 //     }
 //     catch (error) {
 //       log('error' + error);
@@ -681,7 +776,7 @@ const changePassword = async (request) => {
 //           let end = dataUtils.fromCharCodeData(16);
 //           if (result == 0) {
 //             socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
-//           }        
+//           }
 //         }
 //       }
 //     });
@@ -703,7 +798,7 @@ const changePassword = async (request) => {
 //           let end = dataUtils.fromCharCodeData(16);
 //           if (result == 0) {
 //             socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
-//           }        
+//           }
 //         }
 //       }
 //     });
@@ -725,7 +820,7 @@ const changePassword = async (request) => {
 //           let end = dataUtils.fromCharCodeData(16);
 //           if (result == 0) {
 //             socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
-//           }        
+//           }
 //         }
 //       }
 //     });
@@ -739,4 +834,11 @@ const changePassword = async (request) => {
 // setTimeout(function () {
 //   server.close();
 // }, 5000000);
-module.exports = { upgradeVersion,changePassword,modLocation,modName,controlLight, deviceMode };
+module.exports = {
+  upgradeVersion,
+  changePassword,
+  modLocation,
+  modName,
+  controlLight,
+  deviceMode,
+};

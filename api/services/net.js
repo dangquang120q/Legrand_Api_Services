@@ -103,6 +103,8 @@ server.on("secureConnection", function (socket) {
             }, 130000);
             break;
           case SOCKET_REQUEST.heartbeat:
+            console.log("list acocunt: " + JSON.stringify(list_account));
+            console.log("list_account_test: " + JSON.stringify(list_account_test));
             response = await heartbeat(data,list_account[socket.remoteAddress]);
             break;
           case SOCKET_REQUEST.addDevice:

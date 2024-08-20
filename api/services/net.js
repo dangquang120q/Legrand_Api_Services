@@ -301,6 +301,7 @@ const controlLight = async (request) => {
             .concat(dataUtils.fromCharCodeData(0)).concat(dataUtils.fromCharCodeData(0));
           let end = dataUtils.fromCharCodeData(16);
           if (result == 0) {
+            console.log(JSON.stringify(req));
             socket.write(header.concat(JSON.stringify(req)).concat(end), 'latin1');
           }
         }

@@ -19,7 +19,7 @@ module.exports = {
         "deviceId": data.deviceId,
         "switch": data.switch
       }
-      req.data = data;
+      req.data = response;
       return {req,result};
     } catch {
         const req = {};

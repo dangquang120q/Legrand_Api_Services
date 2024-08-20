@@ -1064,6 +1064,7 @@ module.exports = {
   sendRequestSocket: async (req, res) => {
     try {
       log("sendRequestSocket => " + JSON.stringify(req.body));
+      log("cmdType: " + req.body.cmdType);
       if (req.body.cmdType == SOCKET_REQUEST.upgrade) {
         await upgradeVersion(req.body);
         let response = new HttpResponse(
@@ -1072,6 +1073,7 @@ module.exports = {
         );
         return res.ok(response);
       } else if (req.body.cmdType == SOCKET_REQUEST.light) {
+        log("should come here");
         await controlLight(req.body);
         let response = new HttpResponse(
           { msg: "Ordinary Lamp Control Successfull" },

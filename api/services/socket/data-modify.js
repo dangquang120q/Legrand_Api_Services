@@ -14,11 +14,18 @@ module.exports = {
         .sendNativeQuery(sql);
       req.packetNo = request.packetNo;
       req.cmdType = request.cmdType;
-      req.data = data;
+      var response = {
+        "gatewayDn": data.gatewayDn,
+        "deviceId": data.deviceId,
+        "switch": data.switch
+      }
+      req.data = response;
+      console.log(JSON.stringify(req));
       return {req,result};
-    } catch {
+    } catch (e){
         const req = {};
         let result = -1;
+        console.log(e);
         return {req,result};
     }
   },

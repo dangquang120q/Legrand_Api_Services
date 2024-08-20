@@ -103,8 +103,6 @@ server.on("secureConnection", function (socket) {
             }, 130000);
             break;
           case SOCKET_REQUEST.heartbeat:
-            console.log("list acocunt: " + JSON.stringify(list_account));
-            console.log("list_account_test: " + JSON.stringify(list_account_test));
             response = await heartbeat(data,list_account[socket.remoteAddress]);
             break;
           case SOCKET_REQUEST.addDevice:
@@ -290,13 +288,11 @@ const upgradeVersion = async (request) => {
 }
 const controlLight = async (request) => {
   try {
-    console.log(JSON.stringify(list_account));
     Object.values(list_account_test).forEach(async (account) => {
       console.log(JSON.stringify(account));
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
-        console.log(account.dn);
         console.log(request.data["gatewayDn"]);
         if (account.dn == request.data["gatewayDn"]) {
           let {req,result} = await doLampControl(request);

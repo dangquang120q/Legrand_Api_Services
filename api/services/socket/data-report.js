@@ -1,5 +1,7 @@
 const sqlString = require("sqlstring");
 const { getFirebaseToken } = require("./firebase-token");
+const notificationQueue = require("../firebase-queue");
+
 module.exports = {
   addDevice: async function (request, lts_mac) {
     try {

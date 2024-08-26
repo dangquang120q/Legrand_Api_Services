@@ -1,5 +1,5 @@
 const sqlString = require("sqlstring");
-
+const notificationQueue = require("../firebase-queue");
 module.exports = {
     doLampControl: async function (request) {
     try {
@@ -12,6 +12,40 @@ module.exports = {
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
+      let sqlUser = sqlString.format(
+        "select owned_id from lts_device_control where lts_mac = ?", [data.gatewayDn]
+      );
+      let dataUser = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlUser);
+      let userId = dataUser["rows"][0]["owned_id"];
+      let sqlFirebase = sqlString.format(
+        "SELECT device_token FROM firebase_token WHERE user_id = ?",
+        [userId]
+      );
+      const dataFb = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlFirebase);
+
+      // Chuyển đổi kết quả truy vấn thành mảng các token
+      const registrationTokens = dataFb.rows.map((device) => device.device_token);
+
+      const message = {
+        title: "Thông báo",
+        body: "Nội dung thông báo",
+      };
+
+      // Chia thành các batch nhỏ để tránh quá tải
+      const batchSize = 500;
+      for (let i = 0; i < registrationTokens.length; i += batchSize) {
+        const batchTokens = registrationTokens.slice(i, i + batchSize);
+
+        // Thêm công việc vào hàng đợi
+        notificationQueue.add({
+          registrationTokens: batchTokens,
+          message: message,
+        });
+      }
       req.packetNo = request.packetNo;
       req.cmdType = request.cmdType;
       var response = {

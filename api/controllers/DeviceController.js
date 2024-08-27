@@ -147,7 +147,7 @@ module.exports = {
     if (mode == "max") {
       const currTime = new Date().getTime();
       let endTime = new Date(currTime + 30 * 60000).getTime();
-      value["cooling_setpoint_end_time"] = endTime / 1000;
+      value["cooling_setpoint_end_time"] = Math.round(endTime / 1000);
     }
     log("controlAirConditioner => " + JSON.stringify(value));
     try {

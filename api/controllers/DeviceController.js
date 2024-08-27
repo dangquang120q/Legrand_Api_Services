@@ -144,6 +144,10 @@ module.exports = {
     if (end_time) {
       value["cooling_setpoint_end_time"] = +end_time;
     }
+    if (mode == "max") {
+      let endTime = new Date(new Date.getTime() + 30 * 60000);
+      value["cooling_setpoint_end_time"] = endTime / 1000;
+    }
     log("controlAirConditioner => " + JSON.stringify(value));
     try {
       const data = await setState({

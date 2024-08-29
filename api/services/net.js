@@ -238,9 +238,9 @@ server.on("secureConnection", function (socket) {
       //echo data
       for (i = 0; i < header.length; i++) {
         var hex = header.charCodeAt(i).toString(16);
-        console.log("header char code at response: " + i + " -- " + hex);
+        // console.log("header char code at response: " + i + " -- " + hex);
       }
-      console.log("header " + header.toString(16));
+      // console.log("header " + header.toString(16));
       console.log(
         "response-- " + header.concat(JSON.stringify(response)).concat(end)
       );

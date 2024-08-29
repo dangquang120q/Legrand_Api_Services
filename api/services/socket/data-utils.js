@@ -7,10 +7,10 @@ module.exports = {
         const end = request.substring(lastPosBody + 1, request.length);
         for (i = 0; i < header.length; i++) {
             var hex = header.charCodeAt(i).toString(16);
-            console.log("header char code " + i + " -- " + hex);
+            // console.log("header char code " + i + " -- " + hex);
         }
-        console.log("header " + header.toString(16));
-        console.log("end " + end.toString(16));
+        // console.log("header " + header.toString(16));
+        // console.log("end " + end.toString(16));
         return {header, body, end};
     },
     fromCharCodeData: function(number) {

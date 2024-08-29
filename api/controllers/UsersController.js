@@ -81,13 +81,23 @@ module.exports = {
     let userId = decodedToken["userId"];
     let { deviceToken } = req.body;
     try {
-      let insertSql = sqlString.format(
-        "insert into firebase_token(user_id, device_token) values (?, ?)",
+      let selectDeviceToken = sqlString.format(
+        "select user_id from firebase_token where user_id = ? and device_token = ?",
         [userId, deviceToken]
       );
-      await sails
+      let tokenData = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
-        .sendNativeQuery(insertSql);
+        .sendNativeQuery(selectDeviceToken);
+
+      if (tokenData["rows"].length == 0) {
+        let insertSql = sqlString.format(
+          "insert into firebase_token(user_id, device_token) values (?, ?)",
+          [userId, deviceToken]
+        );
+        await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(insertSql);
+      }
       response = new HttpResponse(
         {
           msg: "insert token successfully",

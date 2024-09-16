@@ -34,7 +34,10 @@ module.exports = {
 
       const message = {
         title: "Thông báo",
-        body: request,
+        body: {
+          "switch": data.switch,
+          "deviceId": data.deviceId
+        },
       };
 
       // Chia thành các batch nhỏ để tránh quá tải

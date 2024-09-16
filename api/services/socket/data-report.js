@@ -12,6 +12,7 @@ module.exports = {
       let result = 0;
       for (let index = 0; index < data["has"].length; index++) {
         const element = data["has"][index];
+        console.log("element ==" + JSON.stringify(element));
         let sqlInsert = sqlString.format(
           "CALL sp_insert_device(?,?,?,?,?,?)", [element["name"],element["location"],element["productKey"],element["gatewayDn"],element["parentDn"],element["deviceId"]]
         );

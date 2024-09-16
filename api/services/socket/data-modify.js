@@ -19,10 +19,12 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlUser);
       let userId = dataUser["rows"][0]["owned_id"];
+      console.log("owned_id == " + userId);
       let sqlFirebase = sqlString.format(
         "SELECT device_token FROM firebase_token WHERE user_id = ?",
         [userId]
       );
+      console.log(JSON.stringify(sqlFirebase));
       const dataFb = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlFirebase);

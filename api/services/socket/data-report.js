@@ -267,7 +267,8 @@ module.exports = {
       response.packetNo = request.packetNo;
       response.result = result;
       return response;
-    } catch {
+    } catch(e) {
+      console.log("error +" + e);
       const response = {
         result: -1,
       };

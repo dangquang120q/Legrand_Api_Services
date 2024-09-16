@@ -147,9 +147,46 @@ module.exports = {
 
   battery: async function (request, lts_mac) {
     try {
+      const { data } = request;
       const response = {
         result: 0,
       };
+      if (data.batteryLevel <= 20) {
+        let sqlUser = sqlString.format(
+          "select owned_id from lts_device_control where lts_mac = ?", [data.gatewayDn]
+        );
+        let dataUser = await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(sqlUser);
+        let userId = dataUser["rows"][0]["owned_id"];
+        let sqlFirebase = sqlString.format(
+          "SELECT device_token FROM firebase_token WHERE user_id = ?",
+          [userId]
+        );
+        const dataFb = await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(sqlFirebase);
+  
+        // Chuyển đổi kết quả truy vấn thành mảng các token
+        const registrationTokens = dataFb.rows.map((device) => device.device_token);
+  
+        const message = {
+          title: "Thông báo",
+          body: "Low Battery Alarm",
+        };
+  
+        // Chia thành các batch nhỏ để tránh quá tải
+        const batchSize = 500;
+        for (let i = 0; i < registrationTokens.length; i += batchSize) {
+          const batchTokens = registrationTokens.slice(i, i + batchSize);
+  
+          // Thêm công việc vào hàng đợi
+          notificationQueue.add({
+            registrationTokens: batchTokens,
+            message: message,
+          });
+        }
+      }
       let result = 0;
       response.packetNo = request.packetNo;
       response.result = result;
@@ -188,6 +225,12 @@ module.exports = {
       let dataUser = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlUser);
+      let sqlLocation = sqlString.format(
+        "select location from lts_device_detail where lts_mac = ? and deviceId = ?", [data.gatewayDn,data.deviceId]
+      );
+      let dataLocation = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sqlLocation);
       let userId = dataUser["rows"][0]["owned_id"];
       let sqlFirebase = sqlString.format(
         "SELECT device_token FROM firebase_token WHERE user_id = ?",
@@ -202,10 +245,7 @@ module.exports = {
 
       const message = {
         title: "Thông báo",
-        body: JSON.stringify({
-          "alarmType": data.alarmType,
-          "deviceId": data.deviceId
-        }),
+        body: "Water Leakage Detect - " + dataLocation[0]["location"],
       };
 
       // Chia thành các batch nhỏ để tránh quá tải

@@ -9,8 +9,6 @@ module.exports = {
       const response = {
         result: 0,
       };
-      console.log("request == " + request);
-      console.log("lts_mac == " + lts_mac);
       let result = 0;
       for (let index = 0; index < data["has"].length; index++) {
         const element = data["has"][index];
@@ -55,8 +53,6 @@ module.exports = {
       const response = {
         result: 0,
       };
-      console.log("request == " + request);
-      console.log("lts_mac == " + lts_mac);
       let result = 0;
       let sql = sqlString.format(
         "delete from lts_device_detail where lts_mac = ? and deviceId = ?", [data["gatewayDn"], data["deviceId"]]
@@ -91,8 +87,6 @@ module.exports = {
       const response = {
         result: 0,
       };
-      console.log("request == " + request);
-      console.log("lts_mac == " + lts_mac);
       let sql = sqlString.format(
         "update lts_device_detail set lampStatus = ? where lts_mac = ? and deviceId = ?", [data.switch,data.gatewayDn,data.deviceId]
       );
@@ -117,8 +111,6 @@ module.exports = {
       const response = {
         result: 0,
       };
-      console.log("request == " + request);
-      console.log("lts_mac == " + lts_mac);
       let result = 0;
       response.packetNo = request.packetNo;
       response.result = result;
@@ -138,8 +130,6 @@ module.exports = {
       const response = {
         result: 0,
       };
-      console.log("request == " + request);
-      console.log("lts_mac == " + lts_mac);
       let sql = sqlString.format(
         "update lts_device_detail set alarmStatus = ? where lts_mac = ? and deviceId = ?", [data.alarmType,data.gatewayDn,data.deviceId]
       );
@@ -206,8 +196,6 @@ module.exports = {
       const response = {
         result: 0,
       };
-      console.log("request == " + request);
-      console.log("lts_mac == " + lts_mac);
       let sql = sqlString.format(
         "update lts_device_control set status = ? where lts_mac = ?", [data.status,data.gatewayDn]
       );

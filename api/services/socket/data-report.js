@@ -249,7 +249,7 @@ module.exports = {
       const message = {
         title: "Thông báo",
         body: JSON.stringify({
-          "message": "Water Leakage Detect - " + dataLocation[0]["location"],
+          "message": "Water Leakage Detect - " + dataLocation["rows"][0]["location"],
         })
       }
       // Chia thành các batch nhỏ để tránh quá tải

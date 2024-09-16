@@ -116,7 +116,7 @@ module.exports = {
       const message = {
         title: "Thông báo",
         body: {
-          "switch": data.switch,
+          "switch": data.switch + "",
           "deviceId": data.deviceId
         },
       };

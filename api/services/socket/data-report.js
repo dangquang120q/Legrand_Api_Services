@@ -115,7 +115,7 @@ module.exports = {
 
       const message = {
         title: "Thông báo",
-        body: "Nội dung thông báo",
+        body: request,
       };
 
       // Chia thành các batch nhỏ để tránh quá tải
@@ -199,7 +199,7 @@ module.exports = {
 
       const message = {
         title: "Thông báo",
-        body: "Nội dung thông báo",
+        body: request,
       };
 
       // Chia thành các batch nhỏ để tránh quá tải

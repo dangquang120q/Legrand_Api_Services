@@ -24,9 +24,8 @@ notificationQueue.process(async (job, done) => {
         const response = await admin.messaging().sendEachForMulticast({
             tokens: registrationTokens,
             notification: message.title,
-            data: JSON.string(message.body)
+            data: JSON.stringify(message.body)
         });
-        console.log(JSON.stringify(response.responses[0].error));
         console.log('Successfully sent message:', response);
         done(null, response);
     } catch (error) {

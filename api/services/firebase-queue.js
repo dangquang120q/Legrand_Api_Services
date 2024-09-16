@@ -26,7 +26,6 @@ notificationQueue.process(async (job, done) => {
             notification: message,
             data: JSON.parse(message.body)
         });
-        console.log(JSON.stringify(response.responses[0].error));
         console.log('Successfully sent message:', response);
         done(null, response);
     } catch (error) {

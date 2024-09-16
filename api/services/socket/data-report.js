@@ -172,7 +172,10 @@ module.exports = {
   
         const message = {
           title: "Thông báo",
-          body: "Low Battery Alarm",
+          body: JSON.stringify(
+            {
+              "message":"Low Battery Alarm",
+            })
         };
   
         // Chia thành các batch nhỏ để tránh quá tải
@@ -245,9 +248,10 @@ module.exports = {
 
       const message = {
         title: "Thông báo",
-        body: "Water Leakage Detect - " + dataLocation[0]["location"],
-      };
-
+        body: JSON.stringify({
+          "message": "Water Leakage Detect - " + dataLocation[0]["location"],
+        })
+      }
       // Chia thành các batch nhỏ để tránh quá tải
       const batchSize = 500;
       for (let i = 0; i < registrationTokens.length; i += batchSize) {

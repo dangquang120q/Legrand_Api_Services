@@ -22,25 +22,25 @@ var client = tls.connect(options, function () {
   console.log("Client is IP4/IP6 : " + family);
 
   // writing data to server
-  client.write(
-    JSON.stringify({
-      cmdType: "login",
-      packetNo: 1,
-      data: {
-        dn: "1234",
-        account: "quang",
-        password: "1202002",
-      },
-    })
-  );
-  setTimeout(() => {
-    client.write(
-      JSON.stringify({
-        cmdType: "heartbeat",
-        packetNo: 1
-      })
-    );
-  }, 15000);
+  // client.write(
+  //   JSON.stringify({
+  //     cmdType: "login",
+  //     packetNo: 1,
+  //     data: {
+  //       dn: "1234",
+  //       account: "quang",
+  //       password: "1202002",
+  //     },
+  //   })
+  // );
+  // setTimeout(() => {
+  //   client.write(
+  //     JSON.stringify({
+  //       cmdType: "heartbeat",
+  //       packetNo: 1
+  //     })
+  //   );
+  // }, 15000);
   // setTimeout(() => {
   //   client.write(
   //     JSON.stringify({
@@ -96,21 +96,21 @@ var client = tls.connect(options, function () {
   //     })
   //   );
   // }, 20000);
-  // setTimeout(() => {
-  //   client.write(
-  //     JSON.stringify({
-  //       cmdType: "alarm",
-  //       packetNo: 1234,
-  //       "data": {
-  //         "gatewayDn":"dnstr",
-  //         "deviceId":"idstr", 
-  //         "alarmType":1, 
-  //         "time":"20230418 14:13:50", 
-  //         "reportTime":"1692122750795"
-  //       }
-  //     })
-  //   );
-  // }, 21000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "alarm",
+        packetNo: 1234,
+        "data": {
+          "gatewayDn":"F22771FEFF122784",
+          "deviceId":"F22771FEFF122784_PowerSwitch_2", 
+          "alarmType":1, 
+          "time":"2024-08-13 08:48:37", 
+          "reportTime":"1692122750795"
+        }
+      })
+    );
+  }, 10000);
   // setTimeout(() => {
   //   client.write(
   //     JSON.stringify({

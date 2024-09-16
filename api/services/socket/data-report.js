@@ -5,6 +5,7 @@ const notificationQueue = require("../firebase-queue");
 module.exports = {
   addDevice: async function (request, lts_mac) {
     try {
+      console.log("addDevice");
       const { data } = request;
       const response = {
         result: 0,

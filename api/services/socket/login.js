@@ -17,14 +17,14 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlCheck);
       if (dataCheck["rows"].length == 0) {
-        result = -1;
-        // let sqlInsert = sqlString.format(
-        //   "insert into lts_device_control(lts_mac) values (?)",
-        //   [data["dn"]]
-        // );
-        // await sails
-        //   .getDatastore(process.env.MYSQL_DATASTORE)
-        //   .sendNativeQuery(sqlInsert);
+        // result = -1;
+        let sqlInsert = sqlString.format(
+          "insert into lts_device_control(lts_mac) values (?)",
+          [data["dn"]]
+        );
+        await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(sqlInsert);
       } else {
         let sqlUpdateTime = sqlString.format(
           "update lts_device_control set last_ping_time = ? where lts_mac = ?",

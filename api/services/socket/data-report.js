@@ -172,7 +172,11 @@ module.exports = {
   
         const message = {
           title: "Low Battery",
-          body: "Low Battery Alarm",
+          
+          body: 
+          JSON.stringify({
+            "message" : "Low Battery Alarm"
+          })
         };
   
         // Chia thành các batch nhỏ để tránh quá tải
@@ -245,7 +249,9 @@ module.exports = {
 
       const message = {
         title: "Water Leakage",
-        body: "Water Leakage Detect - " + dataLocation["rows"][0]["location"],
+        body: JSON.stringify({
+          "message" : "Water Leakage Detect - " + dataLocation["rows"][0]["location"]
+        }),
       }
       // Chia thành các batch nhỏ để tránh quá tải
       const batchSize = 500;

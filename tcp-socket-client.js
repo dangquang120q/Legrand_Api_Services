@@ -87,15 +87,15 @@ var client = tls.connect(options, function () {
   //     })
   //   );
   // }, 19000);
-  // setTimeout(() => {
-  //   client.write(
-  //     JSON.stringify({
-  //       cmdType: "battery",
-  //       packetNo: 1234,
-  //       "data": {"gatewayDn":"dnstr", "deviceId":"idstr", "batteryLevel":50}
-  //     })
-  //   );
-  // }, 20000);
+  setTimeout(() => {
+    client.write(
+      JSON.stringify({
+        cmdType: "battery",
+        packetNo: 1234,
+        "data": {"gatewayDn":"F22771FEFF122784", "deviceId":"F22771FEFF122784_PowerSwitch_2", "batteryLevel":15}
+      })
+    );
+  }, 10000);
   setTimeout(() => {
     client.write(
       JSON.stringify({
@@ -110,7 +110,7 @@ var client = tls.connect(options, function () {
         }
       })
     );
-  }, 10000);
+  }, 5000);
   // setTimeout(() => {
   //   client.write(
   //     JSON.stringify({

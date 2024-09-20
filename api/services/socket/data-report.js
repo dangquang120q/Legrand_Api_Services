@@ -114,11 +114,8 @@ module.exports = {
       const registrationTokens = dataFb.rows.map((device) => device.device_token);
 
       const message = {
-        title: "Thông báo",
-        body: JSON.stringify({
-          "switch": data.switch + "",
-          "deviceId": data.deviceId
-        }),
+          switch: data.switch + "",
+          deviceId: data.deviceId + ""
       };
 
       // Chia thành các batch nhỏ để tránh quá tải
@@ -129,7 +126,7 @@ module.exports = {
         // Thêm công việc vào hàng đợi
         notificationQueue.add({
           registrationTokens: batchTokens,
-          message: message,
+          data: message,
         });
       }
       let result = 0;
@@ -172,11 +169,7 @@ module.exports = {
   
         const message = {
           title: "Low Battery",
-          
-          body: 
-          JSON.stringify({
-            "message" : "Low Battery Alarm"
-          })
+          body: "Low Battery Alarm"
         };
   
         // Chia thành các batch nhỏ để tránh quá tải
@@ -249,9 +242,8 @@ module.exports = {
 
       const message = {
         title: "Water Leakage",
-        body: JSON.stringify({
-          "message" : "Water Leakage Detect - " + dataLocation["rows"][0]["location"]
-        }),
+        body: "Water Leakage Detect - " + dataLocation["rows"][0]["location"],
+        data: {},
       }
       // Chia thành các batch nhỏ để tránh quá tải
       const batchSize = 500;

@@ -16,16 +16,24 @@ const notificationQueue = new Queue('notificationQueue', {
 
 // Xử lý công việc trong hàng đợi
 notificationQueue.process(async (job, done) => {
-    const { registrationTokens, message } = job.data;
+    const { registrationTokens, message,data } = job.data;
 
     try {
         console.log(registrationTokens);
         console.log(message);
-        const response = await admin.messaging().sendEachForMulticast({
-            tokens: registrationTokens,
-            notification: message,
-            data: JSON.parse(message.body)
-        });
+        console.log(data);
+        var response;
+        if(message == null) {
+            response = await admin.messaging().sendEachForMulticast({
+                tokens: registrationTokens,
+                data: data
+            });
+        } else {
+            response = await admin.messaging().sendEachForMulticast({
+                tokens: registrationTokens,
+                notification: message
+            });
+        }
         console.log('Successfully sent message:', response);
         done(null, response);
     } catch (error) {

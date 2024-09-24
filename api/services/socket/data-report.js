@@ -114,8 +114,8 @@ module.exports = {
       const registrationTokens = dataFb.rows.map((device) => device.device_token);
 
       const message = {
-          switch: data.switch + "",
-          deviceId: data.deviceId + ""
+          title: "Switch Device",
+          body: "Switch Device - " + data.deviceId
       };
 
       // Chia thành các batch nhỏ để tránh quá tải

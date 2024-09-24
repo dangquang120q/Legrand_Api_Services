@@ -34,10 +34,10 @@ module.exports = {
 
       const message = {
         title: "Thông báo",
-        body: JSON.stringify({
-          "switch": data.switch,
-          "deviceId": data.deviceId
-        }),
+        body: {
+          title: "Switch Device",
+          body: "Switch Device - " + data.deviceId
+        }
       };
 
       // Chia thành các batch nhỏ để tránh quá tải

@@ -5,9 +5,18 @@ const { log } = require("../services/log");
 
 module.exports = async function (req, res, next) {
   const jwtToken = req.headers["auth-token"];
+  let response;
   try {
     let decodedToken = jwtoken.decode(jwtToken);
-    let userId = decodedToken["userId"];
+    if (!decodedToken) {
+      response = new HttpResponse(null, {
+        statusCode: 401,
+        error: true,
+        errorMsg: "Invalid Token",
+      });
+      return res.ok(response);
+    }
+    let userId = decodedToken["userId"] || 0;
     let sqlCheck = sqlString.format(
       "Select id from user_account where user_id = ? and login_token = ?",
       [userId, jwtToken]
@@ -15,7 +24,7 @@ module.exports = async function (req, res, next) {
     let dataCheck = await sails
       .getDatastore(process.env.MYSQL_DATASTORE)
       .sendNativeQuery(sqlCheck);
-    let response;
+
     if (dataCheck["rows"].length == 0) {
       response = new HttpResponse(null, {
         statusCode: 401,

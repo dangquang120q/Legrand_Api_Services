@@ -24,7 +24,7 @@ const {
   modName,
   changePassword,
   deviceMode,
-  delDevice
+  appDelDevice
 } = require("../services/net");
 const {
   DEVICE_CODES,
@@ -1122,7 +1122,7 @@ module.exports = {
         return res.ok(response);
       }
       else if (req.body.cmdType == SOCKET_REQUEST.appDelDevice) {
-        await delDevice(req.body);
+        await appDelDevice(req.body);
         let response = new HttpResponse(
           { msg: "Delete device Successfull" },
           { statusCode: 200, error: false }

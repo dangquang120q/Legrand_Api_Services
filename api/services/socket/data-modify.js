@@ -174,7 +174,7 @@ module.exports = {
     }
   },
 
-  doDelDevice: async function (request) {
+  doAppDelDevice: async function (request) {
     try {
         const { data } = request;
 

@@ -24,6 +24,7 @@ const {
   modName,
   changePassword,
   deviceMode,
+  delDevice
 } = require("../services/net");
 const {
   DEVICE_CODES,
@@ -1116,6 +1117,14 @@ module.exports = {
         await changePassword(req.body);
         let response = new HttpResponse(
           { msg: "Change the login password Successfull" },
+          { statusCode: 200, error: false }
+        );
+        return res.ok(response);
+      }
+      else if (req.body.cmdType == SOCKET_REQUEST.appDelDevice) {
+        await delDevice(req.body);
+        let response = new HttpResponse(
+          { msg: "Delete device Successfull" },
           { statusCode: 200, error: false }
         );
         return res.ok(response);

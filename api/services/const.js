@@ -33,6 +33,7 @@ module.exports = {
     deviceMode: "deviceMode",
     deviceLocation: "deviceLocation",
     deviceName: "deviceName",
+    appDelDevice: "appDelDevice",
     LTSVersion: "LTSVersion",
     upgrade: "upgrade",
     firmwareInfo: "firmwareInfo",
@@ -42,6 +43,7 @@ module.exports = {
     deviceLocationAck: "deviceLocationAck",
     deviceNameAck: "deviceNameAck",
     changePasswordAck: "changePasswordAck",
+    appDelDeviceAck: "appDelDeviceAck",
   },
 
   DEVICE_CODES: {

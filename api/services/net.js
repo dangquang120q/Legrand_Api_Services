@@ -19,6 +19,7 @@ const {
   doModLocation,
   doModName,
   doDeviceMode,
+  doDelDevice,
 } = require("./socket/data-modify");
 
 const {
@@ -498,6 +499,35 @@ const changePassword = async (request) => {
     console.log(err);
   }
 };
+const delDevice = async (request) => {
+  try {
+    Object.values(list_account_test).forEach(async (account) => {
+      // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
+      let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+      if (socket) {
+        if (account.dn == request.data["gatewayDn"]) {
+          let { req, result } = await doDelDevice(request);
+          let header = dataUtils
+            .fromCharCodeData(68)
+            .concat(dataUtils.fromCharCodeData(33))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(7))
+            .concat(dataUtils.fromCharCodeData(0))
+            .concat(dataUtils.fromCharCodeData(0));
+          let end = dataUtils.fromCharCodeData(16);
+          if (result == 0) {
+            socket.write(
+              header.concat(JSON.stringify(req)).concat(end),
+              "latin1"
+            );
+          }
+        }
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
 //static port allocation
 server.listen(9601);
 
@@ -841,4 +871,5 @@ module.exports = {
   modName,
   controlLight,
   deviceMode,
+  delDevice
 };

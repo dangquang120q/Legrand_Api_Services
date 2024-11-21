@@ -180,12 +180,15 @@ module.exports = {
 
         let result = 0;
         const req = {};
-    //   let sql = sqlString.format(
-    //     "update lts_device_detail set location = ? where lts_mac = ? and deviceId = ?", [data.location,data.gatewayDn,data.deviceId]
-    //   );
-    //   await sails
-    //     .getDatastore(process.env.MYSQL_DATASTORE)
-    //     .sendNativeQuery(sql);
+        for (let index = 0; index < data["has"].length; index++) {
+          const element = data["has"][index];
+          let sql = sqlString.format(
+            "delete from lts_device_detail where lts_mac = ? and deviceId = ?", [element.gatewayDn,element.deviceId]
+          );
+          await sails
+            .getDatastore(process.env.MYSQL_DATASTORE)
+            .sendNativeQuery(sql);
+        }
         let sqlGet = sqlString.format(
           "select lts_device_version from lts_device_control where lts_mac = ?", [data.gatewayDn]
         );

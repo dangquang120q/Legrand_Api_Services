@@ -195,7 +195,7 @@ module.exports = {
         let dataVersion = await sails
           .getDatastore(process.env.MYSQL_DATASTORE)
               .sendNativeQuery(sqlGet);
-        req.packetNo = request.packetNo;
+        req.packetNo = request.packetNo || 1;
         req.cmdType = request.cmdType;
         req.data = data;
         req.data.deviceVersion = dataVersion["rows"][0]["lts_device_version"].toString();

@@ -501,8 +501,6 @@ const changePassword = async (request) => {
 };
 const appDelDevice = async (request) => {
   try {
-    console.log(request);
-    console.log(list_account_test);
     Object.values(list_account_test).forEach(async (account) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
@@ -523,11 +521,14 @@ const appDelDevice = async (request) => {
               "latin1"
             );
           }
+          return 1;
         }
       }
     });
+    return 0;
   } catch (err) {
     console.log(err);
+    return 0;
   }
 };
 //static port allocation

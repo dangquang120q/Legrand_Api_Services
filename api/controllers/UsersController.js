@@ -1122,13 +1122,21 @@ module.exports = {
         return res.ok(response);
       }
       else if (req.body.cmdType == SOCKET_REQUEST.appDelDevice) {
-        console.log(req.body);
-        await appDelDevice(req.body);
-        let response = new HttpResponse(
-          { msg: "Delete device Successfull" },
-          { statusCode: 200, error: false }
-        );
-        return res.ok(response);
+        let status = await appDelDevice(req.body);
+        if (status == 1) {
+          let response = new HttpResponse(
+            { msg: "Delete device Successfull" },
+            { statusCode: 200, error: false }
+          );
+          return res.ok(response);
+        }
+        else{
+          let response = new HttpResponse(
+            { msg: "Delete device Failure (Maybe your screen is turned off)" },
+            { statusCode: 407, error: false }
+          );
+          return res.ok(response);
+        }
       }
     } catch (error) {
       log("Upgrade Socket error => " + error.toString());

@@ -1107,12 +1107,21 @@ module.exports = {
         );
         return res.ok(response);
       } else if (req.body.cmdType == SOCKET_REQUEST.deviceName) {
-        await modName(req.body);
-        let response = new HttpResponse(
-          { msg: "Modify the Device Name Successfull" },
-          { statusCode: 200, error: false }
-        );
-        return res.ok(response);
+        let status = await modName(req.body);
+        if (status == 1){
+          let response = new HttpResponse(
+            { msg: "Modify the Device Name Successfull" },
+            { statusCode: 200, error: false }
+          );
+          return res.ok(response);
+        }
+        else{
+          let response = new HttpResponse(
+            { msg: "Modify the Device Name Failure (Maybe your screen is turned off)" },
+            { statusCode: 407, error: true }
+          );
+          return res.ok(response);
+        }
       } else if (req.body.cmdType == SOCKET_REQUEST.changePassword) {
         await changePassword(req.body);
         let response = new HttpResponse(

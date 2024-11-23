@@ -463,12 +463,15 @@ const modName = async (request) => {
               header.concat(JSON.stringify(req)).concat(end),
               "latin1"
             );
+            return 1;
           }
         }
       }
+      return 0;
     });
   } catch (err) {
     console.log(err);
+    return 0;
   }
 };
 const changePassword = async (request) => {
@@ -521,8 +524,8 @@ const appDelDevice = async (request) => {
               header.concat(JSON.stringify(req)).concat(end),
               "latin1"
             );
+            return 1;
           }
-          return 1;
         }
       }
     });

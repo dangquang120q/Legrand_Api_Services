@@ -446,7 +446,7 @@ const modName = async (request) => {
     Object.values(list_account_test).forEach(async (account) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
-      if (socket) {
+      if (socket && request.data) {
         if (account.dn == request.data["gatewayDn"]) {
           let { req, result } = await doModName(request);
           let header = dataUtils
@@ -504,6 +504,7 @@ const appDelDevice = async (request) => {
     Object.values(list_account_test).forEach(async (account) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
+      console.log(request);
       if (socket) {
         if (account.dn == request.data["gatewayDn"]) {
           let { req, result } = await doAppDelDevice(request);

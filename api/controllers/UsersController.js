@@ -1122,6 +1122,7 @@ module.exports = {
         return res.ok(response);
       }
       else if (req.body.cmdType == SOCKET_REQUEST.appDelDevice) {
+        console.log(req.body);
         await appDelDevice(req.body);
         let response = new HttpResponse(
           { msg: "Delete device Successfull" },

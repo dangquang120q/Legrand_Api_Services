@@ -1133,7 +1133,7 @@ module.exports = {
         else{
           let response = new HttpResponse(
             { msg: "Delete device Failure (Maybe your screen is turned off)" },
-            { statusCode: 407, error: false }
+            { statusCode: 407, error: true }
           );
           return res.ok(response);
         }

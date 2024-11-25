@@ -509,6 +509,8 @@ const appDelDevice = async (request) => {
       // Lấy socket của client từ account (giả sử list_account lưu trữ socket trực tiếp)
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
+        console.log("accountdn===" + account.dn);
+        console.log("request.data===" + request.data);
         if (account.dn == request.data["has"][0]["gatewayDn"]) {
           let { req, result } = await doAppDelDevice(request);
           let header = dataUtils

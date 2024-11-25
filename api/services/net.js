@@ -510,10 +510,8 @@ const appDelDevice = async (request) => {
       let socket = account.socket; // Sửa lại tên biến socket nếu cần thiết
       if (socket) {
         console.log("accountdn===" + account.dn);
-        console.log("request.data.has===" + request.data["has"][0]["gatewayDn"]);
-        console.log("request.data===" + request.data["has"][0]["gatewayDn"]);
         if (account.dn == request.data["has"][0]["gatewayDn"]) {
-          let { req, result } = await doAppDelDevice(request);
+          let { req, result } = await doAppDelDevice(account.dn,request);
           console.log("req === "+ req);
           console.log("result === " + result);
 

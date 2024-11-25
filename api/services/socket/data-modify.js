@@ -174,10 +174,11 @@ module.exports = {
     }
   },
 
-  doAppDelDevice: async function (request) {
+  doAppDelDevice: async function (lts_mac,request) {
     try {
         const { data } = request;
         console.log("doAppDelDevice=>>>" + JSON.stringify(data["has"]));
+        console.log("data has length=>>>" + JSON.stringify(data["has"].length));
 
         let result = 0;
         const req = {};
@@ -191,7 +192,7 @@ module.exports = {
             .sendNativeQuery(sql);
         }
         let sqlGet = sqlString.format(
-          "select lts_device_version from lts_device_control where lts_mac = ?", [data.gatewayDn]
+          "select lts_device_version from lts_device_control where lts_mac = ?", [lts_mac]
         );
         let dataVersion = await sails
           .getDatastore(process.env.MYSQL_DATASTORE)

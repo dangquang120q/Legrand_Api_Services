@@ -514,6 +514,9 @@ const appDelDevice = async (request) => {
         console.log("request.data===" + request.data["has"][0]["gatewayDn"]);
         if (account.dn == request.data["has"][0]["gatewayDn"]) {
           let { req, result } = await doAppDelDevice(request);
+          console.log("req === "+ req);
+          console.log("result === " + result);
+
           let header = dataUtils
             .fromCharCodeData(68)
             .concat(dataUtils.fromCharCodeData(33))

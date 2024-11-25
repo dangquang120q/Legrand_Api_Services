@@ -24,7 +24,7 @@ const {
   modName,
   changePassword,
   deviceMode,
-  appDelDevice
+  appDelDevice,
 } = require("../services/net");
 const {
   DEVICE_CODES,
@@ -55,7 +55,6 @@ module.exports = {
         title: "Thông báo",
         body: "Nội dung thông báo",
       };
-      
 
       // Chia thành các batch nhỏ để tránh quá tải
       const batchSize = 500;
@@ -724,7 +723,7 @@ module.exports = {
         access_token,
         home_id,
       });
-      log("get home data: ", JSON.stringify(data));
+      log("get home data: " + JSON.stringify(data));
       if (data.error?.code) {
         response = new HttpResponse(null, {
           statusCode: "NET_" + data.error.code,
@@ -1108,16 +1107,17 @@ module.exports = {
         return res.ok(response);
       } else if (req.body.cmdType == SOCKET_REQUEST.deviceName) {
         let status = await modName(req.body);
-        if (status == 1){
+        if (status == 1) {
           let response = new HttpResponse(
             { msg: "Modify the Device Name Successfull" },
             { statusCode: 200, error: false }
           );
           return res.ok(response);
-        }
-        else{
+        } else {
           let response = new HttpResponse(
-            { msg: "Modify the Device Name Failure (Maybe your screen is turned off)" },
+            {
+              msg: "Modify the Device Name Failure (Maybe your screen is turned off)",
+            },
             { statusCode: 407, error: true }
           );
           return res.ok(response);
@@ -1129,8 +1129,7 @@ module.exports = {
           { statusCode: 200, error: false }
         );
         return res.ok(response);
-      }
-      else if (req.body.cmdType == SOCKET_REQUEST.appDelDevice) {
+      } else if (req.body.cmdType == SOCKET_REQUEST.appDelDevice) {
         let status = await appDelDevice(req.body);
         if (status == 1) {
           let response = new HttpResponse(
@@ -1138,8 +1137,7 @@ module.exports = {
             { statusCode: 200, error: false }
           );
           return res.ok(response);
-        }
-        else{
+        } else {
           let response = new HttpResponse(
             { msg: "Delete device Failure (Maybe your screen is turned off)" },
             { statusCode: 407, error: true }

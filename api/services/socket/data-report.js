@@ -242,7 +242,7 @@ module.exports = {
 
       const message = {
         title: "Water Leakage",
-        body: "Water Leakage Detect - " + dataLocation["rows"][0]["location"]
+        body: "Water Leakage Detect - " + dataLocation["rows"][0]["name"]
       }
       // Chia thành các batch nhỏ để tránh quá tải
       const batchSize = 500;

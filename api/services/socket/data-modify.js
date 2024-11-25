@@ -176,8 +176,8 @@ module.exports = {
 
   doAppDelDevice: async function (request) {
     try {
-        console.log("doAppDelDevice=>>>" + data);
         const { data } = request;
+        console.log("doAppDelDevice=>>>" + data);
 
         let result = 0;
         const req = {};

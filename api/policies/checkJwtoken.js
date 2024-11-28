@@ -33,6 +33,19 @@ module.exports = async function (req, res, next) {
       });
       return res.ok(response);
     }
+    let userData = dataCheck["rows"][0];
+    if (!userData.netatmo_access_token) {
+      response = new HttpResponse(null, {
+        statusCode: 401,
+        error: true,
+        errorMsg: "Invalid Access token",
+      });
+      return res.ok(response);
+    }
+    req.user = {
+      userId: userId,
+      access_token: userData.netatmo_access_token,
+    };
     return next();
   } catch (error) {
     return res.serverError("Something bad happened on the server: " + error);

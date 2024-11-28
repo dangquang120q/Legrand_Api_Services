@@ -25,7 +25,7 @@ const sqlString = require("sqlstring");
 
 module.exports = {
   turnOnLight: async (req, res) => {
-    let access_token = req.headers["access-token"];
+    let access_token = req.user["access-token"];
     let { device_id, bridge, net_home_id, on } = req.body;
 
     try {
@@ -62,7 +62,7 @@ module.exports = {
     }
   },
   changeLightBrightness: async (req, res) => {
-    let access_token = req.headers["access-token"];
+    let access_token = req.user["access-token"];
     let { device_id, bridge, net_home_id, brightness } = req.body;
 
     try {
@@ -97,7 +97,7 @@ module.exports = {
     }
   },
   openCurtain: async (req, res) => {
-    let access_token = req.headers["access-token"];
+    let access_token = req.user["access-token"];
     let { device_id, bridge, net_home_id, target_position } = req.body;
 
     try {
@@ -132,7 +132,7 @@ module.exports = {
     }
   },
   controlAirConditioner: async (req, res) => {
-    let access_token = req.headers["access-token"];
+    let access_token = req.user["access-token"];
     let { room_id, net_home_id, end_time, mode, temperature, current_mode } =
       req.body;
 
@@ -200,7 +200,7 @@ module.exports = {
     }
   },
   changeFanSpeed: async (req, res) => {
-    let access_token = req.headers["access-token"];
+    let access_token = req.user["access-token"];
     let { net_home_id, bridge, device_id, mode, speed, end_time } = req.body;
     try {
       let value = {
@@ -245,13 +245,11 @@ module.exports = {
     let jwtToken = req.headers["auth-token"];
     let encrypt_text = req.body.qrcode;
     let home_id = req.body.home_id || 0;
+    let userId = req.user.userId;
     let response;
     log("addScreen => " + JSON.stringify(req.body));
     log("addScreen => " + JSON.stringify(req.body));
     try {
-      let decodedToken = jwtoken.decode(jwtToken);
-      let userId = decodedToken["userId"];
-
       log("addScreen => encrypt_text => " + encrypt_text);
       let decode_text = await decryptAES(encrypt_text);
       // Fix: Utf8 decode the decrypted data
@@ -307,13 +305,11 @@ module.exports = {
     }
   },
   turnOffAlarm: async (req, res) => {
-    let jwtToken = req.headers["auth-token"];
     let { deviceId } = req.body;
     let response;
+    let userId = req.user.userId;
     log("turnOffAlarm => " + JSON.stringify(req.body));
     try {
-      let decodedToken = jwtoken.decode(jwtToken);
-      let userId = decodedToken["userId"];
       let sql = sqlString.format("call sp_turn_off_alarm(?)", [deviceId]);
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
@@ -338,7 +334,7 @@ module.exports = {
   },
   changeRoomLightOn: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
-    let access_token = req.headers["access-token"];
+    let access_token = req.user["access-token"];
     let { net_home_id, room_id, status } = req.body;
 
     let response;
@@ -408,8 +404,7 @@ module.exports = {
     }
   },
   launchScenario: async (req, res) => {
-    let jwtToken = req.headers["auth-token"];
-    let access_token = req.headers["access-token"];
+    let access_token = req.user["access-token"];
     let { net_home_id, modules, scenario } = req.body;
     modules = modules || [];
     let response;

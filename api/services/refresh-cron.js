@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const refreshFunc = require('../services/netamo-token').refreshToken;
+const refreshFunc = require('./netamo-token').refreshToken;
 
 module.exports.cron = {
     // Tạo schedule chạy mỗi 2 tiếng

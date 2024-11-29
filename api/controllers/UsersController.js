@@ -923,7 +923,7 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
       response = new HttpResponse(
-        { msg: "mapNetatmoAccount Successfull" },
+        { msg: "mapNetatmoAccount Successfully" },
         { statusCode: 200, error: false }
       );
       return res.ok(response);

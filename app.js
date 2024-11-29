@@ -30,7 +30,7 @@ var sails;
 var rc;
 
 require("dotenv").config();
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 // const serviceAccount = require('./config/legrand-dev-api-firebase-adminsdk-r0fjc-901a1347a2.json');//'./config/legrand-dev-api-firebase-adminsdk-r0fjc-901a1347a2.json');
 // admin.initializeApp({
 //   credential: admin.credential.cert(serviceAccount)
@@ -75,3 +75,11 @@ try {
 
 // Start server
 sails.lift(rc("sails"));
+
+sails.on("ready", () => {
+  const { refreshCronJob } = require("./api/services/refresh-cron");
+
+  setTimeout(function () {
+    refreshCronJob();
+  }, 1000);
+});

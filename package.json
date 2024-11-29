@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mailgun-js": "^0.22.0",
     "net": "^1.0.2",
+    "node-cron": "^3.0.3",
     "node-datetime": "^2.1.2",
     "node-mailjet": "^6.0.5",
     "nodemailer": "^6.9.14",

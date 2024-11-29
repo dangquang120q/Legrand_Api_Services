@@ -894,25 +894,29 @@ module.exports = {
   },
 
   mapNetatmoAccount: async(req, res) => {
-    const account = req.body.netatmo_account;
-    const client_id = req.body.netatmo_client_id;
-    const client_secret = req.body.netatmo_client_secret;
-    const access_token = req.body.netatmo_access_token;
-    const refresh_token = req.body.netatmo_refresh_token;
-    const expired_at = new Date(
+    let jwtToken = req.headers["auth-token"];
+    let account = req.body.netatmo_account;
+    let client_id = req.body.netatmo_client_id;
+    let client_secret = req.body.netatmo_client_secret;
+    let access_token = req.body.netatmo_access_token;
+    let refresh_token = req.body.netatmo_refresh_token;
+    let expired_at = new Date(
       new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
     ).getTime();
-
+    let decodedToken = jwtoken.decode(jwtToken);
+    let userId = decodedToken["userId"] || "8288bfc6986b6268914a7f2e8261d6ba";
     try {
       let sql = sqlString.format("UPDATE user_account "
         + "SET netatmo_account=?, netatmo_access_token=?, netatmo_refresh_token=?, "
-        + "netatmo_token_expired=?, netatmo_client_id=?, netatmo_client_secret=?", [
+        + "netatmo_token_expired=?, netatmo_client_id=?, netatmo_client_secret=? "
+        + "WHERE user_id=?", [
         account,
         access_token,
         refresh_token,
         expired_at,
         client_id,
-        client_secret
+        client_secret,
+        userId
       ]);
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)

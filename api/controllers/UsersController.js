@@ -893,6 +893,42 @@ module.exports = {
     }
   },
 
+  mapNetatmoAccount: async(req, res) => {
+    const account = req.body.netatmo_account;
+    const client_id = req.body.netatmo_client_id;
+    const client_secret = req.body.netatmo_client_secret;
+    const access_token = req.body.netatmo_access_token;
+    const refresh_token = req.body.netatmo_refresh_token;
+    const expired_at = new Date(
+      new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
+    ).getTime();
+
+    try {
+      let sql = sqlString.format("UPDATE user_account "
+        + "SET netatmo_account=?, netatmo_access_token=?, netatmo_refresh_token=?, "
+        + "netatmo_token_expired=?, netatmo_client_id=?, netatmo_client_secret=?", [
+        account,
+        access_token,
+        refresh_token,
+        expired_at,
+        client_id,
+        client_secret
+      ]);
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      response = new HttpResponse(
+        { msg: "mapNetatmoAccount Successfull" },
+        { statusCode: 200, error: false }
+      );
+      return res.ok(response);
+    } catch (error) {
+      log("mapNetatmoAccount error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+
   getNetamoToken: async (req, res) => {
     const { state, code } = req.query;
     const grant_type = "authorization_code";

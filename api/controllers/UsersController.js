@@ -894,6 +894,7 @@ module.exports = {
   },
 
   mapNetatmoAccount: async(req, res) => {
+    log("mapNetatmoAccount => " + JSON.stringify(req.body));
     let jwtToken = req.headers["auth-token"];
     let account = req.body.netatmo_account;
     let client_id = req.body.netatmo_client_id;

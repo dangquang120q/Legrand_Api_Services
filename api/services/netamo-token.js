@@ -56,7 +56,7 @@ module.exports = {
   refreshToken: async() => {
     try {
       let sql = sqlString.format(
-        "Select netatmo_refresh_token, netatmo_client_id, netatmo_client_secret from user_account"
+        "Select netatmo_refresh_token, netatmo_client_id, netatmo_client_secret from user_account where netatmo_refresh_token is not null"
       );
       let grant_type = process.env.NETATMO_REFRESH_GRANT_TYPE;
       let data = await sails

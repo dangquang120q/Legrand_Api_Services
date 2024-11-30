@@ -78,7 +78,7 @@ module.exports = {
             headers: {
               "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
             },
-            body: params.toString(),
+            body: params,
           });
 
           const data = await res.json();

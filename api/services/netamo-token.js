@@ -92,7 +92,7 @@ module.exports = {
             let update_sql = sqlString.format(
               "UPDATE user_account " +
                 "SET netatmo_access_token=?, netatmo_refresh_token=?, netatmo_token_expired=? " +
-                "WHERE netatmo_refresh_token=?, netatmo_client_id=?, netatmo_client_secret=?",
+                "WHERE netatmo_refresh_token=? AND netatmo_client_id=? AND netatmo_client_secret=?",
               [
                 data["access_token"],
                 data["refresh_token"],

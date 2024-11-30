@@ -97,7 +97,7 @@ module.exports = {
                 data["access_token"],
                 data["refresh_token"],
                 expired_at,
-                element["netatmo_refresh_token"],
+                decodeURIComponent(element["netatmo_refresh_token"]),
                 element["netatmo_client_id"],
                 element["netatmo_client_secret"],
               ]

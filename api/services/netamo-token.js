@@ -93,8 +93,8 @@ module.exports = {
                 "SET netatmo_access_token=?, netatmo_refresh_token=?, netatmo_token_expired=? " +
                 "WHERE netatmo_refresh_token=?, netatmo_client_id=?, netatmo_client_secret=?",
               [
-                data[""],
-                data[""],
+                data["access_token"],
+                data["refresh_token"],
                 expired_at,
                 element["netatmo_refresh_token"],
                 element["netatmo_client_id"],

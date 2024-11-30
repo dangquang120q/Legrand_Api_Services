@@ -72,7 +72,7 @@ module.exports = {
             client_id: element["netatmo_client_id"],
             client_secret: element["netatmo_client_secret"],
           });
-          log("Netatmo refresh-token params => " + params.toString());
+          log("Netatmo refresh-token params => " + decodeURIComponent(element["netatmo_refresh_token"]));
           const res = await fetch(url, {
             method: "POST",
             headers: {

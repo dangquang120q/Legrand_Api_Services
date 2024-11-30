@@ -68,7 +68,7 @@ module.exports = {
           let url = API_URL + "/oauth2/token";
           const params = new URLSearchParams({
             grant_type: grant_type,
-            refresh_token: element["netatmo_refresh_token"],
+            refresh_token: decodeURIComponent(element["netatmo_refresh_token"]),
             client_id: element["netatmo_client_id"],
             client_secret: element["netatmo_client_secret"],
           });

@@ -102,6 +102,7 @@ module.exports = {
                 element["netatmo_client_secret"],
               ]
             );
+            log("Update Refresh Token: " + update_sql);
             let data_ = await sails
               .getDatastore(process.env.MYSQL_DATASTORE)
               .sendNativeQuery(update_sql);

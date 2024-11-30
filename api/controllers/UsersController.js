@@ -896,7 +896,6 @@ module.exports = {
   mapNetatmoAccount: async(req, res) => {
     log("mapNetatmoAccount => " + JSON.stringify(req.body));
     let jwtToken = req.headers["auth-token"];
-    let account = req.body.netatmo_account;
     let client_id = req.body.netatmo_client_id;
     let client_secret = req.body.netatmo_client_secret;
     let access_token = req.body.netatmo_access_token;
@@ -908,10 +907,9 @@ module.exports = {
     let userId = decodedToken["userId"] || "8288bfc6986b6268914a7f2e8261d6ba";
     try {
       let sql = sqlString.format("UPDATE user_account "
-        + "SET netatmo_account=?, netatmo_access_token=?, netatmo_refresh_token=?, "
+        + "SET netatmo_access_token=?, netatmo_refresh_token=?, "
         + "netatmo_token_expired=?, netatmo_client_id=?, netatmo_client_secret=? "
         + "WHERE user_id=?", [
-        account,
         access_token,
         refresh_token,
         expired_at,

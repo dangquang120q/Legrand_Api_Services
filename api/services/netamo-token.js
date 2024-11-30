@@ -77,7 +77,8 @@ module.exports = {
               "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
             },
             body: {
-              params: params,
+              grant_type: grant_type,
+              refresh_token: decodeURIComponent(element["netatmo_refresh_token"]),
               client_id: element["netatmo_client_id"],
               client_secret: element["netatmo_client_secret"],
             },

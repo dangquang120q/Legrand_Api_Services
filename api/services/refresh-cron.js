@@ -5,7 +5,7 @@ module.exports = {
   // Tạo schedule chạy mỗi 2 tiếng
   refreshCronJob: async () => {
     const refreshSchedule = cron.schedule(
-      "0 */2 * * *",
+      process.env.CRON_REFRESH_TOKEN,
       async () => {
         console.log("Cron job chạy mỗi 2 tiếng");
         try {

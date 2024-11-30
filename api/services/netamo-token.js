@@ -3,6 +3,7 @@ const { SET_STATE_ACTION } = require("./const");
 const { formatObject } = require("./utils");
 const qs = require("qs");
 const API_URL = process.env.NETAMO_API;
+const sqlString = require("sqlstring");
 
 module.exports = {
   getAuthToken: async (params) => {
@@ -53,7 +54,7 @@ module.exports = {
     }
   },
 
-  refreshToken: async() => {
+  refreshToken: async () => {
     try {
       let sql = sqlString.format(
         "Select netatmo_refresh_token, netatmo_client_id, netatmo_client_secret from user_account where netatmo_refresh_token is not null"
@@ -62,19 +63,19 @@ module.exports = {
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
-      if(data["rows"].length > 0) {
-        for(var element of data["rows"]) {
-          let url = NETAMO_API + "/oauth2/token";
+      if (data["rows"].length > 0) {
+        for (var element of data["rows"]) {
+          let url = API_URL + "/oauth2/token";
           const res = await fetch(url, {
             method: "POST",
             headers: {
-              "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+              "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
             },
             body: {
               grant_type: grant_type,
               refresh_token: element["netatmo_refresh_token"],
               client_id: element["netatmo_client_id"],
-              client_secret: element["netatmo_client_secret"]
+              client_secret: element["netatmo_client_secret"],
             },
           });
 
@@ -86,17 +87,19 @@ module.exports = {
             const expired_at = new Date(
               new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
             ).getTime();
-            let update_sql = sqlString.format("UPDATE user_account "
-              + "SET netatmo_access_token=?, netatmo_refresh_token=?, netatmo_token_expired=? "
-              + "WHERE netatmo_refresh_token=?, netatmo_client_id=?, netatmo_client_secret=?",
+            let update_sql = sqlString.format(
+              "UPDATE user_account " +
+                "SET netatmo_access_token=?, netatmo_refresh_token=?, netatmo_token_expired=? " +
+                "WHERE netatmo_refresh_token=?, netatmo_client_id=?, netatmo_client_secret=?",
               [
                 data[""],
                 data[""],
                 expired_at,
                 element["netatmo_refresh_token"],
                 element["netatmo_client_id"],
-                element["netatmo_client_secret"]
-              ]);
+                element["netatmo_client_secret"],
+              ]
+            );
             let data_ = await sails
               .getDatastore(process.env.MYSQL_DATASTORE)
               .sendNativeQuery(update_sql);

@@ -69,8 +69,6 @@ module.exports = {
           const params = new URLSearchParams({
             grant_type: grant_type,
             refresh_token: decodeURIComponent(element["netatmo_refresh_token"]),
-            // client_id: element["netatmo_client_id"],
-            // client_secret: element["netatmo_client_secret"],
           });
           log("Netatmo refresh-token params => " + decodeURIComponent(element["netatmo_refresh_token"]));
           const res = await fetch(url, {
@@ -78,7 +76,11 @@ module.exports = {
             headers: {
               "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
             },
-            body: params,
+            body: {
+              params: params,
+              client_id: element["netatmo_client_id"],
+              client_secret: element["netatmo_client_secret"],
+            },
           });
 
           const data = await res.json();

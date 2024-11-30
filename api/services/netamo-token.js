@@ -66,21 +66,22 @@ module.exports = {
       if (data["rows"].length > 0) {
         for (var element of data["rows"]) {
           let url = API_URL + "/oauth2/token";
+          const params = new URLSearchParams({
+            grant_type: grant_type,
+            refresh_token: element["netatmo_refresh_token"],
+            client_id: element["netatmo_client_id"],
+            client_secret: element["netatmo_client_secret"],
+          });
           const res = await fetch(url, {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
             },
-            body: {
-              grant_type: grant_type,
-              refresh_token: element["netatmo_refresh_token"],
-              client_id: element["netatmo_client_id"],
-              client_secret: element["netatmo_client_secret"],
-            },
+            body: params.toString(),
           });
 
           const data = await res.json();
-          log(JSON.stringify(data));
+          log("Netatmo refresh-token response => " + JSON.stringify(data));
           if (data["error"]) {
             log("REFRESH TOKEN ERRROR" + JSON.stringify(data));
           } else {

@@ -709,7 +709,7 @@ module.exports = {
     log("getListHomeNetatmo => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
     let access_token = req.query.user["access-token"];
-    log("access-token " + access_token);
+    log("access-token " + JSON.stringify(req.query.user));
     let home_id = req.body.net_home_id || "";
     let get_user = req.body.get_user || false;
     let response;

@@ -34,6 +34,9 @@ module.exports = async function (req, res, next) {
       return res.ok(response);
     }
     let userData = dataCheck["rows"][0];
+    log(
+      "checkJwtoktn netatmo_access_token => " + userData.netatmo_access_token
+    );
     if (!userData.netatmo_access_token) {
       // response = new HttpResponse(null, {
       //   statusCode: 401,

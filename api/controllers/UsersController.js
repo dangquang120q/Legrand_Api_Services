@@ -893,7 +893,7 @@ module.exports = {
     }
   },
 
-  mapNetatmoAccount: async(req, res) => {
+  mapNetatmoAccount: async (req, res) => {
     log("mapNetatmoAccount => " + JSON.stringify(req.body));
     let jwtToken = req.headers["auth-token"];
     let client_id = req.body.netatmo_client_id;
@@ -903,20 +903,25 @@ module.exports = {
     let expired_at = new Date(
       new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
     ).getTime();
-    let decodedToken = jwtoken.decode(jwtToken);
-    let userId = decodedToken["userId"] || "8288bfc6986b6268914a7f2e8261d6ba";
+    let response;
+    log("auth-toke => " + jwtToken);
     try {
-      let sql = sqlString.format("UPDATE user_account "
-        + "SET netatmo_access_token=?, netatmo_refresh_token=?, "
-        + "netatmo_token_expired=?, netatmo_client_id=?, netatmo_client_secret=? "
-        + "WHERE user_id=?", [
-        access_token,
-        refresh_token,
-        expired_at,
-        client_id,
-        client_secret,
-        userId
-      ]);
+      let decodedToken = jwtoken.decode(jwtToken);
+      let userId = decodedToken["userId"] || "8288bfc6986b6268914a7f2e8261d6ba";
+      let sql = sqlString.format(
+        "UPDATE user_account " +
+          "SET netatmo_access_token=?, netatmo_refresh_token=?, " +
+          "netatmo_token_expired=?, netatmo_client_id=?, netatmo_client_secret=? " +
+          "WHERE user_id=?",
+        [
+          access_token,
+          refresh_token,
+          expired_at,
+          client_id,
+          client_secret,
+          userId,
+        ]
+      );
       let data = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);

@@ -25,7 +25,7 @@ const sqlString = require("sqlstring");
 
 module.exports = {
   turnOnLight: async (req, res) => {
-    let access_token = req.user["access-token"];
+    let access_token = req.query.user["access-token"];
     let { device_id, bridge, net_home_id, on } = req.body;
 
     try {
@@ -62,7 +62,7 @@ module.exports = {
     }
   },
   changeLightBrightness: async (req, res) => {
-    let access_token = req.user["access-token"];
+    let access_token = req.query.user["access-token"];
     let { device_id, bridge, net_home_id, brightness } = req.body;
 
     try {
@@ -97,7 +97,7 @@ module.exports = {
     }
   },
   openCurtain: async (req, res) => {
-    let access_token = req.user["access-token"];
+    let access_token = req.query.user["access-token"];
     let { device_id, bridge, net_home_id, target_position } = req.body;
 
     try {
@@ -132,7 +132,7 @@ module.exports = {
     }
   },
   controlAirConditioner: async (req, res) => {
-    let access_token = req.user["access-token"];
+    let access_token = req.query.user["access-token"];
     let { room_id, net_home_id, end_time, mode, temperature, current_mode } =
       req.body;
 
@@ -200,7 +200,7 @@ module.exports = {
     }
   },
   changeFanSpeed: async (req, res) => {
-    let access_token = req.user["access-token"];
+    let access_token = req.query.user["access-token"];
     let { net_home_id, bridge, device_id, mode, speed, end_time } = req.body;
     try {
       let value = {
@@ -334,7 +334,7 @@ module.exports = {
   },
   changeRoomLightOn: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
-    let access_token = req.user["access-token"];
+    let access_token = req.query.user["access-token"];
     let { net_home_id, room_id, status } = req.body;
 
     let response;
@@ -404,7 +404,7 @@ module.exports = {
     }
   },
   launchScenario: async (req, res) => {
-    let access_token = req.user["access-token"];
+    let access_token = req.query.user["access-token"];
     let { net_home_id, modules, scenario } = req.body;
     modules = modules || [];
     let response;

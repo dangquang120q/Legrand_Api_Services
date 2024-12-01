@@ -44,12 +44,12 @@ module.exports = async function (req, res, next) {
       //   errorMsg: "Invalid Access token",
       // });
       // return res.ok(response);
-      req.user = {
+      req.query.user = {
         userId: userId,
         access_token: "NULL",
       };
     } else {
-      req.user = {
+      req.query.user = {
         userId: userId,
         access_token: userData.netatmo_access_token,
       };

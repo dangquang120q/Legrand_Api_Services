@@ -16,7 +16,7 @@ const { ELECTRICITY_TYPE } = require("../services/const");
 module.exports = {
   temperatureReport: async (req, res) => {
     let response;
-    let access_token = req.query.user["access-token"];
+    let access_token = req.user["access_token"];
     let { home_id, room_id, scale, date_begin, date_end, limit, type } =
       req.body;
     try {
@@ -54,7 +54,7 @@ module.exports = {
   },
   electricityReport: async (req, res) => {
     let response;
-    let access_token = req.query.user["access-token"];
+    let access_token = req.user["access_token"];
     let { device_id, bridge, scale, date_begin, date_end, type } = req.body;
     try {
       const request = {
@@ -105,7 +105,7 @@ module.exports = {
   },
   humidityReport: async (req, res) => {
     let response;
-    let access_token = req.query.user["access-token"];
+    let access_token = req.user["access_token"];
     let { home_id, room_id, scale, date_begin, date_end, limit, type } =
       req.body;
     try {

@@ -656,7 +656,7 @@ module.exports = {
   //   log("CreateRoom => " + JSON.stringify(req.headers));
   //   let jwtToken = req.headers["auth-token"];
   //   let room_name = req.body.room_name;
-  //   let accessToken = req.query.user["access-token"];
+  //   let accessToken = req.user["access_token"];
   //   let response;
   //   try {
   //     let decodedToken = jwtoken.decode(jwtToken);
@@ -708,8 +708,8 @@ module.exports = {
   getListHomeNetatmo: async (req, res) => {
     log("getListHomeNetatmo => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
-    let access_token = req.query.user["access-token"];
-    log("access-token " + JSON.stringify(req.query.user));
+    let access_token = req.user["access_token"];
+    log("access-token " + JSON.stringify(req.user));
     let home_id = req.body.net_home_id || "";
     let get_user = req.body.get_user || false;
     let response;
@@ -1199,7 +1199,7 @@ module.exports = {
   getRoomDetail: async (req, res) => {
     log("getListHomeNetatmo => " + JSON.stringify(req.headers));
     let jwtToken = req.headers["auth-token"];
-    let access_token = req.query.user["access-token"];
+    let access_token = req.user["access_token"];
     let home_id = req.body.net_home_id || "";
     let room_id = req.body.net_room_id;
     let response;
@@ -1430,7 +1430,7 @@ module.exports = {
   },
   getHomeDevices: async (req, res) => {
     let jwtToken = req.headers["auth-token"];
-    let access_token = req.query.user["access-token"];
+    let access_token = req.user["access_token"];
     let home_id = req.body.net_home_id || "";
     log("getHomeDevices => " + home_id);
 

@@ -28,7 +28,6 @@ module.exports.policies = {
     updateProfile: "checkJwtoken",
     installNewHome: "checkJwtoken",
     changeNameHome: "checkJwtoken",
-    getNetamoInfo: "checkJwtoken",
     mapHome: "checkJwtoken",
     getRoomDetail: "checkJwtoken",
     removeMappedHome: "checkJwtoken",

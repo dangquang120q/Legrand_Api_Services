@@ -43,12 +43,12 @@ module.exports = async function (req, res, next) {
       // return res.ok(response);
       req.user = {
         userId: userId,
-        access_token: userData.netatmo_access_token,
+        access_token: "NULL",
       };
     } else {
       req.user = {
         userId: userId,
-        access_token: "NULL",
+        access_token: userData.netatmo_access_token,
       };
     }
     return next();

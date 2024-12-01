@@ -49,7 +49,7 @@ module.exports = async function (req, res, next) {
     } else {
       req.user = {
         userId: userId,
-        access_token: userData.netatmo_access_token,
+        access_token: decodeURIComponent(userData.netatmo_access_token),
       };
     }
     return next();

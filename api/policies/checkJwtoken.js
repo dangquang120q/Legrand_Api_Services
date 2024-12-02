@@ -18,8 +18,8 @@ module.exports = async function (req, res, next) {
     }
     let userId = decodedToken["userId"] || 0;
     let sqlCheck = sqlString.format(
-      "Select id, netatmo_access_token from user_account where user_id = ? and login_token = ?",
-      [userId, jwtToken]
+      "Select id, netatmo_access_token from user_account where user_id = ?",// and login_token = ?",
+      [userId]//, jwtToken]
     );
     let dataCheck = await sails
       .getDatastore(process.env.MYSQL_DATASTORE)

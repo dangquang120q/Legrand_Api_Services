@@ -124,6 +124,7 @@ module.exports = {
   doModName: async function (request) {
     try {
         const { data } = request;
+        console.log(JSON.stringify(data));
         let result = 0;
         const req = {};
         let sql = sqlString.format(

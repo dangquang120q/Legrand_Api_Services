@@ -706,7 +706,7 @@ module.exports = {
   //   }
   // },
   getListHomeNetatmo: async (req, res) => {
-    log("getListHomeNetatmo => " + JSON.stringify(req.headers));
+    log("getListHomeNetatmo => " + JSON.stringify(req.body));
     let jwtToken = req.headers["auth-token"];
     let access_token = req.user["access_token"];
     log("access-token " + JSON.stringify(req.user));

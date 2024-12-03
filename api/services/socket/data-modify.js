@@ -124,7 +124,6 @@ module.exports = {
   doModName: async function (request) {
     try {
         const { data } = request;
-        console.log(JSON.stringify(data));
         let result = 0;
         const req = {};
         let sql = sqlString.format(
@@ -143,7 +142,6 @@ module.exports = {
         req.cmdType = request.cmdType;
         req.data = data;
         req.data.deviceVersion = dataVersion["rows"][0]["lts_device_version"].toString();
-        console.log(JSON.stringify(req));
         return {req,result};
     } catch(error) {
         console.log(error);

@@ -66,4 +66,7 @@ module.exports = {
       return "";
     }
   },
+  sleep: (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  },
 };

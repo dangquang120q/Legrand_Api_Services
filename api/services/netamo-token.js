@@ -1,6 +1,6 @@
 const { log } = require("./log");
 const { SET_STATE_ACTION } = require("./const");
-const { formatObject } = require("./utils");
+const { formatObject, sleep } = require("./utils");
 const qs = require("qs");
 const API_URL = process.env.NETAMO_API;
 const sqlString = require("sqlstring");
@@ -108,6 +108,7 @@ module.exports = {
               .sendNativeQuery(update_sql);
             log("Update Refresh Token: " + data_["rows"]);
           }
+          await sleep(500);
         }
       }
     } catch (error) {

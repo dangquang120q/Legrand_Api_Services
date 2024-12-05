@@ -70,6 +70,8 @@ module.exports = {
         const current = new Date(
           new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
         ).getTime();
+        log("expired => " + dateObject);
+        log("current => " + current);
         if (dateObject < current) {
           let url = API_URL + "/oauth2/token";
           const params = new URLSearchParams({

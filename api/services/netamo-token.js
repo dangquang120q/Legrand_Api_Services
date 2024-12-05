@@ -223,7 +223,7 @@ module.exports = {
               .sendNativeQuery(update_sql);
             log("Update Refresh Token: " + data_["rows"]);
           }
-          await sleep(500);
+          await sleep(1500);
         }
       }
     } catch (error) {

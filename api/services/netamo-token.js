@@ -54,6 +54,69 @@ module.exports = {
     }
   },
 
+  checkRefreshToken: async (userId) => {
+    try {
+      let sql = sqlString.format(
+        "Select netatmo_token_expired, netatmo_refresh_token, netatmo_client_id, netatmo_client_secret from user_account where user_id=?", [userId]
+      );
+      let grant_type = process.env.NETATMO_REFRESH_GRANT_TYPE;
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      if (data["rows"].length > 0) {
+        let expiredIn = data["rows"][0]["netatmo_token_expired"];
+        const dateObject = new Date(parseInt(expiredIn)).getTime();
+        const current = new Date(
+          new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
+        ).getTime();
+        if(dateObject < current) {
+          let url = API_URL + "/oauth2/token";
+          const params = new URLSearchParams({
+            grant_type: grant_type,
+            refresh_token: decodeURIComponent(data["rows"][0]["netatmo_refresh_token"]),
+            client_id: data["rows"][0]["netatmo_client_id"],
+            client_secret: data["rows"][0]["netatmo_client_secret"],
+          });
+          log("Netatmo refresh-token params => " + params);
+          const res = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            },
+            body: params,
+          });
+          const data = await res.json();
+          log("Netatmo refresh-token response => " + JSON.stringify(data));
+          if (data["error"]) {
+            log("REFRESH TOKEN ERRROR" + JSON.stringify(data));
+          } else {
+            const expired_at = new Date(
+              new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
+            ).getTime();
+            let update_sql = sqlString.format(
+              "UPDATE user_account " +
+              "SET netatmo_access_token=?, netatmo_refresh_token=?, netatmo_token_expired=? " +
+              "WHERE user_id=?",
+              [
+                data["access_token"],
+                data["refresh_token"],
+                expired_at,
+                userId,
+              ]
+            );
+            log("Update Refresh Token: " + update_sql);
+            let data_ = await sails
+              .getDatastore(process.env.MYSQL_DATASTORE)
+              .sendNativeQuery(update_sql);
+            log("Update Refresh Token: " + data_["rows"]);
+          }
+        }
+      }
+    } catch (error) {
+      log("refreshToken netamo token error: " + error);
+    }
+  },
+
   testRefreshToken: async(param) => {
     try {
       log("Netatmo refresh-token test => " + param);

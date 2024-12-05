@@ -45,6 +45,7 @@ module.exports.routes = {
   "POST /user/changeNameHome": "UsersController.changeNameHome",
   "POST /user/mapHome": "UsersController.mapHome",
   "POST /user/mapNetatmoAcc": "UsersController.mapNetatmoAccount",
+  "POST /user/testRefresh": "UsersController.testRefreshToken",
 
   "GET /user/getNetamoApi": "UsersController.getNetamoToken",
   "GET /user/getNetamoInfo": "UsersController.getNetamoInfo",

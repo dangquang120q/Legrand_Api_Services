@@ -34,6 +34,7 @@ const {
 const sendMailjet = require("../services/mailjet-util");
 const transporter = require("../services/mailtrap-utils");
 const notificationQueue = require("../services/firebase-queue");
+const netamoToken = require("../services/netamo-token");
 
 module.exports = {
   testFCMNoti: async (req, res) => {
@@ -648,6 +649,17 @@ module.exports = {
       return res.ok(response);
     } catch (error) {
       log("Logout error => " + error.toString());
+      response = new HttpResponse(error, { statusCode: 500, error: true });
+      return res.serverError(response);
+    }
+  },
+  testRefreshToken: async(req, res) => {
+    log("testRefreshToken => " + JSON.stringify(req.body));
+    let response;
+    try {
+      netamoToken.testRefreshToken(req.body);
+    } catch (error) {
+      log("testRefreshToken => " + error.toString());
       response = new HttpResponse(error, { statusCode: 500, error: true });
       return res.serverError(response);
     }

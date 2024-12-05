@@ -54,6 +54,58 @@ module.exports = {
     }
   },
 
+  testRefreshToken: async(param) => {
+    try {
+      log("Netatmo refresh-token test => " + param);
+      let {refresh_token, client_id, client_secret} = param;
+      let grant_type = process.env.NETATMO_REFRESH_GRANT_TYPE;
+      let data = await sails
+        .getDatastore(process.env.MYSQL_DATASTORE)
+        .sendNativeQuery(sql);
+      let url = API_URL + "/oauth2/token";
+      const params = new URLSearchParams({
+        grant_type: grant_type,
+        refresh_token: refresh_token,
+        client_id: client_id,
+        client_secret: client_secret,
+      });
+      log("Netatmo refresh-token params => " + params);
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        body: params,
+      });
+
+      const data = await res.json();
+      log("Netatmo refresh-token response => " + JSON.stringify(data));
+      if (data["error"]) {
+        log("REFRESH TOKEN ERRROR" + JSON.stringify(data));
+      } else {
+        const expired_at = new Date(
+          new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
+        ).getTime();
+        let update_sql = sqlString.format(
+          "UPDATE user_account " +
+          "SET netatmo_access_token=?, netatmo_refresh_token=?, netatmo_token_expired=? " +
+          "WHERE netatmo_refresh_token=? AND netatmo_client_id=? AND netatmo_client_secret=?",
+          [
+            data["access_token"],
+            data["refresh_token"],
+            expired_at,
+            refresh_token,
+            client_id,
+            client_secret,
+          ]
+        );
+        log("Update Refresh Token: " + update_sql);
+      }
+    } catch (error) {
+      log("refreshToken netamo token error: " + error);
+    }
+  },
+
   refreshToken: async () => {
     try {
       let sql = sqlString.format(

@@ -75,7 +75,7 @@ module.exports = {
           const params = new URLSearchParams({
             grant_type: grant_type,
             refresh_token: decodeURIComponent(
-              data["rows"][0]["netatmo_refresh_token"]
+              data1["rows"][0]["netatmo_refresh_token"]
             ),
             client_id: data1["rows"][0]["netatmo_client_id"],
             client_secret: data1["rows"][0]["netatmo_client_secret"],

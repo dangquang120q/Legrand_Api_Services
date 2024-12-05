@@ -16,6 +16,7 @@ const {
   getHomeStatus,
   getHomeData,
   switchHomeSchedule: switchNetatmoSchedule,
+  checkRefreshToken,
 } = require("../services/netamo-token");
 const { HttpResponse } = require("../services/http-response");
 const jwtoken = require("../services/jwtoken");
@@ -27,8 +28,12 @@ module.exports = {
   turnOnLight: async (req, res) => {
     let access_token = req.user["access_token"];
     let { device_id, bridge, net_home_id, on } = req.body;
-
+    let { userId } = req.user;
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       const data = await setState({
         action: SET_STATE_ACTION.turnOnLight,
         value: on == "true" || on == true ? true : false,
@@ -64,8 +69,12 @@ module.exports = {
   changeLightBrightness: async (req, res) => {
     let access_token = req.user["access_token"];
     let { device_id, bridge, net_home_id, brightness } = req.body;
-
+    let { userId } = req.user;
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       const data = await setState({
         action: SET_STATE_ACTION.changeBrightness,
         value: +brightness,
@@ -99,8 +108,12 @@ module.exports = {
   openCurtain: async (req, res) => {
     let access_token = req.user["access_token"];
     let { device_id, bridge, net_home_id, target_position } = req.body;
-
+    let { userId } = req.user;
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       const data = await setState({
         action: SET_STATE_ACTION.openCurtain,
         value: +target_position,
@@ -135,7 +148,7 @@ module.exports = {
     let access_token = req.user["access_token"];
     let { room_id, net_home_id, end_time, mode, temperature, current_mode } =
       req.body;
-
+    let { userId } = req.user;
     let value = {
       cooling_setpoint_mode:
         current_mode == "off" && mode == "max" ? "manual" : mode,
@@ -151,6 +164,10 @@ module.exports = {
     }
     log("controlAirConditioner => " + JSON.stringify(value));
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       const data = await setState({
         action: SET_STATE_ACTION.chageTemperatureSetpoint,
         value: value,
@@ -202,7 +219,12 @@ module.exports = {
   changeFanSpeed: async (req, res) => {
     let access_token = req.user["access_token"];
     let { net_home_id, bridge, device_id, mode, speed, end_time } = req.body;
+    let { userId } = req.user;
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       let value = {
         fan_setpoint_from: "module",
         fan_mode: mode || "manual",
@@ -336,10 +358,15 @@ module.exports = {
     let jwtToken = req.headers["auth-token"];
     let access_token = req.user["access_token"];
     let { net_home_id, room_id, status } = req.body;
+    let userId = req.user.userId;
 
     let response;
     log("changeRoomLightOn => " + JSON.stringify(req.body));
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       let homeData = await getHomeData({ access_token, home_id: net_home_id });
       if (homeData.error?.code) {
         response = new HttpResponse(null, {
@@ -405,11 +432,16 @@ module.exports = {
   },
   launchScenario: async (req, res) => {
     let access_token = req.user["access_token"];
+    let { userId } = req.user;
     let { net_home_id, modules, scenario } = req.body;
     modules = modules || [];
     let response;
     log("launchScenario => " + JSON.stringify(req.body));
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       const data = await setState({
         access_token,
         home_id: net_home_id,

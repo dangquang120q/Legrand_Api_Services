@@ -16,6 +16,7 @@ const {
   getRoomMeasure,
   getHomeStatus,
   getScenario,
+  checkRefreshToken,
 } = require("../services/netamo-token");
 const {
   upgradeVersion,
@@ -653,7 +654,7 @@ module.exports = {
       return res.serverError(response);
     }
   },
-  testRefreshToken: async(req, res) => {
+  testRefreshToken: async (req, res) => {
     log("testRefreshToken => " + JSON.stringify(req.body));
     let response;
     try {
@@ -728,6 +729,12 @@ module.exports = {
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
+
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
+
       let response_data = {};
       let listhomes = [];
 
@@ -1218,6 +1225,10 @@ module.exports = {
     try {
       let decodedToken = jwtoken.decode(jwtToken);
       let userId = decodedToken["userId"];
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       const homeData = await getHomeData({
         access_token,
         home_id,
@@ -1444,10 +1455,15 @@ module.exports = {
     let jwtToken = req.headers["auth-token"];
     let access_token = req.user["access_token"];
     let home_id = req.body.net_home_id || "";
+    let userId = req.user.userId;
     log("getHomeDevices => " + home_id);
 
     let response;
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       const homeData = await getHomeData({
         access_token,
         home_id,

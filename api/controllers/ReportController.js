@@ -10,6 +10,7 @@ const {
   getRoomMeasure,
   getMeasure,
   getHomeMeasure,
+  checkRefreshToken,
 } = require("../services/netamo-token");
 const { ELECTRICITY_TYPE } = require("../services/const");
 
@@ -19,7 +20,13 @@ module.exports = {
     let access_token = req.user["access_token"];
     let { home_id, room_id, scale, date_begin, date_end, limit, type } =
       req.body;
+    let userId = req.user.userId;
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
+
       const request = {
         home_id,
         room_id,
@@ -56,7 +63,12 @@ module.exports = {
     let response;
     let access_token = req.user["access_token"];
     let { device_id, bridge, scale, date_begin, date_end, type } = req.body;
+    let { userId } = req.user;
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       const request = {
         module_id: device_id,
         device_id: bridge,
@@ -108,7 +120,12 @@ module.exports = {
     let access_token = req.user["access_token"];
     let { home_id, room_id, scale, date_begin, date_end, limit, type } =
       req.body;
+    let userId = req.user.userId;
     try {
+      // Check if access_token expired and return new access_token
+      let checkAccessToken = await checkRefreshToken(userId);
+      if (checkAccessToken) access_token = checkAccessToken;
+      //
       const request = {
         home_id,
         room_id,

@@ -123,9 +123,9 @@ module.exports = {
       log("Netatmo refresh-token test => " + param);
       let { refresh_token, client_id, client_secret } = param;
       let grant_type = process.env.NETATMO_REFRESH_GRANT_TYPE;
-      let data = await sails
-        .getDatastore(process.env.MYSQL_DATASTORE)
-        .sendNativeQuery(sql);
+      // let data = await sails
+      //   .getDatastore(process.env.MYSQL_DATASTORE)
+      //   .sendNativeQuery(sql);
       let url = API_URL + "/oauth2/token";
       const params = new URLSearchParams({
         grant_type: grant_type,

@@ -78,10 +78,10 @@ module.exports = {
         body: params,
       });
 
-      const data = await res.json();
-      log("Netatmo refresh-token response => " + JSON.stringify(data));
-      if (data["error"]) {
-        log("REFRESH TOKEN ERRROR" + JSON.stringify(data));
+      const datas = await res.json();
+      log("Netatmo refresh-token response => " + JSON.stringify(datas));
+      if (datas["error"]) {
+        log("REFRESH TOKEN ERRROR" + JSON.stringify(datas));
       } else {
         const expired_at = new Date(
           new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
@@ -91,8 +91,8 @@ module.exports = {
           "SET netatmo_access_token=?, netatmo_refresh_token=?, netatmo_token_expired=? " +
           "WHERE netatmo_refresh_token=? AND netatmo_client_id=? AND netatmo_client_secret=?",
           [
-            data["access_token"],
-            data["refresh_token"],
+            datas["access_token"],
+            datas["refresh_token"],
             expired_at,
             refresh_token,
             client_id,

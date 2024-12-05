@@ -67,9 +67,7 @@ module.exports = {
       if (data1["rows"].length > 0) {
         let expiredIn = data1["rows"][0]["netatmo_token_expired"];
         const dateObject = new Date(parseInt(expiredIn)).getTime();
-        const current = new Date(
-          new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
-        ).getTime();
+        const current = new Date().getTime();
         log("expired => " + dateObject);
         log("current => " + current);
         if (dateObject < current) {

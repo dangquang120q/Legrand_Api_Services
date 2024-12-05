@@ -61,11 +61,11 @@ module.exports = {
         [userId]
       );
       let grant_type = process.env.NETATMO_REFRESH_GRANT_TYPE;
-      let data = await sails
+      let data1 = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
-      if (data["rows"].length > 0) {
-        let expiredIn = data["rows"][0]["netatmo_token_expired"];
+      if (data1["rows"].length > 0) {
+        let expiredIn = data1["rows"][0]["netatmo_token_expired"];
         const dateObject = new Date(parseInt(expiredIn)).getTime();
         const current = new Date(
           new Date().getTime() + process.env.NETATMO_EXPIRES_IN * 1000
@@ -77,8 +77,8 @@ module.exports = {
             refresh_token: decodeURIComponent(
               data["rows"][0]["netatmo_refresh_token"]
             ),
-            client_id: data["rows"][0]["netatmo_client_id"],
-            client_secret: data["rows"][0]["netatmo_client_secret"],
+            client_id: data1["rows"][0]["netatmo_client_id"],
+            client_secret: data1["rows"][0]["netatmo_client_secret"],
           });
           log("Netatmo refresh-token params => " + params);
           const res = await fetch(url, {

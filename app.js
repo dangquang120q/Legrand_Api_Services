@@ -80,6 +80,6 @@ sails.on("ready", () => {
   const { refreshCronJob } = require("./api/services/refresh-cron");
 
   setTimeout(function () {
-    refreshCronJob();
+    // refreshCronJob();
   }, 1000);
 });

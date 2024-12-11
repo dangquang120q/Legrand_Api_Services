@@ -800,6 +800,7 @@ module.exports = {
             // Push room to array
             rooms.push({
               ...room,
+              ...temperature,
               cooling_setpoint_mode: temperature?.cooling_setpoint_mode || null,
               temperature: temperature
                 ? temperature.therm_measured_temperature

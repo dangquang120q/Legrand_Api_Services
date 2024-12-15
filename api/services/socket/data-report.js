@@ -223,7 +223,7 @@ module.exports = {
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlUser);
       let sqlLocation = sqlString.format(
-        "select location from lts_device_detail where lts_mac = ? and deviceId = ?", [data.gatewayDn,data.deviceId]
+        "select name from lts_device_detail where lts_mac = ? and deviceId = ?", [data.gatewayDn,data.deviceId]
       );
       let dataLocation = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)

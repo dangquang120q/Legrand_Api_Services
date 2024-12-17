@@ -123,8 +123,8 @@ module.exports = {
 
   doModName: async function (request) {
     try {
-        console.log("doModName ----" + request);
         const { data } = request;
+        console.log("doModName ----" + JSON.stringify(request));
         let result = 0;
         const req = {};
         let sql = sqlString.format(

@@ -5,6 +5,7 @@ const { login } = require("./socket/login");
 const { heartbeat } = require("./socket/heartbeat");
 const { checkPing } = require("./socket/checkPing");
 const { checkVersion } = require("./socket/checkVersion");
+const { updateDeviceVersion } = require("./socket/updateDeviceVersion")
 const {
   addDevice,
   delDevice,
@@ -213,7 +214,7 @@ server.on("secureConnection", function (socket) {
             Ack = 1;
             break;
           case SOCKET_REQUEST.deviceNameAck:
-            await modName(data, list_account[socket.remoteAddress]);
+            await updateDeviceVersion(data, list_account[socket.remoteAddress]);
             Ack = 1;
             break;
           case SOCKET_REQUEST.changePasswordAck:

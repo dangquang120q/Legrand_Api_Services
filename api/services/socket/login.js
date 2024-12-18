@@ -38,7 +38,7 @@ module.exports = {
       response.packetNo = 1;
       response.data = {
         timestamp: Date.now().toString(),
-        timezone: "Asia/Shanghai",
+        timezone: "Asia/Ho_Chi_Minh",
         secretKey: "E26DC731BF67F664D28E90E008B083A6"
       };
       return response;
@@ -49,7 +49,7 @@ module.exports = {
       response.packetNo = 1;
       response.data = {
         timestamp: Date.now().toString(),
-        timezone: "Asia/Shanghai",
+        timezone: "Asia/Ho_Chi_Minh",
         secretKey: "E26DC731BF67F664D28E90E008B083A6"
       };
       return response;

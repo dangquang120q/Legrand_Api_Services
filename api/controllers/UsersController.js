@@ -70,7 +70,7 @@ module.exports = {
         });
       }
 
-      return res.ok("Notification jobs added to the queue.");
+      return res.ok(registrationTokens);
     } catch (error) {
       console.error("Error querying device tokens:", error);
       return res.serverError("Failed to add notification jobs to the queue.");

@@ -20,19 +20,23 @@ module.exports = {
         await sails
           .getDatastore(process.env.MYSQL_DATASTORE)
           .sendNativeQuery(sqlInsert);
+        console.log("index == " + index);
       }
+      console.log("1 ==");
       let sql = sqlString.format(
         "update lts_device_control set lts_device_version = lts_device_version + 1 where lts_mac = ?", [lts_mac]
       );
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
+      console.log("2 ==" + sql);
       let sqlGet = sqlString.format(
         "select lts_device_version from lts_device_control where lts_mac = ?", [lts_mac]
       );
       let dataVersion = await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sqlGet);
+      console.log("3 ==" + sqlGet);
       response.packetNo = request.packetNo;
       response.result = result;
       response.data = {

@@ -19,8 +19,6 @@ notificationQueue.process(async (job, done) => {
     const { registrationTokens, message,data } = job.data;
 
     try {
-        console.log(registrationTokens);
-        console.log(message);
         console.log(data);
         var response;
         if(message == null) {

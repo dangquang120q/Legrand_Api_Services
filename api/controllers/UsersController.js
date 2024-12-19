@@ -54,8 +54,8 @@ module.exports = {
       const registrationTokens = data.rows.map((device) => device.device_token);
 
       const message = {
-        title: "Thông báo",
-        body: "Nội dung thông báo",
+        switch: "abc",
+        deviceId: "xyz"
       };
 
       // Chia thành các batch nhỏ để tránh quá tải

@@ -34,7 +34,9 @@ notificationQueue.process(async (job, done) => {
         }
         console.log('Successfully sent message:', response);
         response.responses.forEach(element => {
-            console.log("Element: " + element.error.message);
+            if(element && element.error){
+                console.log("Element: " + element.error.message);
+            }
         });
         done(null, response);
     } catch (error) {

@@ -13,7 +13,7 @@ module.exports = {
       let result = 0;
       for (let index = 0; index < data["has"].length; index++) {
         const element = data["has"][index];
-        console.log("element ==" + JSON.stringify(element));
+        // console.log("element ==" + JSON.stringify(element));
         let sqlInsert = sqlString.format(
           "CALL sp_insert_device(?,?,?,?,?,?)", [element["name"],element["location"],element["productKey"],element["gatewayDn"],element["parentDn"],element["deviceId"]]
         );
@@ -21,12 +21,14 @@ module.exports = {
           .getDatastore(process.env.MYSQL_DATASTORE)
           .sendNativeQuery(sqlInsert);
       }
+      console.log("update --- lts_device_version");
       let sql = sqlString.format(
         "update lts_device_control set lts_device_version = lts_device_version + 1 where lts_mac = ?", [lts_mac]
       );
       await sails
         .getDatastore(process.env.MYSQL_DATASTORE)
         .sendNativeQuery(sql);
+      console.log("get --- lts_device_version");
       let sqlGet = sqlString.format(
         "select lts_device_version from lts_device_control where lts_mac = ?", [lts_mac]
       );
@@ -156,6 +158,12 @@ module.exports = {
           .getDatastore(process.env.MYSQL_DATASTORE)
           .sendNativeQuery(sqlUser);
         let userId = dataUser["rows"][0]["owned_id"];
+        let sqlName = sqlString.format(
+          "select name from lts_device_detail where lts_mac = ? and deviceId = ?", [data.gatewayDn,data.deviceId]
+        );
+        let dataName = await sails
+          .getDatastore(process.env.MYSQL_DATASTORE)
+          .sendNativeQuery(sqlName);
         let sqlFirebase = sqlString.format(
           "SELECT device_token FROM firebase_token WHERE user_id = ?",
           [userId]
@@ -169,7 +177,7 @@ module.exports = {
   
         const message = {
           title: "Low Battery",
-          body: "Low Battery Alarm"
+          body: "Low Battery Alarm" + + dataName["rows"][0]["name"]
         };
   
         // Chia thành các batch nhỏ để tránh quá tải

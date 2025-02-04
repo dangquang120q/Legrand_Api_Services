@@ -452,7 +452,7 @@ module.exports = {
         })),
       });
       log("launchScenario data: " + JSON.stringify(data));
-      if (data.error?.code) {
+      if (data.error?.code && data.error.code != 21) {
         response = new HttpResponse(null, {
           statusCode: "NET_" + data.error.code,
           error: true,

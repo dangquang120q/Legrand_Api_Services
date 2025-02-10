@@ -458,6 +458,7 @@ module.exports = {
           error: true,
           errorMsg: data.error.message,
         });
+        log("launchScenario error response: " + JSON.stringify(response));
         return res.send(response);
       }
       response = new HttpResponse(
@@ -466,6 +467,7 @@ module.exports = {
         },
         { statusCode: 200, error: false }
       );
+      log("launchScenario success response: " + JSON.stringify(response));
       return res.ok(response);
     } catch (error) {
       log("launchScenario error => " + error.toString());

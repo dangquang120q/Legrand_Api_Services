@@ -1636,4 +1636,34 @@ module.exports = {
       return res.serverError(response);
     }
   },
+  disableSystem: async (req, res) => {
+    const fs = require("fs");
+    const flagFile = "./disabled.flag";
+
+    try {
+      if (!fs.existsSync(flagFile)) {
+        fs.writeFileSync(flagFile, "DISABLED");
+      }
+
+      return res.ok({ message: "System has been disabled." });
+    } catch (error) {
+      console.error("Failed to disable system:", error);
+      return res.serverError("Unable to disable system.");
+    }
+  },
+  enableSystem: async (req, res) => {
+    const fs = require("fs");
+    const flagFile = "./disabled.flag";
+
+    try {
+      if (fs.existsSync(flagFile)) {
+        fs.unlinkSync(flagFile);
+      }
+
+      return res.ok({ message: "System has been enabled." });
+    } catch (error) {
+      console.error("Failed to enable system:", error);
+      return res.serverError("Unable to enable system.");
+    }
+  }
 };
